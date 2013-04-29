@@ -13,7 +13,7 @@ import java.util.Map;
 public class ExpressionRootObject
     extends StaticExpressionFunctions
 {
-    private Map<String, String> param;
+    private Map<String, String[]> param;
     private Map<String, String> session;
     private Map<String, String> cookie;
     private Map<String, String> user;
@@ -23,12 +23,12 @@ public class ExpressionRootObject
     {
     }
 
-    public Map<String, String> getParam()
+    public Map<String, String[]> getParam()
     {
         return param;
     }
 
-    public void setParam( final Map<String, String> param )
+    public void setParam( final Map<String, String[]> param )
     {
         this.param = param;
     }

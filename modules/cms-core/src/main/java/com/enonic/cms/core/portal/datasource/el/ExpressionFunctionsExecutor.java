@@ -223,19 +223,19 @@ public final class ExpressionFunctionsExecutor
         return userMap;
     }
 
-    private Map<String, String> createParameterMap()
+    private Map<String, String[]> createParameterMap()
     {
-        HashMap<String, String> map = new HashMap<String, String>();
+        Map<String, String[]> map = new HashMap<String, String[]>();
         if ( this.requestParameters != null )
         {
             for ( RequestParameters.Param param : this.requestParameters.getParameters() )
             {
                 String name = param.getName();
-                String value = param.getFirstValue();
+                String[] values = param.getValues();
 
-                if ( value != null )
+                if ( values != null )
                 {
-                    map.put( name, value );
+                    map.put( name, values );
                 }
             }
         }
@@ -245,7 +245,7 @@ public final class ExpressionFunctionsExecutor
 
     private Map<String, String> createSessionMap()
     {
-        HashMap<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         if ( this.verticalSession != null )
         {
             for ( String name : this.verticalSession.getAttributeNames() )
@@ -263,7 +263,7 @@ public final class ExpressionFunctionsExecutor
 
     private Map<String, String> createCookieMap()
     {
-        HashMap<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         if ( this.httpRequest != null )
         {
             Cookie[] cookies = httpRequest.getCookies();
