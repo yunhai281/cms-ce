@@ -53,6 +53,7 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.preference.PreferenceEntity;
@@ -140,6 +141,10 @@ public final class DataSourceServiceImpl
             ContentByQueryQuery spec = new ContentByQueryQuery();
             spec.setQuery( query );
             spec.setOrderBy( orderBy );
+            if ( index < 0 )
+            {
+                throw createNegativeIndexException();
+            }
             spec.setIndex( index );
             spec.setCount( count );
             spec.setFilterContentOnlineAt( now );
@@ -181,6 +186,10 @@ public final class DataSourceServiceImpl
         catch ( InvalidKeyException e )
         {
             return xmlCreator.createEmptyDocument( "Invalid key: " + e.getMessage() );
+        }
+        catch ( DataSourceException e )
+        {
+            return xmlCreator.createEmptyDocument( e.getMessage() );
         }
     }
 
@@ -563,48 +572,59 @@ public final class DataSourceServiceImpl
         }
         else
         {
-            Collection<CategoryKey> categoryFilter = CategoryKey.convertToList( categories );
-            Collection<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( contentTypes );
-            final Date now = new Date();
-
-            ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
-            contentByCategoryQuery.setUser( user );
-            contentByCategoryQuery.setCategoryKeyFilter( categoryFilter, includeSubCategories ? Integer.MAX_VALUE : 1 );
-            contentByCategoryQuery.setQuery( query );
-            contentByCategoryQuery.setOrderBy( orderBy );
-            contentByCategoryQuery.setContentTypeFilter( contentTypeFilter );
-            contentByCategoryQuery.setCount( count );
-            contentByCategoryQuery.setIndex( index );
-            contentByCategoryQuery.setFilterContentOnlineAt( now );
-
-            ContentResultSet contents = contentService.queryContent( contentByCategoryQuery );
-            if ( previewContext.isPreviewingContent() )
+            try
             {
-                contents = previewContext.getContentPreviewContext().overrideContentResultSet( contents );
+                Collection<CategoryKey> categoryFilter = CategoryKey.convertToList( categories );
+                Collection<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( contentTypes );
+                final Date now = new Date();
+
+                ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
+                contentByCategoryQuery.setUser( user );
+                contentByCategoryQuery.setCategoryKeyFilter( categoryFilter, includeSubCategories ? Integer.MAX_VALUE : 1 );
+                contentByCategoryQuery.setQuery( query );
+                contentByCategoryQuery.setOrderBy( orderBy );
+                contentByCategoryQuery.setContentTypeFilter( contentTypeFilter );
+                contentByCategoryQuery.setCount( count );
+                if ( index < 0 )
+                {
+                    throw createNegativeIndexException();
+                }
+                contentByCategoryQuery.setIndex( index );
+                contentByCategoryQuery.setFilterContentOnlineAt( now );
+
+                ContentResultSet contents = contentService.queryContent( contentByCategoryQuery );
+                if ( previewContext.isPreviewingContent() )
+                {
+                    contents = previewContext.getContentPreviewContext().overrideContentResultSet( contents );
+                }
+
+                RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
+                relatedContentQuery.setUser( user );
+                relatedContentQuery.setContentResultSet( contents );
+                relatedContentQuery.setParentLevel( parentLevel );
+                relatedContentQuery.setChildrenLevel( childrenLevel );
+                relatedContentQuery.setParentChildrenLevel( parentChildrenLevel );
+                relatedContentQuery.setIncludeOnlyMainVersions( true );
+
+                RelatedContentResultSet relatedContents = contentService.queryRelatedContent( relatedContentQuery );
+                if ( previewContext.isPreviewingContent() )
+                {
+                    relatedContents = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContents );
+                }
+
+                xmlCreator.setIncludeContentData( !titlesOnly );
+                xmlCreator.setIncludeRelatedContentData( !relatedTitlesOnly );
+                xmlCreator.setIncludeUserRightsInfo( includeUserRights, new CategoryAccessResolver( groupDao ),
+                                                     new ContentAccessResolver( groupDao ) );
+                xmlCreator.setResultIndexing( index, count );
+                xmlCreator.setIncludeVersionsInfoForPortal( false );
+                xmlCreator.setIncludeAssignment( true );
+                doc = xmlCreator.createContentsDocument( user, contents, relatedContents );
             }
-
-            RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
-            relatedContentQuery.setUser( user );
-            relatedContentQuery.setContentResultSet( contents );
-            relatedContentQuery.setParentLevel( parentLevel );
-            relatedContentQuery.setChildrenLevel( childrenLevel );
-            relatedContentQuery.setParentChildrenLevel( parentChildrenLevel );
-            relatedContentQuery.setIncludeOnlyMainVersions( true );
-
-            RelatedContentResultSet relatedContents = contentService.queryRelatedContent( relatedContentQuery );
-            if ( previewContext.isPreviewingContent() )
+            catch ( DataSourceException e )
             {
-                relatedContents = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContents );
+                doc = xmlCreator.createEmptyDocument( e.getMessage() );
             }
-
-            xmlCreator.setIncludeContentData( !titlesOnly );
-            xmlCreator.setIncludeRelatedContentData( !relatedTitlesOnly );
-            xmlCreator.setIncludeUserRightsInfo( includeUserRights, new CategoryAccessResolver( groupDao ),
-                                                 new ContentAccessResolver( groupDao ) );
-            xmlCreator.setResultIndexing( index, count );
-            xmlCreator.setIncludeVersionsInfoForPortal( false );
-            xmlCreator.setIncludeAssignment( true );
-            doc = xmlCreator.createContentsDocument( user, contents, relatedContents );
         }
         addDataTraceInfo( doc.getAsJDOMDocument() );
         return doc;
@@ -919,6 +939,10 @@ public final class DataSourceServiceImpl
             contentByCategoryQuery.setQuery( query );
             contentByCategoryQuery.setOrderBy( orderBy );
             contentByCategoryQuery.setCount( count );
+            if (index < 0)
+            {
+                throw createNegativeIndexException();
+            }
             contentByCategoryQuery.setIndex( index );
             contentByCategoryQuery.setFilterContentOnlineAt( now );
             contentByCategoryQuery.setFacets( facets );
@@ -964,6 +988,10 @@ public final class DataSourceServiceImpl
         {
             return xmlCreator.createEmptyDocument( "Invalid key: " + e.getMessage() );
         }
+        catch ( DataSourceException e )
+        {
+            return xmlCreator.createEmptyDocument( e.getMessage() );
+        }
     }
 
     private String applyUserFilterToQuery( String query, final UserEntity user )
@@ -1005,6 +1033,10 @@ public final class DataSourceServiceImpl
             //spec.setApprovedSectionContentOnly( true );
             spec.setSectionFilterStatus( SectionFilterStatus.APPROVED_ONLY );
             spec.setLevels( levels );
+            if (fromIndex < 0)
+            {
+                throw createNegativeIndexException();
+            }
             spec.setIndex( fromIndex );
             spec.setCount( count );
             spec.setQuery( query );
@@ -1054,6 +1086,10 @@ public final class DataSourceServiceImpl
             return xmlCreator.createEmptyDocument( "Invalid key: " + e.getMessage() );
         }
         catch ( InvalidContentBySectionQueryException e )
+        {
+            return xmlCreator.createEmptyDocument( e.getMessage() );
+        }
+        catch (DataSourceException e )
         {
             return xmlCreator.createEmptyDocument( e.getMessage() );
         }
@@ -1162,6 +1198,11 @@ public final class DataSourceServiceImpl
     private UserEntity getUserEntity( User user )
     {
         return userDao.findByKey( user.getKey() );
+    }
+
+    private DataSourceException createNegativeIndexException()
+    {
+        return new DataSourceException( "Index parameter must be greater then zero" );
     }
 
     @Autowired
