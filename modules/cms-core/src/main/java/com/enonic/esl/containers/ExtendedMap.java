@@ -19,6 +19,8 @@ public class ExtendedMap
     implements Map
 {
 
+    public final static String ALLOW_ATTACHMENT = "allowAttachment";
+
     private final static long serialVersionUID = 100000000L;
 
     private boolean allowNullValues = false;
@@ -438,5 +440,10 @@ public class ExtendedMap
     public boolean hasFileItems()
     {
         return this.fileItemCount > 0;
+    }
+
+    public boolean isAllowAttachment()
+    {
+        return getBoolean(ALLOW_ATTACHMENT, true);
     }
 }
