@@ -7,8 +7,11 @@ package com.enonic.vertical.adminweb;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +19,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,6 +60,10 @@ import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.page.PageEntity;
+import com.enonic.cms.core.structure.page.PageWindowEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplatePortletEntity;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 
 /**
@@ -1068,10 +1074,9 @@ public final class ContentObjectHandlerServlet
         Document coDoc = buildContentObjectXML( admin, formItems, false, false );
         admin.updateContentObject( XMLTool.documentToString( coDoc ) );
 
-        // it is better to have these 3 lines inside updateContentObject, but updateContentObject is used only from here
         final SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
-        final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
-        pageCache.removePortletWindowEntriesBySite();
+        final int portletKey = formItems.getInt( "key" );
+        removePagesUsingPortletFromCache( siteKey, portletKey );
 
         String subop = formItems.getString( "subop", "" );
         if ( "popup".equals( subop ) )
@@ -1093,6 +1098,45 @@ public final class ContentObjectHandlerServlet
         }
     }
 
+    /**
+     * Removes pages that are using the portlet from the cache
+     * @param siteKey site key
+     * @param portletKey portlet key
+     */
+    private void removePagesUsingPortletFromCache( final SiteKey siteKey, final int portletKey )
+    {
+        final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+
+        final Collection<MenuItemEntity> menuItemEntities = menuItemDao.findBySiteKey( siteKey.toInt() );
+
+        for ( final MenuItemEntity menuItem : menuItemEntities )
+        {
+            // find inside menu item
+            final PageEntity page = menuItem.getPage();
+            if ( page != null ) // not shortcut
+            {
+                // check if page templates is using the portlet
+                final List<PageTemplatePortletEntity> portlets = page.getTemplate().getPortlets();
+                for ( final PageTemplatePortletEntity portlet : portlets )
+                {
+                    if ( portlet.getKey().getPortletKey() == portletKey )
+                    {
+                        pageCache.removeEntriesByMenuItem( menuItem.getKey() );
+                    }
+                }
+
+                // check if menu items is using the portlet
+                final Set<PageWindowEntity> pageWindows = page.getPageWindows();
+                for ( final PageWindowEntity pageWindow : pageWindows )
+                {
+                    if ( pageWindow.getPortlet().getKey() == portletKey )
+                    {
+                        pageCache.removeEntriesByMenuItem( menuItem.getKey() );
+                    }
+                }
+            }
+        }
+    }
 
     private void spoolDocument( HttpServletResponse res, Document doc )
         throws VerticalAdminException
