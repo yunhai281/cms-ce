@@ -19,6 +19,9 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.TypedValue;
+import org.springframework.expression.spel.SpelNode;
+import org.springframework.expression.spel.ast.CompoundExpression;
+import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -81,9 +84,11 @@ public final class ExpressionFunctionsExecutor
 
         ExpressionFunctionsFactory.get().setContext( expressionContext );
 
-        context.addPropertyAccessor( new SafeMapAccessor( expression ) );
+        SafeMapAccessor accessor = new SafeMapAccessor( expression );
+        context.addPropertyAccessor( accessor );
 
         Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
+        accessor.setExpression( exp );
 
         String evaluatedString = "";
 
@@ -298,11 +303,17 @@ public final class ExpressionFunctionsExecutor
         extends MapAccessor
     {
         private String expression;
+        private Expression exp;
 
         public SafeMapAccessor( final String expression )
         {
 
             this.expression = expression;
+        }
+
+        public void setExpression( Expression exp )
+        {
+            this.exp = exp;
         }
 
         @Override
@@ -350,6 +361,48 @@ public final class ExpressionFunctionsExecutor
                     return TypedValue.NULL;
                 }
 
+                if ( exp instanceof SpelExpression )
+                {
+                    SpelExpression spelExp = ( SpelExpression ) exp;
+                    SpelNode ast = spelExp.getAST();
+
+                    if ( ast instanceof CompoundExpression )
+                    {
+                        return new TypedValue( value );
+
+                    } else
+                    {
+                        int count = ast.getChildCount();
+
+                        if ( count == 2 )
+                        {
+                            SpelNode child1 = ast.getChild( 0 );
+
+                            if ( child1 instanceof CompoundExpression )
+                            {
+                                int childCount = child1.getChildCount();
+
+                                // case: "${param.brands == 'bmw'}"
+                                if ( childCount == 2 )
+                                {
+                                    String evaluatedValue = "";
+
+                                    if ( value instanceof String[] )
+                                    {
+                                        evaluatedValue = StringUtils.join( (String[]) value, ',' );
+                                    }
+
+                                    return new TypedValue( evaluatedValue );
+
+                                // case: "${param.brands[0] == 'bmw'}"
+                                } else if ( childCount == 3 )
+                                {
+                                    return new TypedValue( value );
+                                }
+                            }
+                        }
+                    }
+                }
                 return new TypedValue( value );
             }
 
