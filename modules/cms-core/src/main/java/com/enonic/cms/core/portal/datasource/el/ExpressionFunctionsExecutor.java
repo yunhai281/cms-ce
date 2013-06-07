@@ -71,7 +71,7 @@ public final class ExpressionFunctionsExecutor
     {
         ExpressionRootObject rootObject = new ExpressionRootObject();
 
-        rootObject.setParam( createParameterMap() );
+        createParameterMap( rootObject );
         rootObject.setSession( createSessionMap() );
         rootObject.setCookie( createCookieMap() );
         rootObject.setUser( createUserMap() );
@@ -233,9 +233,11 @@ public final class ExpressionFunctionsExecutor
         return userMap;
     }
 
-    private Map<String, String[]> createParameterMap()
+    private void createParameterMap( ExpressionRootObject rootObject )
     {
-        HashMap<String, String[]> map = new HashMap<String, String[]>();
+        Map<String, String> singleParam = new HashMap<String, String>();
+        Map<String, String[]> multiParam = new HashMap<String, String[]>();
+
         if ( this.requestParameters != null )
         {
             for ( RequestParameters.Param param : this.requestParameters.getParameters() )
@@ -245,12 +247,19 @@ public final class ExpressionFunctionsExecutor
 
                 if ( value != null )
                 {
-                    map.put( name, value );
+                    if ( value.length == 1 )
+                    {
+                        singleParam.put( name, param.getFirstValue() );
+                    }
+                    else if ( value.length > 1 )
+                    {
+                        multiParam.put( name, value );
+                    }
                 }
             }
         }
-
-        return map;
+        rootObject.setParam( singleParam );
+        rootObject.setParams( multiParam );
     }
 
     private Map<String, String> createSessionMap()
@@ -342,6 +351,24 @@ public final class ExpressionFunctionsExecutor
             }
             else if ( target instanceof Map )
             {
+                Object object = context.getRootObject().getValue();
+
+                if ( object instanceof ExpressionRootObject )
+                {
+                    ExpressionRootObject rootObject = (ExpressionRootObject) object;
+
+                    // param
+                    if ( rootObject.getParam().containsKey( name ) )
+                    {
+                        return new TypedValue( rootObject.getParam().get( name ) );
+
+                    // params
+                    } else if ( rootObject.getParams().containsKey( name ) )
+                    {
+                        return new TypedValue( rootObject.getParams().get( name ) );
+                    }
+                }
+
                 Map map = (Map) target;
                 Object value = map.get( name );
 
