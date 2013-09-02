@@ -17,14 +17,15 @@ import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentNativeLink;
 import com.enonic.cms.core.content.ContentNativeLinkCollector;
-import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
 import com.enonic.cms.core.content.contentdata.custom.DataEntryType;
+import com.enonic.cms.core.content.contentdata.custom.stringbased.html.BatchHyperTextProcessor;
+import com.enonic.cms.core.content.contentdata.custom.stringbased.html.XHTMLValidator;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 
 public class HtmlAreaDataEntry
     extends AbstractStringBasedInputDataEntry
 {
-    private static String wrapElementName = "temp-wraped-element-if-you-can-see-me-something-went-wrong";
+    private static BatchHyperTextProcessor hyperTextProcessor = new BatchHyperTextProcessor();
 
     private List<ContentNativeLink> contentNativeLinks;
 
@@ -32,7 +33,7 @@ public class HtmlAreaDataEntry
 
     public HtmlAreaDataEntry( final DataEntryConfig config, final String value )
     {
-        super( config, DataEntryType.HTML_AREA, validateXhtml( config, removeProlog( value ) ) );
+        super( config, DataEntryType.HTML_AREA, hyperTextProcessor.prepare( config.getName(), value ) );
     }
 
     protected void customValidate()
@@ -45,32 +46,13 @@ public class HtmlAreaDataEntry
         return StringUtils.isEmpty( value );
     }
 
-    private static String validateXhtml( final DataEntryConfig config, final String value )
-    {
-        if ( StringUtils.isEmpty( value ) )
-        {
-            return value;
-        }
-
-        try
-        {
-            JDOMUtil.parseDocument( getStartWrap() + value + getEndWrap() );
-        }
-        catch ( final Exception e )
-        {
-            throw new InvalidContentDataException( "Input " + config.getName() + " has no vaild xhtml value", e );
-        }
-
-        return value;
-    }
-
     private String getComparableValue()
     {
         if ( comparableValue == null )
         {
             try
             {
-                final Document doc = JDOMUtil.parseDocument( getStartWrap() + value + getEndWrap() );
+                final Document doc = XHTMLValidator.parseDocument( "[comparator]", value );
                 comparableValue = JDOMUtil.prettyPrintDocument( doc, "", false );
             }
             catch ( final Exception e )
@@ -80,17 +62,6 @@ public class HtmlAreaDataEntry
             }
         }
         return comparableValue;
-    }
-
-
-    private static String getStartWrap()
-    {
-        return "<" + wrapElementName + ">";
-    }
-
-    private static String getEndWrap()
-    {
-        return "</" + wrapElementName + ">";
     }
 
     public Set<ContentKey> resolveRelatedContentKeys()
@@ -119,28 +90,6 @@ public class HtmlAreaDataEntry
         }
         return contentNativeLinks;
     }
-
-    private static String removeProlog( final String value )
-    {
-        if ( StringUtils.isEmpty( value ) )
-        {
-            return value;
-        }
-
-        final String start = "<?xml";
-        final String end = "?>";
-        if ( !value.startsWith( start ) )
-        {
-            return value;
-        }
-        final int endPos = value.indexOf( end );
-        if ( endPos < 0 )
-        {
-            return value;
-        }
-        return value.substring( endPos + end.length() ).trim();
-    }
-
 
     @Override
     public boolean equals( Object o )
