@@ -7,8 +7,7 @@ package com.enonic.cms.core.search.facet.builder;
 
 import java.util.Set;
 
-
-import org.elasticsearch.search.facet.FacetBuilder;
+import org.elasticsearch.search.facet.AbstractFacetBuilder;
 
 import com.google.common.collect.Sets;
 
@@ -32,9 +31,9 @@ public class ElasticsearchFacetBuilder
 
     private final ElasticsearchTermsStatsFacetBuilder termsStatsFacetBuilder = new ElasticsearchTermsStatsFacetBuilder();
 
-    public Set<FacetBuilder> build( FacetsModel facetsModel )
+    public Set<AbstractFacetBuilder> build( FacetsModel facetsModel )
     {
-        Set<FacetBuilder> facetBuilders = Sets.newHashSet();
+        Set<AbstractFacetBuilder> facetBuilders = Sets.newHashSet();
 
         final Set<FacetModel> facetModels = facetsModel.getFacetModels();
 

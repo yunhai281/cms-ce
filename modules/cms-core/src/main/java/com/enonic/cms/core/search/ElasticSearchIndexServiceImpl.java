@@ -378,7 +378,7 @@ public class ElasticSearchIndexServiceImpl
 
         final DeleteIndexResponse deleteIndexResponse = this.client.admin().indices().delete( deleteIndexRequest ).actionGet();
 
-        if ( !deleteIndexResponse.isAcknowledged() )
+        if ( !deleteIndexResponse.acknowledged() )
         {
             LOG.warn( "Index " + indexName + " not deleted" );
         }
@@ -484,7 +484,7 @@ public class ElasticSearchIndexServiceImpl
             setIndices( indexName ).
             execute().actionGet();
 
-        return indicesStatusResponse.getIndex( indexName );
+        return indicesStatusResponse.index( indexName );
     }
 
     @Override

@@ -8,11 +8,11 @@ package com.enonic.cms.core.search.facet;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.search.facet.FacetBuilder;
+import org.elasticsearch.search.facet.AbstractFacetBuilder;
 
 public abstract class AbstractElasticsearchFacetTestBase
 {
-    public String getJson( FacetBuilder facetBuilder )
+    public String getJson( AbstractFacetBuilder facetBuilder )
         throws Exception
     {
         final XContentBuilder builder = XContentFactory.jsonBuilder();

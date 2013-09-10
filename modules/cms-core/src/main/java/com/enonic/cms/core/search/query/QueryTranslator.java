@@ -11,7 +11,7 @@ import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.FacetBuilder;
+import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,6 @@ import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
-import com.enonic.cms.core.search.IndexException;
 import com.enonic.cms.core.search.facet.FacetBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
@@ -115,8 +114,8 @@ public class QueryTranslator
 
     private void doAddFacets( final ContentIndexQuery contentIndexQuery, final SearchSourceBuilder builder )
     {
-        final Collection<FacetBuilder> facetBuilders = facetBuilderFactory.buildFacetBuilder( contentIndexQuery );
-        for ( FacetBuilder facetBuilder : facetBuilders )
+        final Collection<AbstractFacetBuilder> facetBuilders = facetBuilderFactory.buildFacetBuilder( contentIndexQuery );
+        for ( AbstractFacetBuilder facetBuilder : facetBuilders )
         {
             builder.facet( facetBuilder );
         }

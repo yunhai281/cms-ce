@@ -42,7 +42,7 @@ public class IndexStatusInfoBuilder
         json.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
         json.put( "initializingShards", clusterHealthResponse.getInitializingShards() );
 
-        json.put( "documents", indexStatus.getDocs().getNumDocs() );
+        //json.put( "documents", indexStatus.getDocs().getNumDocs() );
         json.put( "primaryShardsStoreSize", indexStatus.getPrimaryStoreSize().toString() );
         json.put( "totalStoreSize", indexStatus.getStoreSize().toString() );
 
