@@ -29,6 +29,7 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertyNames;
+import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
@@ -75,6 +76,9 @@ public final class PageHandler
             redirectToRoot( httpRequest, httpResponse, sitePath );
             return;
         }
+
+        // required to support forward in shortcuts
+        OriginalUrlResolver.resolveOriginalUrl( httpRequest );
 
         String originalUrl = (String) httpRequest.getAttribute( Attribute.ORIGINAL_URL );
         SitePath originalSitePath = (SitePath) httpRequest.getAttribute( Attribute.ORIGINAL_SITEPATH );
