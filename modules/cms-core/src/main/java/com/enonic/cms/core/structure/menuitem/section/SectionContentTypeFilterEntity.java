@@ -10,8 +10,6 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 public class SectionContentTypeFilterEntity
 {
-
-
     private int key;
 
     private MenuItemEntity section;

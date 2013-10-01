@@ -33,6 +33,7 @@ import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
@@ -264,18 +265,39 @@ public class PageTemplateServiceImpl
         }
 
         // do the same for all menuitems using this page template
-        Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
-
-        for ( MenuItemEntity menuItem : menuItems )
-        {
-            if ( menuItem.isSection() )
-            {
-                menuItem.clearSectionContentTypes();
-                menuItem.addAllowedSectionContentType( contentTypes );
-            }
-        }
+        createContentTypesForMenuItems( pageTemplate, contentTypes, true );
 
         return contentTypes;
+    }
+
+    private void createContentTypesForMenuItems( final PageTemplateEntity pageTemplate, final List<ContentTypeEntity> contentTypes,
+                                                 final boolean switchToSection )
+    {
+        final Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
+
+        for ( final MenuItemEntity menuItem : menuItems )
+        {
+            if ( menuItem.isSection() == switchToSection )
+            {
+                boolean removeSection = !switchToSection;
+
+                if ( removeSection )
+                {
+                    menuItem.setOrderedSection( true );
+                    menuItem.setSection( true );
+                }
+
+                menuItem.clearSectionContentTypeFilters();
+
+                for ( final ContentTypeEntity contentType : contentTypes )
+                {
+                    final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+                    contentTypeFilter.setContentType( contentType );
+                    contentTypeFilter.setSection( menuItem );
+                    menuItem.addSectionContentTypeFilter( contentTypeFilter );
+                }
+            }
+        }
     }
 
     private int[] createPageTemplParam( final PageTemplateEntity pageTemplate, final Document ptpDoc )
@@ -672,7 +694,12 @@ public class PageTemplateServiceImpl
         final Element contenttypes = subelems.get( "contenttypes" );
         final Element[] ctyElems = XMLTool.getElements( contenttypes );
         final List<ContentTypeEntity> contentTypes = setPageTemplateContentTypes( pageTemplate, ctyElems );
-        createSectionsForMenuItems( pageTemplate, contentTypes );
+
+        // If page template is of type "section", we need to create sections for menuitems that does not have one
+        if ( pageTemplate.getType() == PageTemplateType.SECTIONPAGE )
+        {
+            createContentTypesForMenuItems( pageTemplate, contentTypes, false );
+        }
 
         pageTemplateDao.updateExisting( pageTemplate );
     }
@@ -744,31 +771,6 @@ public class PageTemplateServiceImpl
             css = ResourceKey.from( patstylesheetkey );
         }
         pageTemplate.setCssKey( css );
-    }
-
-    private void createSectionsForMenuItems( final PageTemplateEntity pageTemplate,
-                                             final List<ContentTypeEntity> contentTypes )
-    {
-        // If page template is of type "section", we need to create sections for menuitems
-        // that does not have one
-        if ( pageTemplate.getType() == PageTemplateType.SECTIONPAGE )
-        {
-            final Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
-
-            for ( final MenuItemEntity menuItem : menuItems )
-            {
-                if ( !menuItem.isSection() )
-                {
-                    menuItem.setOrderedSection( true );
-                    menuItem.setSection( true );
-
-                    menuItem.clearSectionContentTypes();
-                    menuItem.addAllowedSectionContentType( contentTypes );
-
-                    menuItemDao.updateExisting( menuItem );
-                }
-            }
-        }
     }
 
     private int getPageTemplateKey( final Element root )
