@@ -480,7 +480,7 @@ public class SecurityServiceImpl
 
     public void logoutPortalUser()
     {
-        doLogoutPortalUser( false );
+        doLogoutPortalUser( true );
     }
 
     public void logoutClientApiUser( boolean invalidateSession )
