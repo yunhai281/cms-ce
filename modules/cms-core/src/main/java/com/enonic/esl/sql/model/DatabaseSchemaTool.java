@@ -120,6 +120,12 @@ public final class DatabaseSchemaTool
             for ( int j = 0; j < columns.size(); j++ )
             {
                 sql.append( columns.get( j ) );
+
+                if ( !indexes[i].isUnique() && columns.get( j ).getSize() > 255 )
+                {
+                    sql.append( "(255)" );
+                }
+
                 if ( j < columns.size() - 1 )
                 {
                     sql.append( ", " );
