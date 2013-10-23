@@ -12,6 +12,8 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.PropertyAccessor;
@@ -32,6 +34,8 @@ import com.enonic.cms.core.structure.SiteProperties;
 
 public final class ExpressionFunctionsExecutor
 {
+    private static final Logger LOG = LoggerFactory.getLogger( "ExpressionFunctionsExecutor" );
+
     private static final ExpressionParser EXPR_FACTORY = new SpelExpressionParser();
 
     private static final TemplateParserContext TEMPLATE_PARSER_CONTEXT = new TemplateParserContext();
@@ -75,17 +79,23 @@ public final class ExpressionFunctionsExecutor
 
             ExpressionFunctionsFactory.get().setContext( expressionContext );
 
-            final Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
-
             Object result;
 
             try
             {
+                final Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
+
                 result = exp.getValue( context );
             }
             catch ( SpelEvaluationException e )
             {
                 result = null;
+            }
+            catch ( Exception e )
+            {
+                LOG.error( e.getMessage() );
+
+                result = "ERROR: " + e.getMessage();
             }
 
             // must be converted here, because param.x[0] will not work
