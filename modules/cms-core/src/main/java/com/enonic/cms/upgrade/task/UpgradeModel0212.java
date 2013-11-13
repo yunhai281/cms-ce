@@ -37,42 +37,39 @@ final class UpgradeModel0212
         {
             for ( LargeIndexedColumn column : LargeIndexedColumn.values() )
             {
-                List<String> keys = (List<String>) context.getJdbcTemplate().query( column.query(), column.extractor() );
+                List<String> keys = column.query( context );
 
                 if ( !keys.isEmpty() )
                 {
                     xtraLarges.put( column, keys );
                 }
             }
+
+            if ( xtraLarges.isEmpty() )
+            {
+                context.logInfo( "Upgrade check ok." );
+                return true;
+            }
+
+            String plural = ( xtraLarges.size() == 1) ? "" : "s";
+            context.logWarning( "Column" + plural + " with value more than 255 characters found:" );
+
+            for ( Map.Entry<LargeIndexedColumn, List<String>> xtraLarge : xtraLarges.entrySet() )
+            {
+                final LargeIndexedColumn column = xtraLarge.getKey();
+                final List<String> ids = xtraLarge.getValue();
+
+                final String message = column.message( context, ids );
+                context.logWarning( message );
+            }
+
+            context.logWarning( "\nThe length of value in column" + plural + " above will be reduced." );
         }
         catch ( Exception ex )
         {
             context.logError( ex.getMessage(), ex );
             return false;
         }
-
-        if ( xtraLarges.isEmpty() )
-        {
-            context.logInfo( "Upgrade check ok." );
-            return true;
-        }
-
-        String plural = ( xtraLarges.size() == 1) ? "" : "s";
-        context.logWarning( "Column" + plural + " with value more than 255 characters found:" );
-
-        for ( Map.Entry<LargeIndexedColumn, List<String>> xtraLarge : xtraLarges.entrySet() )
-        {
-            final LargeIndexedColumn column = xtraLarge.getKey();
-            final List<String> ids = xtraLarge.getValue();
-
-            final String message =
-                "\nTable [" + column.getTable() + "], Column [" + column.name() + "], ID [" + column.getIdColumn() + "] = '" +
-                    StringUtils.collectionToCommaDelimitedString( ids ) + "'";
-
-            context.logWarning( message );
-        }
-
-        context.logWarning( "\nThe length of value in column" + plural + " above will be reduced." );
 
         return true;
     }
@@ -137,6 +134,24 @@ final class UpgradeModel0212
                 String getIdColumn()
                 {
                     return "cov_lKey";
+                }
+
+                @Override
+                String message( final UpgradeContext context, final List<String> ids )
+                    throws Exception
+                {
+                    List<String> keyPair = new ArrayList<String>();
+
+                    for ( String covlKey : ids )
+                    {
+                        String sql = "SELECT con_lKey FROM tContent WHERE con_cov_lKey = " + covlKey;
+                        List<String> conlKeys = context.getJdbcTemplate().query( sql, new IdExtractor( "con_lKey" ) );
+
+                        keyPair.add( covlKey + ":" + conlKeys.get( 0 ) );
+                    }
+
+                    return "\nTable [" + this.getTable() + "], Column [" + this.name() + "], ID [" + this.getIdColumn() + ":con_lKey] = '" +
+                        StringUtils.collectionToCommaDelimitedString( keyPair ) + "'";
                 }
             },
         grp_sName
@@ -204,19 +219,28 @@ final class UpgradeModel0212
 
         abstract String getIdColumn();
 
-        String query()
+        List<String> query( UpgradeContext context )
+            throws Exception
         {
-            return "SELECT " + this.getIdColumn() + " FROM " + this.getTable() + " WHERE @length@(" + this.name() + ") > 255";
+            String sql = "SELECT " + this.getIdColumn() + " FROM " + this.getTable() + " WHERE @length@(" + this.name() + ") > 255";
+            return context.getJdbcTemplate().query( sql, this.extractor() );
         }
 
-        ResultSetExtractor extractor()
+        ResultSetExtractor<List<String>> extractor()
         {
             return new IdExtractor( this.getIdColumn() );
+        }
+
+        String message( final UpgradeContext context, final List<String> ids )
+            throws Exception
+        {
+            return "\nTable [" + this.getTable() + "], Column [" + this.name() + "], ID [" + this.getIdColumn() + "] = '" +
+                StringUtils.collectionToCommaDelimitedString( ids ) + "'";
         }
     }
 
     private static class IdExtractor
-        implements ResultSetExtractor
+        implements ResultSetExtractor<List<String>>
     {
         private final String idColumn;
 
@@ -225,7 +249,7 @@ final class UpgradeModel0212
             this.idColumn = idColumn;
         }
 
-        public Object extractData( ResultSet rs )
+        public List<String> extractData( ResultSet rs )
             throws SQLException, DataAccessException
         {
             List<String> ids = new ArrayList<String>();
