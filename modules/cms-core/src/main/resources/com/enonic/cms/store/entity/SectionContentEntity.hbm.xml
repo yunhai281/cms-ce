@@ -37,4 +37,18 @@
     where x.menuItem.key = :menuItemKey
     and lower(y.name) = :contentName
   </query>
+
+  <query name="SectionContentEntity.findPublishedContent" cacheable="true" read-only="true">
+    select count(c)
+    from SectionContentEntity c
+    where c.content.key = :categoryKey
+    and c.approved = 1
+  </query>
+
+  <query name="SectionContentEntity.findUnpublishedContent" cacheable="true" read-only="true">
+    select count(c)
+    from SectionContentEntity c
+    where c.content.key = :categoryKey
+    and c.approved = 0
+  </query>
 </hibernate-mapping>

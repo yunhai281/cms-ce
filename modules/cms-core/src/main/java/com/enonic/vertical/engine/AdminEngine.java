@@ -42,6 +42,7 @@ import com.enonic.vertical.engine.handlers.UserHandler;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.content.ContentPublishedResolver;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.IndexService;
@@ -69,6 +70,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.SectionContentDao;
 
 @Component
 public final class AdminEngine
@@ -122,6 +124,9 @@ public final class AdminEngine
 
     @Autowired
     private GroupDao groupDao;
+
+    @Autowired
+    private SectionContentDao sectionContentDao;
 
     public void afterPropertiesSet()
         throws Exception
@@ -712,6 +717,7 @@ public final class AdminEngine
         xmlCreator.setIncludeAssignment( true );
         xmlCreator.setIncludeDraftInfo( true );
         xmlCreator.setIncludeRepositoryPathInfo( false );
+        xmlCreator.setPublishedResolver( new ContentPublishedResolver( sectionContentDao ) );
         return xmlCreator.createContentsDocument( user, contents, relatedContents );
     }
 

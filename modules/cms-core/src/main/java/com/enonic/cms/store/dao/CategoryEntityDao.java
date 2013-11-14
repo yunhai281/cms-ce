@@ -84,8 +84,7 @@ public final class CategoryEntityDao
     @Override
     public long countChildrenByCategory( CategoryEntity category )
     {
-        return findSingleByNamedQuery( Long.class, "CategoryEntity.countChildrenByCategoryKey", new String[]{"categoryKey"},
-                                       new Object[]{category.getKey()} );
+        return findSingleByNamedQuery( Long.class, "CategoryEntity.countChildrenByCategoryKey", "categoryKey", category.getKey() );
     }
 
     @Autowired
