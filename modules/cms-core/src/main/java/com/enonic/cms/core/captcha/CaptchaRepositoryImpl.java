@@ -17,7 +17,6 @@ import nl.captcha.Captcha;
 import nl.captcha.backgrounds.TransparentBackgroundProducer;
 import nl.captcha.gimpy.RippleGimpyRenderer;
 import nl.captcha.text.producer.DefaultTextProducer;
-import nl.captcha.text.renderer.DefaultWordRenderer;
 
 @Component("captchaRepository")
 public class CaptchaRepositoryImpl
