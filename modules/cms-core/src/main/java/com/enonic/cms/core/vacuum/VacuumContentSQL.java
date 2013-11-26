@@ -10,24 +10,27 @@ package com.enonic.cms.core.vacuum;
 public class VacuumContentSQL
 {
 
+    public static final String VACUUM_CONTENT_BASE_SQL =
+        "SELECT con_lKey FROM tContent WHERE con_bDeleted = 1";
+
     /**
      * Binary reference sql.
      */
     private final static String VACUUM_CONTENT_BINARY_DATA_SQL =
         "DELETE FROM tContentBinaryData WHERE cbd_cov_lKey IN (" + "SELECT cov_lKey FROM tContentVersion WHERE cov_con_lKey IN (" +
-            "SELECT con_lKey FROM tContent WHERE con_bdeleted = 1))";
+            VACUUM_CONTENT_BASE_SQL + "))";
 
     /**
      * Delete menu item content.
      */
     private final static String VACUUM_MENU_ITEM_CONTENT_SQL =
-        "DELETE FROM tMenuItemContent WHERE mic_con_lKey IN (" + "SELECT con_lKey FROM tContent WHERE con_bDeleted = 1)";
+        "DELETE FROM tMenuItemContent WHERE mic_con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete menu item content.
      */
     private final static String VACUUM_SECTION_CONTENT_SQL =
-        "DELETE FROM tSectionContent2 WHERE sco_con_lKey IN (" + "SELECT con_lKey FROM tContent WHERE con_bDeleted = 1)";
+        "DELETE FROM tSectionContent2 WHERE sco_con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete binary data sql.
@@ -40,36 +43,37 @@ public class VacuumContentSQL
      */
     private final static String VACUUM_RELATED_CONTENT_SQL =
         "DELETE FROM tRelatedContent WHERE rco_con_lParent IN (" + "SELECT cov_lKey FROM tContentVersion WHERE cov_con_lKey IN (" +
-            "SELECT con_lKey FROM tcontent WHERE con_bdeleted = 1))";
+            VACUUM_CONTENT_BASE_SQL + "))";
 
     /**
      * Delete content version.
      */
     private final static String VACUUM_CONTENT_VERSION_SQL =
-        "DELETE FROM tContentVersion WHERE cov_con_lKey IN (" + "SELECT con_lKey FROM tcontent WHERE con_bdeleted = 1)";
+        "DELETE FROM tContentVersion WHERE cov_con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete content access rights.
      */
     private final static String VACUUM_CONTENT_ACCESS_RIGHT_SQL =
-        "DELETE FROM tConAccessRight2 WHERE coa_con_lKey IN (" + "SELECT con_lkey FROM tContent WHERE con_bdeleted = 1)";
+        "DELETE FROM tConAccessRight2 WHERE coa_con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete child releated contents.
      */
     private final static String VACUUM_CHILD_RELATED_CONTENT_SQL =
-        "DELETE FROM tRelatedContent WHERE rco_con_lChild IN (" + "SELECT con_lkey FROM tContent WHERE con_bdeleted = 1)";
+        "DELETE FROM tRelatedContent WHERE rco_con_lChild IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete content home.
      */
     private final static String VACUUM_CONTENT_HOME_SQL =
-        "DELETE FROM tContentHome WHERE cho_con_lKey IN (" + "SELECT con_lKey FROM tContent WHERE con_bDeleted = 1)";
+        "DELETE FROM tContentHome WHERE cho_con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     /**
      * Delete content.
      */
-    private final static String VACUUM_CONTENT_SQL = "DELETE FROM tContent WHERE con_bdeleted = 1";
+    //private final static String VACUUM_CONTENT_SQL = "DELETE FROM tContent WHERE con_bdeleted = 1";
+    private final static String VACUUM_CONTENT_SQL = "DELETE FROM tContent WHERE con_lKey IN (" + VACUUM_CONTENT_BASE_SQL + ")";
 
     private final static String DELETED_CATEGORIES_WITHOUT_CONTENT_AND_SUB_CATEGORIES =
         "SELECT cat_lkey FROM tCategory WHERE cat_bdeleted = 1 AND NOT EXISTS ( select con_lkey from tContent where con_cat_lkey = cat_lkey )" +
