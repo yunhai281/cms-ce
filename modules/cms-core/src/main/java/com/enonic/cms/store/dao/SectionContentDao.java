@@ -20,4 +20,8 @@ public interface SectionContentDao
     int deleteByContentKey( ContentKey key );
 
     Integer getCountNamedContentsInSection( MenuItemKey menuItemKey, String contentName );
+
+    long findPublishedContent( ContentKey key );
+
+    long findUnpublishedContent( ContentKey key );
 }

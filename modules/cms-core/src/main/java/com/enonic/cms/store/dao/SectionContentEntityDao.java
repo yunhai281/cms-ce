@@ -37,5 +37,14 @@ public final class SectionContentEntityDao
         return new Integer( count.intValue() );
     }
 
+    public long findPublishedContent( ContentKey key )
+    {
+        return findSingleByNamedQuery( Long.class, "SectionContentEntity.findPublishedContent", "categoryKey", key.toInt() );
+    }
+
+    public long findUnpublishedContent( ContentKey key )
+    {
+        return findSingleByNamedQuery( Long.class, "SectionContentEntity.findUnpublishedContent", "categoryKey", key.toInt() );
+    }
 }
 
