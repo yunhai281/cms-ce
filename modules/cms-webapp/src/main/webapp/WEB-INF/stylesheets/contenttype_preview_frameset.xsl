@@ -7,7 +7,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     >
 
-  <xsl:output method="html"/>
+  <xsl:output method="html" doctype-public="-//W3C//DTD HTML 4.01 Frameset//EN" doctype-system="http://www.w3.org/TR/html4/frameset.dtd" />
   <xsl:include href="common/generic_parameters.xsl"/>
   <xsl:param name="pagetemplatekey"/>
   <xsl:param name="contentkey"/>
