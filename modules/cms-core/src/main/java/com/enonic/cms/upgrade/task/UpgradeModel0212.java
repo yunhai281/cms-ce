@@ -144,8 +144,8 @@ final class UpgradeModel0212
 
                     for ( String covlKey : ids )
                     {
-                        String sql = "SELECT con_lKey FROM tContent WHERE con_cov_lKey = " + covlKey;
-                        List<String> conlKeys = context.getJdbcTemplate().query( sql, new IdExtractor( "con_lKey" ) );
+                        String sql = "SELECT cov_con_lKey FROM tContentVersion WHERE cov_lKey = " + covlKey;
+                        List<String> conlKeys = context.getJdbcTemplate().query( sql, new IdExtractor( "cov_con_lKey" ) );
 
                         keyPair.add( covlKey + ":" + conlKeys.get( 0 ) );
                     }
