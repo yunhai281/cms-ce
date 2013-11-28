@@ -1217,7 +1217,7 @@ public class ContentBaseHandlerServlet
                 AdminXsltProcessor proc = xsltProcessorFactory.createProcessor( xslResource, getStylesheetURIResolver( admin ) );
                 proc.setParameter( "datetoday", DateUtil.formatISODateTime( new Date() ) );
 
-                response.setContentType( proc.getOutputMediaType() + "; charset=UTF-8" );
+                response.setContentType( proc.getContentType() );
                 response.getWriter().write( proc.process( reportSource ) );
             }
             else
