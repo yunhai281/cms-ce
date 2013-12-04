@@ -36,6 +36,7 @@ class SerializeFunction
         {
             final NodeInfo node = (NodeInfo) args[0].next();
             final boolean includeSelf = ( (BooleanValue) args[1].next() ).getBooleanValue();
+            final String formatter = args.length > 2 ? args[2].next().getStringValue() : "pretty";
 
             final org.w3c.dom.Node w3cNode = NodeOverNodeInfo.wrap( node );
 
@@ -46,7 +47,9 @@ class SerializeFunction
             }
             recursiveRemoveNamespaces( doc.getRootElement() );
 
-            final String output = includeSelf ? JDOMUtil.serialize( doc, 4, true ) : JDOMUtil.serializeChildren( doc, 4 );
+            final int indent = "raw".equals( formatter ) ? -1 : 4;
+
+            final String output = includeSelf ? JDOMUtil.serialize( doc, indent, true ) : JDOMUtil.serializeChildren( doc, indent );
             return createValue( output.trim() );
         }
     }
@@ -80,6 +83,7 @@ class SerializeFunction
         setResultType( SequenceType.SINGLE_STRING );
         setArgumentTypes( SequenceType.SINGLE_NODE, SequenceType.SINGLE_BOOLEAN );
         setMinimumNumberOfArguments( 2 );
+        setMaximumNumberOfArguments( 3 );
     }
 
     @Override

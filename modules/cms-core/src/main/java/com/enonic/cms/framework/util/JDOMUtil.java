@@ -270,9 +270,17 @@ public final class JDOMUtil
 
     private static String serialize( Document doc, int indent, boolean omitDecl, boolean includeSelf )
     {
-        final Format format =
-            Format.getPrettyFormat().setIndent( Strings.repeat( " ", indent ) ).setOmitDeclaration( omitDecl ).setTextMode(
+        Format format;
+        if ( indent != -1 )
+        {
+            format = Format.getPrettyFormat().setIndent( Strings.repeat( " ", indent ) ).setOmitDeclaration( omitDecl ).setTextMode(
                 Format.TextMode.TRIM );
+        }
+        else
+        {
+            format = Format.getRawFormat().setOmitDeclaration( omitDecl ).setTextMode( Format.TextMode.PRESERVE );
+        }
+
         return doSerialize( doc, format, includeSelf );
     }
 
