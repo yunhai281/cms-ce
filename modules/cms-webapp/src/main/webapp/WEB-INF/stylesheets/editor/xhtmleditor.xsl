@@ -136,6 +136,7 @@
           <textarea name="{$name}" id="{$edKey}" class="{concat('editor-textarea editor_settings_', $edKey)}" style="width:{$width}px;height:{$height}px">
             <xsl:call-template name="serialize">
               <xsl:with-param name="xpath" select="$content"/>
+              <xsl:with-param name="formatter" select="'raw'"/>
             </xsl:call-template>
           </textarea>
         </div>

@@ -6,10 +6,11 @@
     <xsl:template name="serialize">
         <xsl:param name="xpath"/>
         <xsl:param name="include-self" select="false()"/>
+        <xsl:param name="formatter" select="'pretty'"/>
 
         <xsl:if test="$xpath">
             <xsl:variable name="serialized">
-                <xsl:value-of select="admin:serialize($xpath, $include-self)"/>
+                <xsl:value-of select="admin:serialize($xpath, $include-self, $formatter)"/>
             </xsl:variable>
 
             <xsl:choose>
