@@ -74,23 +74,35 @@ public abstract class OsgiContainer
 
     @PostConstruct
     public final void start()
-        throws Exception
     {
-        this.tmpDir = Files.createTempDir();
+        try
+        {
+            this.tmpDir = Files.createTempDir();
 
-        this.framework = new EquinoxFactory().newFramework( createConfigMap() );
-        this.framework.start();
-        this.bundleInstaller = new BundleInstaller( this.framework.getBundleContext() );
-        start( this.framework.getBundleContext() );
+            this.framework = new EquinoxFactory().newFramework( createConfigMap() );
+            this.framework.start();
+            this.bundleInstaller = new BundleInstaller( this.framework.getBundleContext() );
+            start( this.framework.getBundleContext() );
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "Cannot start container.", e );
+        }
     }
 
     @PreDestroy
     public final void stop()
-        throws Exception
     {
-        this.framework.stop();
-        this.framework.waitForStop( 5000 );
-        FileUtils.deleteDirectory( this.tmpDir );
+        try
+        {
+            this.framework.stop();
+            this.framework.waitForStop( 5000 );
+            FileUtils.deleteDirectory( this.tmpDir );
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "Cannot stop container correctly.", e );
+        }
     }
 
     protected abstract void start( BundleContext context )
@@ -119,7 +131,7 @@ public abstract class OsgiContainer
 
         final String locationFile = location.getFile();
 
-        LOG.info( "Location of framework.jar : " +  locationFile );
+        LOG.info( "Location of framework.jar : " + locationFile );
 
         if ( locationFile.endsWith( ".jar!/" ) ) // for IBM Websphere 8.5 Liberty Profile
         {
@@ -128,9 +140,7 @@ public abstract class OsgiContainer
             location = new URL( absolutePath );
         }
 
-        else
-
-        if ( ResourceUtils.URL_PROTOCOL_VFS.equals( location.getProtocol() ) ) // JBOSS 7.1.1 VFS
+        else if ( ResourceUtils.URL_PROTOCOL_VFS.equals( location.getProtocol() ) ) // JBOSS 7.1.1 VFS
         {
             final URI uri = ResourceUtils.toURI( location );
             final UrlResource urlResource = new UrlResource( uri );
@@ -155,7 +165,7 @@ public abstract class OsgiContainer
             location = new URL( stringBuilder.toString() );
         }
 
-        LOG.info( "Copying " +  location.toString()  + " to " + targetFile.toString() );
+        LOG.info( "Copying " + location.toString() + " to " + targetFile.toString() );
         Files.copy( Resources.newInputStreamSupplier( location ), targetFile );
     }
 }

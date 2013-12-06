@@ -53,24 +53,36 @@ public final class HotDeployTask
 
     @PostConstruct
     public void start()
-        throws Exception
     {
-        final JarFileFilter filter = new JarFileFilter();
+        try
+        {
+            final JarFileFilter filter = new JarFileFilter();
 
-        final FileAlterationObserver observer = new FileAlterationObserver(this.deployDir, filter);
-        observer.addListener(new HotDeployListener( this.pluginManager ));
-        observer.checkAndNotify();
+            final FileAlterationObserver observer = new FileAlterationObserver( this.deployDir, filter );
+            observer.addListener( new HotDeployListener( this.pluginManager ) );
+            observer.checkAndNotify();
 
-        this.monitor = new FileAlterationMonitor(this.scanPeriod, observer);
-        this.monitor.start();
+            this.monitor = new FileAlterationMonitor( this.scanPeriod, observer );
+            this.monitor.start();
 
-        LOG.info("Hot deploying plugins from [{}]. Scanning every [{}] ms.", this.deployDir.getAbsolutePath(), this.scanPeriod);
+            LOG.info( "Hot deploying plugins from [{}]. Scanning every [{}] ms.", this.deployDir.getAbsolutePath(), this.scanPeriod );
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "cannot start monitor.", e );
+        }
     }
 
     @PreDestroy
     public void stop()
-        throws Exception
     {
-        this.monitor.stop();
+        try
+        {
+            this.monitor.stop();
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "cannot stop monitor correctly.", e );
+        }
     }
 }
