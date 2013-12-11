@@ -9,8 +9,6 @@ import com.enonic.cms.api.Version;
 
 public final class ProductVersion
 {
-    private static boolean ENTERPRISE = false;
-
     public static String getTitle()
     {
         return Version.getTitle();
@@ -18,7 +16,15 @@ public final class ProductVersion
 
     public static boolean isEnterprise()
     {
-        return ENTERPRISE;
+        try
+        {
+            Class.forName( "com.enonic.cms.ee.Bootstrap" );
+            return true;
+        }
+        catch ( final Exception e )
+        {
+            return false;
+        }
     }
 
     public static String getEdition()
@@ -44,10 +50,5 @@ public final class ProductVersion
     public static String getCopyright()
     {
         return Version.getCopyright();
-    }
-
-    public static void setEnterprise( final boolean flag )
-    {
-        ENTERPRISE = flag;
     }
 }
