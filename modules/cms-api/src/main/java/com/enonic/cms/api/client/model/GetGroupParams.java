@@ -18,17 +18,18 @@ public class GetGroupParams
     public String group;
 
     /**
-     * Specify to include specified group's members. Default is false.
+     *  Set this property to <code>true</code> to include a list of all members of this group, in the result XML.  Default is false.
      */
     public boolean includeMembers = false;
 
     /**
-     * Specify to include the groups memberships. Default is false.
+     * Set this property to <code>true</code> to include a list of all groups this group is a member of, in the result XML.  Default is false.
      */
     public boolean includeMemberships = false;
 
     /**
      * If set to false; only direct memeberships are listed. If set to true; indirect memberships are also listed.
+     * This property have no effect, unless <code>includeMemberships</code> is set to <code>true</code>.
      */
     public boolean normalizeGroups = false;
 }
