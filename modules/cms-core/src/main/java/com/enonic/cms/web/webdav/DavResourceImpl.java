@@ -38,6 +38,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.PropEntry;
 import org.apache.jackrabbit.webdav.property.ResourceType;
+import org.apache.jackrabbit.webdav.util.HttpDateFormat;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
@@ -543,8 +544,12 @@ final class DavResourceImpl
         final long modifiedTime = this.file.lastModified();
         if ( modifiedTime != DavConstants.UNDEFINED_TIME )
         {
+            // SimpleDateFormat is not thread safe.
+            final HttpDateFormat modificationDateFormat = (HttpDateFormat) DavConstants.modificationDateFormat;
+            final HttpDateFormat dateFormat = new HttpDateFormat( modificationDateFormat.toPattern() );
+
             result.add( new DefaultDavProperty<String>( DavPropertyName.GETLASTMODIFIED,
-                                                        DavConstants.modificationDateFormat.format( new Date( modifiedTime ) ) ) );
+                                                        dateFormat.format( new Date( modifiedTime ) ) ) );
         }
 
         if ( !isCollection() )
