@@ -7,8 +7,10 @@ package com.enonic.cms.core.mail;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -57,8 +59,7 @@ public abstract class AbstractSendMailService
 
             for ( final Map.Entry<String, InputStream> attachment : attachments.entrySet() )
             {
-                final InputStreamSource inputStreamSource = new InputStreamResource( attachment.getValue() );
-                message.addAttachment( attachment.getKey(), inputStreamSource );
+                message.addAttachment( attachment.getKey(), new ByteArrayResource( IOUtils.toByteArray( attachment.getValue() ) ) );
             }
 
             if ( template.isHtml() )
