@@ -46,7 +46,7 @@ public final class ImageProcessor
             image = ImageHelper.removeAlphaChannel( image, req.getParams().getBackgroundColor() );
         }
 
-        byte[] data = ImageHelper.writeImage( image, format, req.getParams().getQuality() );
+        byte[] data = ImageHelper.writeImage( image, format, req.getParams().getQuality(), true );
         return new ImageResponse( req.getName(), data, format );
     }
 }

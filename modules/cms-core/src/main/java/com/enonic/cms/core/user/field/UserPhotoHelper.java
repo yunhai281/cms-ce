@@ -37,7 +37,7 @@ public final class UserPhotoHelper
         image = scaleIfNeeded( image );
 
         String format = ImageHelper.getAutoFormat( image );
-        return ImageHelper.writeImage( image, format, 85 );
+        return ImageHelper.writeImage( image, format, 85, false );
     }
 
     private static BufferedImage scaleIfNeeded( BufferedImage source )

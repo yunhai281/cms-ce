@@ -24,6 +24,8 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 public final class ImageHelper
 {
+    public static int minSizeForProgressiveLoading = 1000000;
+
     public static ImageWriter getWriterByFormat( String format )
     {
         Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName( format );
@@ -49,21 +51,27 @@ public final class ImageHelper
         return readImage( new ByteArrayInputStream( data ) );
     }
 
-    public static byte[] writeImage( BufferedImage image, String format, int quality )
+    public static byte[] writeImage( BufferedImage image, String format, int quality, boolean canBeProgressive )
         throws IOException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeImage( out, image, format, quality );
+        writeImage( out, image, format, quality, canBeProgressive );
         return out.toByteArray();
     }
 
-    public static void writeImage( OutputStream out, BufferedImage image, String format, int quality )
+    public static void writeImage( OutputStream out, BufferedImage image, String format, int quality, boolean canBeProgressive )
         throws IOException
     {
         ImageWriter writer = getWriterByFormat( format );
         writer.setOutput( new MemoryCacheImageOutputStream( out ) );
         ImageWriteParam params = writer.getDefaultWriteParam();
         setCompressionQuality( params, quality );
+        final int pixels = image.getHeight() * image.getWidth();
+        if ( canBeProgressive && minSizeForProgressiveLoading != -1 && pixels > minSizeForProgressiveLoading &&
+            params.canWriteProgressive() )
+        {
+            params.setProgressiveMode( ImageWriteParam.MODE_DEFAULT );
+        }
         writer.write( null, new IIOImage( image, null, null ), params );
         writer.dispose();
     }
