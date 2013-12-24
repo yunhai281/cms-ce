@@ -7,9 +7,6 @@ package com.enonic.cms.core.content.contentdata.custom.support;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +16,8 @@ import java.util.Set;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.io.FileUtil;
@@ -67,7 +66,7 @@ import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConf
  */
 public class CustomContentDataFormParser
 {
-    private static final DateFormat dateFormatFrom = new SimpleDateFormat( "dd.MM.yyyy" );
+    protected static final DateTimeFormatter DATE_FORMAT_FROM = DateTimeFormat.forPattern( "dd.MM.yyyy" );
 
     private int binaryDataPlaceHolderCounter = 0;
 
@@ -430,20 +429,19 @@ public class CustomContentDataFormParser
                 return new DateDataEntry( config, null );
             }
 
-            DateDataEntry dataEntry;
+            Date date;
 
             try
             {
-                Date date = dateFormatFrom.parse( dateString );
-                dataEntry = new DateDataEntry( config, date );
+                date = DATE_FORMAT_FROM.parseDateTime( dateString ).toDate();
             }
-            catch ( ParseException e )
+            catch ( final Exception e )
             {
                 String message = "Failed to parse date from input: " + dateString;
                 throw new ContentDataParserInvalidDataException( message );
             }
 
-            return dataEntry;
+            return new DateDataEntry( config, date );
         }
 
         private BinaryDataEntry parseBinaryDataEntry( String name, BinaryDataEntryConfig config )

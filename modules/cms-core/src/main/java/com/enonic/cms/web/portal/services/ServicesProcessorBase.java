@@ -8,9 +8,6 @@ package com.enonic.cms.web.portal.services;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -28,6 +25,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
@@ -89,7 +88,9 @@ public abstract class ServicesProcessorBase
 
     public final static int ERR_INVALID_CAPTCHA = 405;
 
-    protected static DateFormat dateFormatFrom = new SimpleDateFormat( "dd.MM.yyyy" );
+    protected static final DateTimeFormatter DATE_FORMAT_FROM = DateTimeFormat.forPattern( "dd.MM.yyyy" );
+
+    protected static final DateTimeFormatter DATE_FORMAT_TO = DateTimeFormat.forPattern( "yyyy-MM-dd" );
 
     private final FileUploadBase fileUpload;
 
@@ -257,7 +258,7 @@ public abstract class ServicesProcessorBase
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
         throws VerticalUserServicesException, VerticalEngineException, IOException, ClassNotFoundException, IllegalAccessException,
-        InstantiationException, ParseException
+        InstantiationException
     {
         String message = "Custom operation not implemented: {0}";
         if ( operation != null )

@@ -6,7 +6,6 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringTokenizer;
@@ -214,7 +213,7 @@ public class SchedulerServlet
                     workEntry.setEndTime( DateUtil.parseDateTime( dateStr, true ) );
                 }
             }
-            catch ( ParseException pe )
+            catch ( Exception pe )
             {
                 WizardLogger.errorWizard( "Failed to parse start or end date", pe );
             }
@@ -368,7 +367,7 @@ public class SchedulerServlet
                 }
                 formItems.put( "stepstate_workentry_trigger_time_@end", dateStr );
             }
-            catch ( ParseException pe )
+            catch ( Exception pe )
             {
                 WizardLogger.errorWizard( "Failed to parse date", pe );
             }

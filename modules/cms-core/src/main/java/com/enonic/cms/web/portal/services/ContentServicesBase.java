@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -499,8 +498,8 @@ public abstract class ContentServicesBase
                         {
                             if ( values[j] != null && values[j].length() > 0 )
                             {
-                                Date tempDate = dateFormatFrom.parse( values[j] );
-                                XMLTool.createTextNode( doc, createXPathElements( blocks[j], xpath, 0 ), dateFormatTo.format( tempDate ) );
+                                final String convertedDate = DATE_FORMAT_FROM.parseDateTime( values[j] ).toString( DATE_FORMAT_TO );
+                                XMLTool.createTextNode( doc, createXPathElements( blocks[j], xpath, 0 ), convertedDate );
                             }
                         }
                     }
@@ -509,8 +508,8 @@ public abstract class ContentServicesBase
                         String tmp = formItems.getString( name );
                         if ( tmp.length() > 0 )
                         {
-                            Date tempDate = dateFormatFrom.parse( tmp );
-                            XMLTool.createTextNode( doc, createXPathElements( blocks[0], xpath, 0 ), dateFormatTo.format( tempDate ) );
+                            final String convertedDate = DATE_FORMAT_FROM.parseDateTime( tmp ).toString( DATE_FORMAT_TO );
+                            XMLTool.createTextNode( doc, createXPathElements( blocks[0], xpath, 0 ), convertedDate );
                         }
                     }
 
@@ -686,8 +685,8 @@ public abstract class ContentServicesBase
                         String date = formItems.getString( name );
                         if ( date.length() > 0 )
                         {
-                            Date tempDate = dateFormatFrom.parse( date );
-                            XMLTool.createTextNode( doc, tmpElem, dateFormatTo.format( tempDate ) );
+                            final String convertedDate = DATE_FORMAT_FROM.parseDateTime( date ).toString( DATE_FORMAT_TO );
+                            XMLTool.createTextNode( doc, tmpElem, convertedDate );
                         }
                     }
                 }
@@ -888,8 +887,6 @@ public abstract class ContentServicesBase
 
         return tmpElem;
     }
-
-    protected SimpleDateFormat dateFormatTo = new SimpleDateFormat( "yyyy-MM-dd" );
 
     protected CreateContentCommand parseCreateContentCommand( ExtendedMap formItems )
     {

@@ -9,24 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.w3c.dom.Node;
 
+import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.xml.XMLTool;
 
 public class TimestampType
     extends DataType
 {
-
-    /**
-     * Format used for storing dates.
-     */
-    private static final DateFormat STORE_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
-
     private static final TimestampType type = new TimestampType();
 
     public int getSQLType()
@@ -58,7 +50,7 @@ public class TimestampType
         }
         else
         {
-            return STORE_DATE_FORMAT.format( new Date( timestamp.getTime() ) );
+            return DateUtil.formatISODateTime( timestamp );
         }
     }
 
@@ -70,7 +62,7 @@ public class TimestampType
         }
         else
         {
-            return STORE_DATE_FORMAT.format( (Date) obj );
+            return DateUtil.formatISODateTime( (Date) obj );
         }
     }
 
@@ -82,7 +74,7 @@ public class TimestampType
         }
         else
         {
-            return STORE_DATE_FORMAT.format( (Date) obj );
+            return DateUtil.formatISODateTime( (Date) obj );
         }
     }
 
@@ -98,9 +90,9 @@ public class TimestampType
         Date date = null;
         try
         {
-            date = STORE_DATE_FORMAT.parse( text );
+            date = DateUtil.parseISODateTime( text );
         }
-        catch ( ParseException pe )
+        catch ( final Exception pe )
         {
             pe.printStackTrace();
         }
@@ -111,23 +103,23 @@ public class TimestampType
     public void setData( PreparedStatement preparedStmt, int columnIndex, Object obj )
         throws SQLException
     {
-        Date value;
+        Date date;
         if ( obj instanceof String )
         {
             try
             {
-                value = STORE_DATE_FORMAT.parse( (String) obj );
+                date = DateUtil.parseISODateTime( (String) obj );
             }
-            catch ( ParseException pe )
+            catch ( Exception pe )
             {
                 throw new IllegalArgumentException( "Invalid date: " + obj );
             }
         }
         else
         {
-            value = (Date) obj;
+            date = (Date) obj;
         }
-        preparedStmt.setTimestamp( columnIndex, new Timestamp( value.getTime() ) );
+        preparedStmt.setTimestamp( columnIndex, new Timestamp( date.getTime() ) );
     }
 
     /**
@@ -137,7 +129,7 @@ public class TimestampType
     {
         if ( xpathValue instanceof Date )
         {
-            return STORE_DATE_FORMAT.format( (Date) xpathValue );
+            return DateUtil.formatISODateTime( (Date) xpathValue );
         }
         else
         {

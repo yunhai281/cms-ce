@@ -16,8 +16,6 @@ import static org.junit.Assert.*;
 
 public class ContentIndexDateValueResolverTest
 {
-    ContentIndexDateValueResolver resolver = new ContentIndexDateValueResolver();
-
     @Test
     public void testNull()
     {
@@ -34,7 +32,7 @@ public class ContentIndexDateValueResolverTest
 
         date = ContentIndexDateValueResolver.resolveDateValue( "2010-08-01t10:00" );
         assertNotNull( date );
-        assertEquals( new DateTime( 2010, 8, 01, 00, 00 ).toDate(), date );
+        assertEquals( new DateTime( 2010, 8, 01, 10, 00 ).toDate(), date );
 
         date = ContentIndexDateValueResolver.resolveDateValue( "2010-08-01 10:00:00" );
         assertNotNull( date );

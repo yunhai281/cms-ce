@@ -7,7 +7,6 @@ package com.enonic.cms.web.portal.services;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +54,7 @@ public final class ContentServicesProcessor
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
         throws VerticalUserServicesException, VerticalEngineException, IOException, ClassNotFoundException, IllegalAccessException,
-        InstantiationException, ParseException
+        InstantiationException
     {
         if ( operation.equals( "modify" ) )
         {

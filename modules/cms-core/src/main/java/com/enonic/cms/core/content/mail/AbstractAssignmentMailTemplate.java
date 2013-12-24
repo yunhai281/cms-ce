@@ -60,7 +60,7 @@ public abstract class AbstractAssignmentMailTemplate
 
             if ( assignmentDueDate != null )
             {
-                addKeyValue( keyValues, "%contentAssignmentDuedate%", dateFormat.format( assignmentDueDate ) );
+                addKeyValue( keyValues, "%contentAssignmentDuedate%", DATE_FORMAT.print( assignmentDueDate.getTime() ) );
             }
 
             addKeyValue( keyValues, "%fldDisplayName%", contentVersion.getTitle() );

@@ -18,11 +18,14 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * This class defines the jdbc dialect.
@@ -76,7 +79,7 @@ public abstract class Dialect
     /**
      * Date time format.
      */
-    private final static SimpleDateFormat TiMESTAMP_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    private final static DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss" );
 
     /**
      * Dialect name.
@@ -797,7 +800,7 @@ public abstract class Dialect
 
     public String formatTimestamp( long time )
     {
-        return "'" + TiMESTAMP_FORMAT.format( new Date( time ) ) + "'";
+        return "'" + new DateTime( time ).toString( TIMESTAMP_FORMAT ) + "'";
     }
 
     protected int convertType( int sqlType )

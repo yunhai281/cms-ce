@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.content;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -66,9 +65,9 @@ public class AssignmentDataParser
             {
                 return DateUtil.parseDateTime( date.toString() );
             }
-            catch ( ParseException e )
+            catch ( final Exception e )
             {
-                VerticalAdminLogger.errorAdmin("Error parsing assignment duedate: %t", e );
+                VerticalAdminLogger.errorAdmin("Error parsing assignment due date: %t", e );
             }
         }
 

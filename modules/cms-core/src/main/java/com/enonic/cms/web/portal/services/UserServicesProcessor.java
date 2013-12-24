@@ -8,7 +8,6 @@ package com.enonic.cms.web.portal.services;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -188,7 +187,7 @@ public final class UserServicesProcessor
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
         throws VerticalUserServicesException, VerticalEngineException, IOException, ClassNotFoundException, IllegalAccessException,
-        InstantiationException, ParseException
+        InstantiationException
     {
         SitePath sitePath = getSitePath( request );
         SiteContext siteContext = getSiteContext( sitePath.getSiteKey() );

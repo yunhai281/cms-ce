@@ -5,7 +5,6 @@
 package com.enonic.cms.core.mail;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +12,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public abstract class AbstractMailTemplate
 
     private MailRecipient from;
 
-    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy HH:mm" );
+    protected static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern( "dd.MM.yyyy HH:mm" );
 
     protected String getTranslation( String key, String languageCode )
     {

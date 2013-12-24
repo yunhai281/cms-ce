@@ -4,14 +4,12 @@
  */
 package com.enonic.cms.core.search.query;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -27,21 +25,19 @@ public final class IndexValueConverter
 
     private final static DateTimeFormatter FULL_DATE_FORMAT_WITH_TIME_ZONE = ISODateTimeFormat.dateTimeParser();
 
-    private final static DateFormat FULL_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss" );
+    private final static DateTimeFormatter FULL_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd'T'HH:mm:ss" );
 
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd" );
+    private final static DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd" );
 
-    private final static DateFormat DATETIME_WITH_SECS_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    private final static DateTimeFormatter DATETIME_WITH_SECS_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss" );
 
-    private final static DateFormat DATETIME_WITHOUT_SECS_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+    private final static DateTimeFormatter DATETIME_WITHOUT_SECS_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
-    static
-    {
-        FULL_DATE_FORMAT.setLenient( false );
-        DATE_FORMAT.setLenient( false );
-        DATETIME_WITH_SECS_FORMAT.setLenient( false );
-        DATETIME_WITHOUT_SECS_FORMAT.setLenient( false );
-    }
+    // strange format that toDate has to recognize. SimpleDataFormat just ignore garbage after yyyy-MM-dd HH:mm:ss . @see ElasticSearchFormatter
+    private final static DateTimeFormatter ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_1 = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss:SSS" );
+
+    // second strange format that toDate has to recognize. SimpleDataFormat just ignore garbage after yyyy-MM-ddTHH:mm:ss
+    private final static DateTimeFormatter ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_2 = DateTimeFormat.forPattern( "yyyy-MM-dd'T'HH:mm:ss:SSS" );
 
     /**
      * Private constructor.
@@ -62,7 +58,7 @@ public final class IndexValueConverter
 
     public static String toString( Date value )
     {
-        return value != null ? FULL_DATE_FORMAT.format( value ) : null;
+        return value != null ? FULL_DATE_FORMAT.print( value.getTime() ) : null;
     }
 
     public static String toTypedString( Date value )
@@ -123,7 +119,17 @@ public final class IndexValueConverter
 
         value = value.toUpperCase();
 
-        Date dateTimeByFullFormat = toDate( value, FULL_DATE_FORMAT );
+        // used in Queries as indicator for expressions like "myDate = '2013-05-05'"
+        // TODO move this hack outside.
+        final DateTime dateByDateFormat = toDateTime( value, DATE_FORMAT );
+        if ( dateByDateFormat != null )
+        {
+            // We use DateMidnight to later recognise that user have not specified time
+            return new DateMidnight( dateByDateFormat );
+        }
+
+        // hza: i do not know why we test for FULL_DATE_FORMAT but then parse using FULL_DATE_FORMAT_WITH_TIME_ZONE
+        final DateTime dateTimeByFullFormat = toDateTime( value, FULL_DATE_FORMAT );
         if ( dateTimeByFullFormat != null )
         {
             final DateTime dateTimeByFullFormatTimeZone = toDateTime( value, FULL_DATE_FORMAT_WITH_TIME_ZONE );
@@ -132,42 +138,24 @@ public final class IndexValueConverter
                 return dateTimeByFullFormatTimeZone;
             }
 
-            return new DateTime( dateTimeByFullFormat );
+            return dateTimeByFullFormat;
         }
 
-        Date dateTimeByDateTimeWithSecsFormat = toDate( value, DATETIME_WITH_SECS_FORMAT );
-        if ( dateTimeByDateTimeWithSecsFormat != null )
-        {
-            return new DateTime( dateTimeByDateTimeWithSecsFormat );
-        }
+        final DateTimeFormatter[] dateTimeFormatterArray =
+            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_1,
+                ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_2, FULL_DATE_FORMAT_WITH_TIME_ZONE};
 
-        Date dateTimeByDateTimeWithoutSecsFormat = toDate( value, DATETIME_WITHOUT_SECS_FORMAT );
-        if ( dateTimeByDateTimeWithoutSecsFormat != null )
+        for ( final DateTimeFormatter dateTimeFormatter : dateTimeFormatterArray )
         {
-            return new DateTime( dateTimeByDateTimeWithoutSecsFormat );
-        }
+            final DateTime dateTime = toDateTime( value, dateTimeFormatter );
 
-        Date dateByDateFormat = toDate( value, DATE_FORMAT );
-        if ( dateByDateFormat != null )
-        {
-            // We use DateMidnight to later recognise that user have not specified time
-            return new DateMidnight( dateByDateFormat );
+            if ( dateTime != null )
+            {
+                return dateTime;
+            }
         }
 
         return null;
-    }
-
-    private static Date toDate( String value, DateFormat format )
-    {
-        try
-        {
-            return format.parse( value );
-        }
-        catch ( ParseException e )
-        {
-            // Do nothing
-            return null;
-        }
     }
 
     private static DateTime toDateTime( String value, DateTimeFormatter format )

@@ -6,7 +6,6 @@ package com.enonic.vertical.adminweb.handlers;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -162,7 +161,7 @@ final public class SimpleContentHandlerServlet
                         publishTo = DateUtil.parseDateTime( date.toString() );
                     }
                 }
-                catch ( ParseException pe )
+                catch ( Exception pe )
                 {
                     String message = "Failed to parse publish from or to date: %t";
                     VerticalAdminLogger.errorAdmin( message, pe );

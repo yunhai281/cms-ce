@@ -6,7 +6,6 @@
 package com.enonic.cms.web.portal.services;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +48,7 @@ public abstract class SendMailServicesBase
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
         throws VerticalUserServicesException, VerticalEngineException, IOException, ClassNotFoundException, IllegalAccessException,
-        InstantiationException, ParseException
+        InstantiationException
     {
         if ( operation.equals( "send" ) )
         {

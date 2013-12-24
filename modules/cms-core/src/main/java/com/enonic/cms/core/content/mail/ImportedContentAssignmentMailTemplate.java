@@ -92,7 +92,8 @@ public class ImportedContentAssignmentMailTemplate
         if ( assignmentDueDate != null )
         {
             addNewLine( body );
-            body.append( getTranslation( "%contentAssignmentDuedate%", languageCode ) + ": " + dateFormat.format( assignmentDueDate ) );
+            final String date = DATE_FORMAT.print( assignmentDueDate.getTime() );
+            body.append( getTranslation( "%contentAssignmentDuedate%", languageCode ) + ": " + date );
         }
     }
 

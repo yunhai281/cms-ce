@@ -4,7 +4,6 @@
  */
 package com.enonic.vertical.adminweb.handlers.xmlbuilders;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -313,7 +312,7 @@ public abstract class ContentBaseXMLBuilder
             }
 
         }
-        catch ( ParseException e )
+        catch ( Exception e )
         {
             VerticalAdminLogger.errorAdmin( "Error parsing dates: %t", e );
         }
@@ -407,7 +406,7 @@ public abstract class ContentBaseXMLBuilder
                 dueDate = DateUtil.parseDateTime( date.toString() );
                 XMLTool.createElement( doc, content, ASSIGNMENT_DUEDATE_XML_KEY, DateUtil.formatISODateTime( dueDate ) );
             }
-            catch ( ParseException e )
+            catch ( Exception e )
             {
                 VerticalAdminLogger.errorAdmin( "Error parsing dates: %t", e );
             }
