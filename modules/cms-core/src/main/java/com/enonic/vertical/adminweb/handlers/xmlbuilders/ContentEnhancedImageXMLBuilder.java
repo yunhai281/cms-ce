@@ -208,7 +208,25 @@ public class ContentEnhancedImageXMLBuilder
 
                 String filenameWithoutExtension = image.fileName.substring( 0, idx );
 
-                BufferedImage origImage = ImageUtil.readImage( image.data );
+                BufferedImage origImage;
+
+                try
+                {
+                    origImage = ImageUtil.readImage( image.data );
+                }
+                catch ( final Exception e )
+                {
+                    origImage = null;
+                }
+
+                // ImageIO.read may return null without any exception.
+                if ( origImage == null )
+                {
+                    VerticalAdminLogger.errorAdmin(
+                        "Unsupported Image Type. Supported formats: jpeg (rgb not cmyk), gif (without transparency), png (with or without transparency) and bmp" );
+                    return null;
+                }
+
                 if ( !formItems.containsKey( "originalwidth" ) )
                 {
                     formItems.put( "originalwidth", origImage.getWidth() );
