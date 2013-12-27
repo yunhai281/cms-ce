@@ -14,8 +14,6 @@ import junit.framework.TestCase;
 import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.UrlPathHelperManager;
-import com.enonic.cms.core.structure.SiteKey;
-import com.enonic.cms.core.structure.SitePropertyNames;
 
 public class SiteRedirectHelperTest
     extends TestCase
@@ -35,8 +33,6 @@ public class SiteRedirectHelperTest
 
     private MockHttpServletResponse response;
 
-    private final SiteKey siteKey0 = new SiteKey( 0 );
-
     protected void setUp()
         throws Exception
     {
@@ -44,16 +40,14 @@ public class SiteRedirectHelperTest
 
         sitePropertiesService = new MockSitePropertiesService();
 
-        sitePropertiesService.setProperty( siteKey0, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
-
         urlPathHelperManager = new UrlPathHelperManager();
-        urlPathHelperManager.setSitePropertiesService( sitePropertiesService );
 
         sitePathResolver = new PortalSitePathResolver();
         sitePathResolver.setUrlPathHelperManager( urlPathHelperManager );
         sitePathResolver.setSitePathPrefix( SiteURLResolver.DEFAULT_SITEPATH_PREFIX );
 
         siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
         siteRedirectHelper = new SiteRedirectHelper();

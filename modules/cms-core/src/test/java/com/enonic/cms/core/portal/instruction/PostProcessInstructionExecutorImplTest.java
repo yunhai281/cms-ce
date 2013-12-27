@@ -406,11 +406,9 @@ public class PostProcessInstructionExecutorImplTest
 
     private SiteURLResolver setUpSiteResolverMock( boolean htmlEscapeParameterAmps )
     {
-        SiteKey siteKey = new SiteKey( 1 );
-
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
         siteURLResolver.setHtmlEscapeParameterAmps( htmlEscapeParameterAmps );
         return siteURLResolver;

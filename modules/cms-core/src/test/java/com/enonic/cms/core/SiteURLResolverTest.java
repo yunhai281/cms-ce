@@ -29,9 +29,9 @@ public class SiteURLResolverTest
         super.setUp();
 
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
 
         siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
         request = new MockHttpServletRequest();
@@ -58,10 +58,10 @@ public class SiteURLResolverTest
     {
 
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         sitePropertiesService.setProperty( siteKey1, SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
 
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
         request.setScheme( "http" );
@@ -87,10 +87,10 @@ public class SiteURLResolverTest
     {
 
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         sitePropertiesService.setProperty( siteKey1, SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
 
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
         request.setScheme( "http" );
@@ -117,10 +117,10 @@ public class SiteURLResolverTest
     {
 
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         sitePropertiesService.setProperty( siteKey1, SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
 
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
         request.setScheme( "https" );

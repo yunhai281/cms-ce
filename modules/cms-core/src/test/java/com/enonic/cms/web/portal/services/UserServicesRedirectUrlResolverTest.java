@@ -10,7 +10,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import junit.framework.TestCase;
 
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.core.UrlPathHelperManager;
 import com.enonic.cms.core.portal.httpservices.IllegalRedirectException;
 
 public class UserServicesRedirectUrlResolverTest
@@ -23,8 +22,6 @@ public class UserServicesRedirectUrlResolverTest
 
     private MockHttpServletRequest request;
 
-    private MockHttpServletResponse response;
-
     protected void setUp()
         throws Exception
     {
@@ -32,14 +29,10 @@ public class UserServicesRedirectUrlResolverTest
 
         sitePropertiesService = new MockSitePropertiesService();
 
-        UrlPathHelperManager urlPathHelperManager = new UrlPathHelperManager();
-        urlPathHelperManager.setSitePropertiesService( sitePropertiesService );
-
         userServicesRedirectUrlResolver = new UserServicesRedirectUrlResolver();
 
         request = new MockHttpServletRequest();
         request.setContextPath( "cms-server" );
-        response = new MockHttpServletResponse();
 
         request.setRequestURI( "/cms-server-idea/site/0/servlet/com.enonic.vertical.userservices.UserHandlerServlet" );
     }

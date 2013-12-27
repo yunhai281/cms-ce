@@ -6,9 +6,6 @@ package com.enonic.cms.core.structure;
 
 public class SitePropertyNames
 {
-
-    public static final String URL_DEFAULT_CHARACTER_ENCODING = "cms.site.url.defaultCharacterEncoding";
-
     public static final String CREATE_URL_AS_PATH_PROPERTY = "cms.site.createUrlAsPath";
 
     public static final String PAGE_CACHE = "cms.site.pageCache";

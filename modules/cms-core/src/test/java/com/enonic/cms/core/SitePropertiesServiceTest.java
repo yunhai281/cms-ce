@@ -94,7 +94,6 @@ public class SitePropertiesServiceTest
         sitePropertiesService.setSiteDao( siteDao );
         sitePropertiesService.setHomeDir( folder.newFolder( "cms-home" ) );
         sitePropertiesService.setResourceLoader( resourceLoader );
-        sitePropertiesService.setCharacterEncoding( "UTF-8" );
         sitePropertiesService.start();
     }
 

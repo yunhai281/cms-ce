@@ -21,6 +21,12 @@ import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
+/**
+ * SiteURLResolver is somewhere spring bean, somewhere it is not .
+ *
+ * @see com.enonic.cms.core.portal.rendering.PageRenderer
+ * @see com.enonic.cms.core.portal.rendering.WindowRenderer
+ */
 @Component
 public class SiteURLResolver
 {
@@ -30,7 +36,7 @@ public class SiteURLResolver
 
     public static final String DEFAULT_SITEPATH_PREFIX = "/site";
 
-    private String sitePathPrefix = DEFAULT_SITEPATH_PREFIX;
+    private String characterEncoding;
 
     private SitePropertiesService sitePropertiesService;
 
@@ -177,10 +183,8 @@ public class SiteURLResolver
 
     private String siteBasePathAndSitePathToString( SiteBasePathAndSitePath siteBasePathAndSitePath, boolean includeParamsInPath )
     {
-        SiteKey siteKey = siteBasePathAndSitePath.getSitePath().getSiteKey();
-
         SiteBasePathAndSitePathToStringBuilder siteBasePathAndSitePathToStringBuilder = new SiteBasePathAndSitePathToStringBuilder();
-        siteBasePathAndSitePathToStringBuilder.setEncoding( getUrlCharacterEncodingForSite( siteKey ) );
+        siteBasePathAndSitePathToStringBuilder.setEncoding( characterEncoding );
         siteBasePathAndSitePathToStringBuilder.setHtmlEscapeParameterAmps( htmlEscapeParameterAmps );
         siteBasePathAndSitePathToStringBuilder.setIncludeFragment( true );
         siteBasePathAndSitePathToStringBuilder.setIncludeParamsInPath( includeParamsInPath );
@@ -192,7 +196,7 @@ public class SiteURLResolver
     private String sitePathAndSitePathToString( SiteKey siteKey, PathAndParams siteLocalPathAndParams, boolean includeParamsInPath )
     {
         PathAndParamsToStringBuilder pathAndParamsToStringBuilder = new PathAndParamsToStringBuilder();
-        pathAndParamsToStringBuilder.setEncoding( getUrlCharacterEncodingForSite( siteKey ) );
+        pathAndParamsToStringBuilder.setEncoding( characterEncoding );
         pathAndParamsToStringBuilder.setHtmlEscapeParameterAmps( htmlEscapeParameterAmps );
         pathAndParamsToStringBuilder.setIncludeFragment( true );
         pathAndParamsToStringBuilder.setIncludeParamsInPath( includeParamsInPath );
@@ -206,47 +210,38 @@ public class SiteURLResolver
      */
     private String resolveLocalSitePathPrefix( HttpServletRequest request, SiteKey siteKey, boolean externalPath )
     {
-
         if ( externalPath && VirtualHostHelper.hasBasePath( request ) )
         {
             return VirtualHostHelper.getBasePath( request );
         }
         else
         {
-            final int capacity = 50;
-            StringBuffer s = new StringBuffer( capacity );
-            s.append( sitePathPrefix );
-            s.append( "/" ).append( siteKey );
-            return s.toString();
+            return DEFAULT_SITEPATH_PREFIX + "/" + siteKey;
         }
     }
 
     /**
-     * Buids up a path from given localPathPrefix and localPath in sitePath. Ensures that the localPath gets url
+     * Builds up a path from given localPathPrefix and localPath in sitePath. Ensures that the localPath gets url
      * encoded.
      */
     private String buildPath( String localPathPrefix, SitePath sitePath )
     {
-        final int capacity = 50;
-        StringBuffer pathString = new StringBuffer( capacity );
-        pathString.append( localPathPrefix );
-        Path localPath = sitePath.getLocalPath();
-        String localPathEncoded = localPath.getAsUrlEncoded( true, getUrlCharacterEncodingForSite( sitePath.getSiteKey() ) );
-        pathString.append( localPathEncoded );
-        return pathString.toString();
+        final String localPathEncoded = sitePath.getLocalPath().getAsUrlEncoded( true, characterEncoding );
+        return localPathPrefix + localPathEncoded;
     }
 
     private String doCreateFullPathForRedirectFromRootPath( SiteKey siteKey, String pathFromRoot )
     {
-        StringBuffer s = new StringBuffer();
+        final StringBuilder stringBuilder = new StringBuilder();
 
         if ( !pathFromRoot.startsWith( "/" ) && !pathFromRoot.equals( "" ) )
         {
             pathFromRoot = "/" + pathFromRoot;
         }
 
-        s.append( encodePath( pathFromRoot, siteKey ) );
-        return s.toString();
+        stringBuilder.append( encodePath( pathFromRoot, siteKey ) );
+
+        return stringBuilder.toString();
     }
 
     /**
@@ -255,28 +250,23 @@ public class SiteURLResolver
      */
     private String doCreateFullPathForRedirectFromLocalPath( HttpServletRequest request, SiteKey siteKey, String localPath )
     {
-        StringBuffer s = new StringBuffer();
-        s.append( request.getContextPath() );
-        s.append( resolveLocalSitePathPrefix( request, siteKey, true ) );
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append( request.getContextPath() );
+        stringBuilder.append( resolveLocalSitePathPrefix( request, siteKey, true ) );
 
         if ( !localPath.startsWith( "/" ) && !localPath.equals( "" ) )
         {
             localPath = "/" + localPath;
         }
 
-        s.append( encodePath( localPath, siteKey ) );
-        return s.toString();
+        stringBuilder.append( encodePath( localPath, siteKey ) );
+
+        return stringBuilder.toString();
     }
 
     private String encodePath( String path, SiteKey siteKey )
     {
-        String encoding = getUrlCharacterEncodingForSite( siteKey );
-        return UrlPathEncoder.encodeUrlPath( path, encoding );
-    }
-
-    private String getUrlCharacterEncodingForSite( SiteKey siteKey )
-    {
-        return sitePropertiesService.getSiteProperties( siteKey ).getProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING );
+        return UrlPathEncoder.encodeUrlPath( path, characterEncoding );
     }
 
     private boolean siteIsCreatingRelativeUrlsFromRoot( SiteKey siteKey )
@@ -297,10 +287,15 @@ public class SiteURLResolver
         this.htmlEscapeParameterAmps = htmlEscapeParameterAmps;
     }
 
-    @Value("/site")
-    public void setSitePathPrefix( String value )
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( String characterEncoding )
     {
-        this.sitePathPrefix = value;
+        this.characterEncoding = characterEncoding;
+    }
+
+    public String getCharacterEncoding()
+    {
+        return characterEncoding;
     }
 
     @Autowired

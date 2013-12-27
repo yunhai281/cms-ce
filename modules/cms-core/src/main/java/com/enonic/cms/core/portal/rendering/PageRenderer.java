@@ -342,6 +342,7 @@ public class PageRenderer
     private SiteURLResolver createSiteURLResolver( boolean escapeHtmlParameterAmps )
     {
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( this.siteURLResolver.getCharacterEncoding() );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
         siteURLResolver.setHtmlEscapeParameterAmps( escapeHtmlParameterAmps );
 
@@ -498,6 +499,7 @@ public class PageRenderer
         else
         {
             SiteURLResolver siteURLResolver = new SiteURLResolver();
+            siteURLResolver.setCharacterEncoding( this.siteURLResolver.getCharacterEncoding() );
             siteURLResolver.setOverridingSitePropertyCreateUrlAsPath( context.getOverridingSitePropertyCreateUrlAsPath() );
             siteURLResolver.setSitePropertiesService( sitePropertiesService );
             return siteURLResolver;
