@@ -40,13 +40,7 @@ public class QueryFunctionsTest
     public void testCompleteDateTime()
     {
         ReadableDateTime xmasEve = QueryFunctions.date( "2008-12-24 16:30:15,454" );
-        assertEquals( "Wrong year", 2008, xmasEve.getYear() );
-        assertEquals( "Wrong month", 12, xmasEve.getMonthOfYear() );
-        assertEquals( "Wrong day", 24, xmasEve.getDayOfMonth() );
-        assertEquals( "Wrong hour", 16, xmasEve.getHourOfDay() );
-        assertEquals( "Wrong minute", 30, xmasEve.getMinuteOfHour() );
-        assertEquals( "Wrong seconds", 15, xmasEve.getSecondOfMinute() );
-        assertEquals( "Wrong millisecs", 0, xmasEve.getMillisOfSecond() );
+        assertNull( xmasEve ); // joda does not allow something wrong in date. T must be here to follow ISO8601 .
     }
 
     public void testDate()

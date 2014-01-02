@@ -7,7 +7,6 @@ package com.enonic.vertical.adminweb;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -18,7 +17,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
-import com.enonic.cms.framework.xml.XMLDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,12 +28,13 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.XDG;
 
+import com.enonic.cms.framework.xml.XMLDocument;
+
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 public class LogHandlerServlet
@@ -227,11 +226,6 @@ public class LogHandlerServlet
             addCommonParameters( admin, user, request, transformParams, -1, menuKey );
             transformXML( session, response.getWriter(), xmlSource, xslSource, transformParams );
         }
-        catch ( ParseException pe )
-        {
-            String message = "Failed to parse a date: %t";
-            VerticalAdminLogger.errorAdmin(message, pe );
-        }
         catch ( IOException ioe )
         {
             String message = "Failed to get response writer: %t";
@@ -241,6 +235,11 @@ public class LogHandlerServlet
         {
             String message = "XSLT error: %t";
             VerticalAdminLogger.errorAdmin(message, te );
+        }
+        catch ( Exception pe )
+        {
+            String message = "Failed to parse a date: %t";
+            VerticalAdminLogger.errorAdmin(message, pe );
         }
     }
 

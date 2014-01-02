@@ -42,7 +42,7 @@ import com.enonic.cms.store.dao.UserDao;
 
 public class ContentParser
 {
-    private final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
     /**
      * Whether to parse contentdata from xml data or not. If false, contentdata is loaded from storage instead. Default is true.
@@ -477,8 +477,7 @@ public class ContentParser
         {
             return null;
         }
-        DateTimeFormatter fmt = DateTimeFormat.forPattern( DATE_PATTERN );
-        DateTime date = fmt.parseDateTime( dateString );
+        final DateTime date = DATE_TIME_FORMATTER.parseDateTime( dateString );
         return date.toDate();
     }
 

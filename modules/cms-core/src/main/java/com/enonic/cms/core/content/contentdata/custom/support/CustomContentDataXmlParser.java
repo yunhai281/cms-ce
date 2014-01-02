@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.content.contentdata.custom.support;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -506,7 +505,7 @@ public class CustomContentDataXmlParser
         {
             return DateUtil.parseISODate( s );
         }
-        catch ( ParseException e )
+        catch ( Exception e )
         {
             return null;
         }

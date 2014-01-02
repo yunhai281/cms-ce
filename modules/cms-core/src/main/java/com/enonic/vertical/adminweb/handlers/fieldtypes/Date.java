@@ -46,7 +46,7 @@ public class Date
                 fields.put( "date" + name, null );
             }
         }
-        catch ( ParseException pe )
+        catch ( Exception pe )
         {
             throw new RuntimeException( "Unable to parse date: " + value );
         }

@@ -5,7 +5,6 @@
 
 package com.enonic.cms.core.search.index;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -175,9 +174,9 @@ public class ContentIndexDataElementFactoryTest
     @Test
     public void testValidStringFormatForDateAsSet()
     {
-        SimpleDateFormat expectedFormat = ElasticSearchFormatter.ELASTICSEARCH_SIMPLE_DATE_FORMAT;
+        final SimpleDateFormat expectedFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
 
-        final DateTime dateTime = new DateTime( 1975, 8, 1, 12, 00 );
+        final DateTime dateTime = new DateTime( 1975, 8, 1, 12, 0 );
 
         ContentIndexDataElement contentIndexDataElement =
             ContentIndexDataElementFactory.create( "date-test", Sets.newHashSet( (Object) dateTime.toDate() ) );
@@ -193,7 +192,7 @@ public class ContentIndexDataElementFactoryTest
         {
             expectedFormat.parse( dateStringValue );
         }
-        catch ( ParseException e )
+        catch ( Exception e )
         {
             fail(
                 "incorrect date format in string-representation of date: " + dateStringValue + ", expected: " + expectedFormat.toString() );

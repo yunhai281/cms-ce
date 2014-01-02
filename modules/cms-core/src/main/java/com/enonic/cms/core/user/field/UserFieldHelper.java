@@ -4,12 +4,13 @@
  */
 package com.enonic.cms.core.user.field;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.enonic.cms.api.client.model.user.Gender;
 import com.enonic.cms.api.plugin.ext.userstore.UserField;
@@ -18,22 +19,17 @@ import com.enonic.cms.core.resolver.locale.LocaleParser;
 
 public final class UserFieldHelper
 {
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "yyyyMMdd" );
+    private final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern( "yyyyMMdd" );
 
-    private final SimpleDateFormat dateFormat;
+    private final DateTimeFormatter dateFormat;
 
-    private SimpleDateFormat[] getSupportedDateFormats()
+    private DateTimeFormatter[] getSupportedDateFormats()
     {
-        SimpleDateFormat iso = new SimpleDateFormat( "yyyy-MM-dd" );
-        iso.setLenient( false );
+        final DateTimeFormatter iso = DateTimeFormat.forPattern( "yyyy-MM-dd" );
+        final DateTimeFormatter old = DateTimeFormat.forPattern( "dd.MM.yyyy" );
+        final DateTimeFormatter standard = DATE_FORMAT;
 
-        SimpleDateFormat old = new SimpleDateFormat( "dd.MM.yyyy" );
-        old.setLenient( false );
-
-        SimpleDateFormat standard = DATE_FORMAT;
-        standard.setLenient( false );
-
-        return new SimpleDateFormat[]{iso, old, standard};
+        return new DateTimeFormatter[]{iso, old, standard};
     }
 
     public UserFieldHelper()
@@ -43,7 +39,7 @@ public final class UserFieldHelper
 
     public UserFieldHelper( String format )
     {
-        this.dateFormat = format != null ? new SimpleDateFormat( format ) : DATE_FORMAT;
+        this.dateFormat = format != null ? DateTimeFormat.forPattern( format ) : DATE_FORMAT;
     }
 
     public String toString( UserField field )
@@ -129,7 +125,7 @@ public final class UserFieldHelper
 
     private String formatDate( Date value )
     {
-        return value == null ? null : this.dateFormat.format( value );
+        return value == null ? null : this.dateFormat.print( value.getTime() );
     }
 
     private String formatBoolean( Boolean value )
@@ -209,7 +205,7 @@ public final class UserFieldHelper
             return null;
         }
 
-        for ( SimpleDateFormat format : getSupportedDateFormats() )
+        for ( final DateTimeFormatter format : getSupportedDateFormats() )
         {
             Date date = parseDate( value, format );
             if ( date != null )
@@ -220,11 +216,11 @@ public final class UserFieldHelper
         throw new IllegalArgumentException( "Could not parse date " + value );
     }
 
-    private Date parseDate( String value, SimpleDateFormat format )
+    private Date parseDate( String value, DateTimeFormatter format )
     {
         try
         {
-            return format.parse( value );
+            return format.parseDateTime( value ).toDate();
         }
         catch ( Exception e )
         {
