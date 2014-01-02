@@ -33,12 +33,6 @@ public final class IndexValueConverter
 
     private final static DateTimeFormatter DATETIME_WITHOUT_SECS_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
-    // strange format that toDate has to recognize. SimpleDataFormat just ignore garbage after yyyy-MM-dd HH:mm:ss . @see ElasticSearchFormatter
-    private final static DateTimeFormatter ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_1 = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss:SSS" );
-
-    // second strange format that toDate has to recognize. SimpleDataFormat just ignore garbage after yyyy-MM-ddTHH:mm:ss
-    private final static DateTimeFormatter ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_2 = DateTimeFormat.forPattern( "yyyy-MM-dd'T'HH:mm:ss:SSS" );
-
     /**
      * Private constructor.
      */
@@ -142,8 +136,7 @@ public final class IndexValueConverter
         }
 
         final DateTimeFormatter[] dateTimeFormatterArray =
-            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_1,
-                ELASTICSEARCH_STRANGE_FULL_DATE_FORMAT_2, FULL_DATE_FORMAT_WITH_TIME_ZONE};
+            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, FULL_DATE_FORMAT_WITH_TIME_ZONE};
 
         for ( final DateTimeFormatter dateTimeFormatter : dateTimeFormatterArray )
         {

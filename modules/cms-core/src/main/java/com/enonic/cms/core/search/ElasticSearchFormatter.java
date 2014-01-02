@@ -20,9 +20,7 @@ public class ElasticSearchFormatter
 
     public final static DateTimeFormatter ELASTICSEARCH_SIMPLE_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
-    // :SSS ??? must be .SSS or ,SSS . here is some mistake.
-    // TODO: FIX ME
-    public final static DateTimeFormatter ELASTICSEARCH_FULL_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss:SSS" );
+    public final static DateTimeFormatter ELASTICSEARCH_FULL_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss.SSS" );
 
     public final static DateTimeFormatter ELASTICSEARCH_DATE_OPTIONAL_TIME_FORMAT = ISODateTimeFormat.dateOptionalTimeParser();
 
