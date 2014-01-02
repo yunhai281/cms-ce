@@ -35,7 +35,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "    <ranges name=\"myRangeFacet\">\n" +
             "            <range to=\"2001-01-01\"/>\n" +
             "            <range from=\"2001-01-01\" to=\"2001-01-02\"/>\n" +
-            "            <range from=\"2001-01-01T00:00:01:001\" to=\"2001-01-01 23:59:59\"/>\n" +
+            "            <range from=\"2001-01-01T00:00:01\" to=\"2001-01-01 23:59:59\"/>\n" +
             "            <range from=\"2001-01-02T\" />\n" +
             "        <index>data.myDate</index>\n" +
             "    </ranges>\n" +
@@ -48,7 +48,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
         createContent( 1, "2000-12-31 23:59:59", "data/myDate" );
         createContent( 2, "2001-01-01 00:00:00", "data/myDate" );
         createContent( 3, "2001-01-01 01:00:00", "data/myDate" );
-        createContent( 4, "2001-01-01 01:00:00:001", "data/myDate" );     // TODO : remove this bad test
+        createContent( 4, "2001-01-01 01:00:01", "data/myDate" );
         createContent( 5, "2001-01-01 23:59:58", "data/myDate" );
         createContent( 6, "2001-01-02", "data/myDate" );
         createContent( 7, "2001-01-03", "data/myDate" );
