@@ -7,6 +7,8 @@ package com.enonic.cms.core.portal.processor;
 import java.util.Map;
 
 import com.enonic.cms.core.Path;
+import com.enonic.cms.core.RequestParameters;
+import com.enonic.cms.core.RequestParametersMerger;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
@@ -49,7 +51,10 @@ public class DirectiveRequestProcessor
         SitePath sitePath = context.getSitePath();
         MenuItemEntity shortcuttedMenuItem = context.getMenuItem().getMenuItemShortcut();
         Path pathToShortcuttedMenuItem = shortcuttedMenuItem.getPath();
-        SitePath shortcutSitePath = sitePath.createNewInSameSite( pathToShortcuttedMenuItem, sitePath.getParams() );
+        RequestParameters mergedRequestParameters =
+            RequestParametersMerger.mergeWithMenuItemRequestParameters( sitePath.getRequestParameters(),
+                                                                        context.getMenuItem().getRequestParameters() );
+        SitePath shortcutSitePath = sitePath.createNewInSameSite( pathToShortcuttedMenuItem, mergedRequestParameters.getAsMapWithStringValues() );
         shortcutSitePath.removeParam( "id" );
 
         // Check for eternal shortcut loop that can occurs when you have menuitems with equals names
