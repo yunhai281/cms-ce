@@ -91,11 +91,6 @@ public class IndexValueConverterTest
         final DateTime dateTimeZoneExpected = new DateTime( 2012, 2, 14, 13, 35, 57, DateTimeZone.UTC );
         assertDateTimeEquals( dateTimeZone, dateTimeZoneExpected );
 
-        // test for ISO NON-compliant format that is used
-        final ReadableDateTime dateTimeZoneT = IndexValueConverter.toDate( "2001-01-01T00:00:01:001" );
-        final DateTime dateTimeZoneExpectedT = new DateTime( 2001, 1, 1, 0, 0, 1, 1 );
-        assertDateTimeEquals( dateTimeZoneT, dateTimeZoneExpectedT );
-
         final ReadableDateTime dateTimeZoneLowerCase = IndexValueConverter.toDate( "2012-02-14T13:35:57.000Z".toLowerCase() );
         final DateTime dateTimeZoneLowerCaseExpected = new DateTime( 2012, 2, 14, 13, 35, 57, DateTimeZone.UTC );
         assertDateTimeEquals( dateTimeZoneLowerCase, dateTimeZoneLowerCaseExpected );
@@ -109,7 +104,8 @@ public class IndexValueConverterTest
         assertDateTimeEquals( dateTimeZoneMinusOne, dateTimeZoneMinusOneExpected );
 
         final ReadableDateTime dateTimeZoneHoursMinutes = IndexValueConverter.toDate( "2012-02-14T13:35:57.000+02:45" );
-        final DateTime dateTimeZoneHoursMinutesExpected = new DateTime( 2012, 2, 14, 13, 35, 57, DateTimeZone.forOffsetHoursMinutes( +2, 45 ) );
+        final DateTime dateTimeZoneHoursMinutesExpected =
+            new DateTime( 2012, 2, 14, 13, 35, 57, DateTimeZone.forOffsetHoursMinutes( +2, 45 ) );
         assertDateTimeEquals( dateTimeZoneHoursMinutes, dateTimeZoneHoursMinutesExpected );
     }
 

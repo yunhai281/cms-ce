@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.search.ElasticSearchFormatter;
 import com.enonic.cms.core.search.builder.ContentIndexDataElement;
 import com.enonic.cms.core.search.builder.ContentIndexDataElementFactory;
 
@@ -72,22 +71,6 @@ public class ContentIndexDataElementFactoryTest
         final Date time = Calendar.getInstance().getTime();
         ContentIndexDataElement contentIndexDataElement =
             ContentIndexDataElementFactory.create( "date-test", Sets.newHashSet( (Object) time ) );
-
-        assertNotNull( contentIndexDataElement.getOrderBy() );
-        assertEquals( 1, contentIndexDataElement.getStringValues().size() );
-        assertEquals( 1, contentIndexDataElement.getDateTimeValues().size() );
-        assertEquals( 0, contentIndexDataElement.getNumericValues().size() );
-    }
-
-    @Test
-    public void testCreateStringWithDateFormat()
-    {
-        final Date time = Calendar.getInstance().getTime();
-
-        final String dateAsString = ElasticSearchFormatter.formatDateAsStringFull( time );
-
-        ContentIndexDataElement contentIndexDataElement =
-            ContentIndexDataElementFactory.create( "date-test", Sets.newHashSet( (Object) dateAsString ) );
 
         assertNotNull( contentIndexDataElement.getOrderBy() );
         assertEquals( 1, contentIndexDataElement.getStringValues().size() );
