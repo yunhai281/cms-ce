@@ -6,9 +6,11 @@ package com.enonic.cms.core.image.cache;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheManager;
+import com.enonic.cms.framework.util.ImageHelper;
 
 @Component("imageCache")
 public final class ImageCacheFactory
@@ -20,6 +22,12 @@ public final class ImageCacheFactory
     public void setCacheManager( final CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;
+    }
+
+    @Value("${cms.portal.image.minSizeForProgressiveLoading}")
+    public void setLongestSize( int minSizeForProgressiveLoading )
+    {
+        ImageHelper.minSizeForProgressiveLoading = minSizeForProgressiveLoading;
     }
 
     public ImageCache getObject()
