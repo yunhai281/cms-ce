@@ -97,9 +97,10 @@ public class HttpServletRangeUtil
             return;
         }
 
+        contentType = contentType != null ? contentType : "application/octet-stream";
 
-        // IV. Process gzip
-        boolean acceptGzip = processGZip( request, response, contentType, filename, file, eTag );
+        // IV. check if gzip accepted
+        boolean acceptGzip = acceptsGZip( request, response, contentType, filename, file, eTag );
 
 
         // V. Process download
@@ -255,18 +256,17 @@ public class HttpServletRangeUtil
         return 0;
     }
 
-    private static boolean processGZip( final HttpServletRequest request, final HttpServletResponse response, String contentType, String filename, final File file, final String eTag )
+    private static boolean acceptsGZip( final HttpServletRequest request, final HttpServletResponse response, final String contentType,
+                                        final String filename, final File file, final String eTag )
     {
-        contentType = ( contentType != null ) ? contentType : "application/octet-stream";
-
         boolean acceptsGzip = false;
         String disposition = "inline";
 
-        if ( contentType.startsWith( "text" ) )
+        if ( contentType.startsWith( "text" ) || contentType.contains( "javascript" ))
         {
             String acceptEncoding = request.getHeader( HttpHeaders.ACCEPT_ENCODING );
             acceptsGzip = acceptEncoding != null && HttpServletUtil.checkHeaderContainsValue( acceptEncoding, "gzip" );
-            contentType += ";charset=UTF-8";
+            // contentType += ";charset=UTF-8";
             disposition = "inline";
         }
         else if ( !contentType.startsWith( "image" ) )
