@@ -9,23 +9,11 @@
     <script type="text/javascript">
 		function waitsplash()
 	  {
-      // ***********************************************************************************************************************************
-      // *** Variables
-      // ***********************************************************************************************************************************
-      var html, body, table, tBody, tr, td;
+      var body = document.getElementsByTagName( 'body' )[0];
 
-      body = document.getElementsByTagName('html')[0];
-      html = document.getElementsByTagName('body')[0];
-
-      // html and body element height needs to be ~100%
-      body.style.height = '100%';
-      html.style.height = '100%';
-
-      body = document.getElementsByTagName( 'body' )[0];
-
-      table = document.createElement( 'table' );
+      var table = document.createElement( 'table' );
       table.id = 'cmsWaitSplash';
-
+      table.className = 'overlay';
 
       table.style.width = (document.all) ? '102%' : '100%';
       table.style.height = (document.all) ? '110%' : '100%';
@@ -35,11 +23,11 @@
       table.style.top = 0;
       table.style.left = 0;
 
-      tBody = document.createElement( 'tbody' );
+      var tBody = document.createElement( 'tbody' );
 
-      tr = document.createElement( 'tr' );
+      var tr = document.createElement( 'tr' );
 
-      td = document.createElement( 'td' );
+      var td = document.createElement( 'td' );
       td.align = 'center';
       td.height = '100%';
       td.style.backgroundColor = '#ffffff';
@@ -68,8 +56,6 @@
       if ( waitSplashElement )
       {
         body.removeChild( waitSplashElement );
-        html.style.height = '';
-        body.style.height = '';
       }
     }
     </script>
