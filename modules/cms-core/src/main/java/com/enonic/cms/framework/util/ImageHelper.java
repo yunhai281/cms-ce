@@ -24,7 +24,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 public final class ImageHelper
 {
-    public static int minSizeForProgressiveLoading = 1000000;
+    public static int minSizeForProgressiveLoading = 10000;
 
     public static ImageWriter getWriterByFormat( String format )
     {
