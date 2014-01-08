@@ -5,7 +5,11 @@
 
 package com.enonic.cms.core.xslt.lib;
 
+import java.util.Date;
+
 import com.google.common.base.Joiner;
+
+import com.enonic.cms.core.search.query.IndexValueConverter;
 
 public class MockPortalFunctionsMediator
     implements PortalFunctionsMediator
@@ -198,5 +202,11 @@ public class MockPortalFunctionsMediator
     public String sha( final String value )
     {
         return "sha," + value;
+    }
+
+    @Override
+    public Date dateTime( final String date )
+    {
+        return IndexValueConverter.toDate( date ).toDateTime().toDate();
     }
 }
