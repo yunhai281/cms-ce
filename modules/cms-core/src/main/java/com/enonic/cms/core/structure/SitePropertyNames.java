@@ -4,46 +4,49 @@
  */
 package com.enonic.cms.core.structure;
 
-public class SitePropertyNames
+public enum SitePropertyNames
 {
+    PAGE_CACHE( "cms.site.pageCache" ),
+    PAGE_CACHE_HEADERS_ENABLED( "cms.site.page.http.cacheHeadersEnabled" ),
+    PAGE_CACHE_HEADERS_FORCENOCACHE( "cms.site.page.http.forceNoCache" ),
+    PAGE_CACHE_TIMETOLIVE( "cms.site.cache.page.timeToLive" ),
 
-    public static final String URL_DEFAULT_CHARACTER_ENCODING = "cms.site.url.defaultCharacterEncoding";
+    ATTACHMENT_CACHE_HEADERS_ENABLED( "cms.site.attachment.http.cacheHeadersEnabled" ),
+    ATTACHMENT_CACHE_HEADERS_FORCENOCACHE( "cms.site.attachment.http.forceNoCache" ),
+    ATTACHMENT_CACHE_HEADERS_MAXAGE( "cms.site.attachment.http.cache.maxAge" ),
 
-    public static final String CREATE_URL_AS_PATH_PROPERTY = "cms.site.createUrlAsPath";
+    RESOURCE_CACHE_HEADERS_ENABLED( "cms.site.resource.http.cacheHeadersEnabled" ),
+    RESOURCE_CACHE_HEADERS_FORCENOCACHE( "cms.site.resource.http.forceNoCache" ),
+    RESOURCE_CACHE_HEADERS_MAXAGE( "cms.site.resource.http.cache.maxAge" ),
 
-    public static final String PAGE_CACHE = "cms.site.pageCache";
+    IMAGE_CACHE_HEADERS_ENABLED( "cms.site.image.http.cacheHeadersEnabled" ),
+    IMAGE_CACHE_HEADERS_FORCENOCACHE( "cms.site.image.http.forceNoCache" ),
+    IMAGE_CACHE_HEADERS_MAXAGE( "cms.site.image.http.cache.maxAge" ),
 
-    public static final String PAGE_CACHE_HEADERS_ENABLED = "cms.site.page.http.cacheHeadersEnabled";
+    AUTOLOGIN_HTTP_REMOTE_USER_ENABLED( "cms.site.login.autologin.httpRemoteUserEnabled" ),
+    AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED( "cms.site.login.autologin.rememberMeCookieEnabled" ),
 
-    public static final String PAGE_CACHE_HEADERS_FORCENOCACHE = "cms.site.page.http.forceNoCache";
+    ENABLE_UNPUBLISHED_CONTENT_PERMALINKS( "cms.site.page.enableUnpublishedContentPermalinks" ),
 
-    public static final String PAGE_CACHE_TIMETOLIVE = "cms.site.cache.page.timeToLive";
+    SITE_URL( "cms.site.url" ),
+    CREATE_URL_AS_PATH_PROPERTY( "cms.site.createUrlAsPath" ),
 
-    public static final String ATTACHMENT_CACHE_HEADERS_ENABLED = "cms.site.attachment.http.cacheHeadersEnabled";
+    LOGGING_AUTHENTICATION( "cms.site.logging.authentication" ),
 
-    public static final String ATTACHMENT_CACHE_HEADERS_FORCENOCACHE = "cms.site.attachment.http.forceNoCache";
+    HTTP_SERVICES_ALLOW_PROPERTY( "cms.site.httpServices.allow" ),
+    HTTP_SERVICES_DENY_PROPERTY( "cms.site.httpServices.deny" ),
 
-    public static final String ATTACHMENT_CACHE_HEADERS_MAXAGE = "cms.site.attachment.http.cache.maxAge";
+    SITE_PROPERTY_CAPTCHA_ENABLE( "cms.site.httpServices.captchaEnabled" );    // .form, .content, .gurba
 
-    public static final String RESOURCE_CACHE_HEADERS_ENABLED = "cms.site.resource.http.cacheHeadersEnabled";
+    private final String keyName;
 
-    public static final String RESOURCE_CACHE_HEADERS_FORCENOCACHE = "cms.site.resource.http.forceNoCache";
+    SitePropertyNames( final String keyName )
+    {
+        this.keyName = keyName;
+    }
 
-    public static final String RESOURCE_CACHE_HEADERS_MAXAGE = "cms.site.resource.http.cache.maxAge";
-
-    public static final String IMAGE_CACHE_HEADERS_ENABLED = "cms.site.image.http.cacheHeadersEnabled";
-
-    public static final String IMAGE_CACHE_HEADERS_FORCENOCACHE = "cms.site.image.http.forceNoCache";
-
-    public static final String IMAGE_CACHE_HEADERS_MAXAGE = "cms.site.image.http.cache.maxAge";
-
-    public static final String AUTOLOGIN_HTTP_REMOTE_USER_ENABLED = "cms.site.login.autologin.httpRemoteUserEnabled";
-
-    public static final String AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED = "cms.site.login.autologin.rememberMeCookieEnabled";
-
-    public static final String ENABLE_UNPUBLISHED_CONTENT_PERMALINKS = "cms.site.page.enableUnpublishedContentPermalinks";
-
-    public static final String SITE_URL = "cms.site.url";
-
-    public static final String LOGGING_AUTHENTICATION = "cms.site.logging.authentication";
+    public String getKeyName()
+    {
+        return keyName;
+    }
 }

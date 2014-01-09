@@ -41,10 +41,9 @@ public class SitePathResolverTest
         urlPathHelper.setDefaultEncoding( "UTF-8" );
 
         sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey_1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
 
         urlPathHelperManager = new UrlPathHelperManager();
-        urlPathHelperManager.setSitePropertiesService( sitePropertiesService );
+        urlPathHelperManager.setCharacterEncoding( "UTF-8" );
 
         sitePathResolver = new SitePathResolver();
         sitePathResolver.setSitePathPrefix( "/site" );
@@ -143,8 +142,6 @@ public class SitePathResolverTest
 
     public void xtestNorwegianSitePath_With_ISO_8859_1()
     {
-
-        sitePropertiesService.setProperty( siteKey_1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "ISO-8859-1" );
         httpServletRequest.setRequestURI( "/site/1/B%E5t/" );
 
         SitePath sitePath = sitePathResolver.resolveSitePath( httpServletRequest );
@@ -155,8 +152,6 @@ public class SitePathResolverTest
 
     public void xtestSweedishSitePath_With_ISO_8859_1()
     {
-
-        sitePropertiesService.setProperty( siteKey_1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "ISO-8859-1" );
         httpServletRequest.setRequestURI( "/site/1/B%F6t/" );
 
         SitePath sitePath = sitePathResolver.resolveSitePath( httpServletRequest );
@@ -167,8 +162,6 @@ public class SitePathResolverTest
 
     public void xtestRussianSitePath_WithDefaultCharacterEncoding_UTF_8()
     {
-
-        sitePropertiesService.setProperty( siteKey_1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         httpServletRequest.setRequestURI( "/site/1/Services%D0%BB/" );
 
         SitePath sitePath = sitePathResolver.resolveSitePath( httpServletRequest );

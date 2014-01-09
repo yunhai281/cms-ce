@@ -93,10 +93,9 @@ public class PortalFunctionsTest
         portalFunctions.setRequest( request );
 
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
-        sitePropertiesService.setProperty( siteKey2, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         sitePropertiesService.setProperty( siteKey2, SitePropertyNames.SITE_URL, "http://site2.com/" );
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
         portalFunctions.setSitePropertiesService( sitePropertiesService );
 

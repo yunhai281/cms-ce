@@ -317,9 +317,12 @@
                       <xsl:for-each select="/menus/menu/advanced/properties/property">
                         <xsl:sort select="@name"/>
                         <tr>
-                          <td nowrap="true"><xsl:value-of select="@name"/>&nbsp;&nbsp;
+                          <td nowrap="true">
+                            <xsl:attribute name="style">color: <xsl:value-of select="@color"/></xsl:attribute>
+                            <xsl:value-of select="@name"/>&nbsp;&nbsp;
                           </td>
                           <td>
+                            <xsl:attribute name="style">color: <xsl:value-of select="@color"/></xsl:attribute>
                             <xsl:value-of select="@value"/>
                           </td>
                         </tr>

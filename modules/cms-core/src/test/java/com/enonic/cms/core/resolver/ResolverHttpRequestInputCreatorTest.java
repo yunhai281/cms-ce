@@ -56,8 +56,9 @@ public class ResolverHttpRequestInputCreatorTest
         request.setRequestURI( "/site/" + siteKey.toString() + "/" );
 
         siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( "UTF-8" );
+
         MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-        sitePropertiesService.setProperty( siteKey, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
         sitePropertiesService.setProperty( siteKey, SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
 
         siteURLResolver.setSitePropertiesService( sitePropertiesService );

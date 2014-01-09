@@ -275,7 +275,7 @@ public class PortalFunctions
 
     private String createUrlOnSiteUsingSiteURL( String[] params, String path, SiteEntity siteEntity )
     {
-        String siteUrl = sitePropertiesService.getSiteProperties( siteEntity.getKey() ).getProperty( SitePropertyNames.SITE_URL );
+        final String siteUrl = sitePropertiesService.getSiteProperty( siteEntity.getKey(), SitePropertyNames.SITE_URL );
 
         if ( !URLUtils.verifyValidURL( siteUrl ) )
         {

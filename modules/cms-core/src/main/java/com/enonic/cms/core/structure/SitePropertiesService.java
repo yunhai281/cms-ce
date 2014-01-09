@@ -12,4 +12,5 @@ public interface SitePropertiesService
 
     SiteProperties getSiteProperties( SiteKey siteKey );
 
+    String getSiteProperty( SiteKey siteKey, SitePropertyNames key );
 }

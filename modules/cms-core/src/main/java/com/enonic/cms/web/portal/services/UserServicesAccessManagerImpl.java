@@ -17,6 +17,7 @@ import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesListener;
 import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.SiteService;
 
 @Component
@@ -29,10 +30,6 @@ public class UserServicesAccessManagerImpl
         ALLOW,
         DENY,
     }
-
-    private static final String HTTP_SERVICES_ALLOW_PROPERTY = "cms.site.httpServices.allow";
-
-    private static final String HTTP_SERVICES_DENY_PROPERTY = "cms.site.httpServices.deny";
 
     private static final String ACCESS_RULE_ALL = "*";
 
@@ -117,10 +114,8 @@ public class UserServicesAccessManagerImpl
     {
         ConcurrentMap<String, AccessPermission> siteRules = new ConcurrentHashMap<String, AccessPermission>();
 
-        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( site );
-
-        String allowRules = siteProperties.getProperty( HTTP_SERVICES_ALLOW_PROPERTY );
-        String denyRules = siteProperties.getProperty( HTTP_SERVICES_DENY_PROPERTY );
+        String allowRules = sitePropertiesService.getSiteProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY );
+        String denyRules = sitePropertiesService.getSiteProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY );
         parseAndAddRules( allowRules, AccessPermission.ALLOW, siteRules, site );
         parseAndAddRules( denyRules, AccessPermission.DENY, siteRules, site );
 

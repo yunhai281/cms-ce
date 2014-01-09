@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.SiteService;
 
 import static org.easymock.EasyMock.isA;
@@ -68,7 +69,7 @@ public class UserServicesAccessManagerTest
     public void testDefaultAllow()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "*" );
 
         boolean allowed = userServicesAccessManager.isOperationAllowed( site, "user", "create" );
         assertAllowed( allowed );
@@ -86,8 +87,8 @@ public class UserServicesAccessManagerTest
     public void testDenyService()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "*" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny", "content.*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY, "content.*" );
 
         boolean allowed = userServicesAccessManager.isOperationAllowed( site, "user", "create" );
         assertAllowed( allowed );
@@ -111,8 +112,8 @@ public class UserServicesAccessManagerTest
     public void testAllowServices()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny", "*" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "content.*,portal.*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY, "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "content.*,portal.*" );
 
         boolean allowed = userServicesAccessManager.isOperationAllowed( site, "user", "create" );
         assertDenied( allowed );
@@ -136,8 +137,8 @@ public class UserServicesAccessManagerTest
     public void testAllowOperations()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny", "*" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "content.modify,content.changepwd,portal.forceLocale" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY, "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "content.modify,content.changepwd,portal.forceLocale" );
 
         boolean allowed = userServicesAccessManager.isOperationAllowed( site, "user", "create" );
         assertDenied( allowed );
@@ -164,8 +165,8 @@ public class UserServicesAccessManagerTest
     public void testDenyOperations()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny", "*,content.modify,content.changepwd,portal.forceLocale" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "content.*,portal.*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY, "*,content.modify,content.changepwd,portal.forceLocale" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "content.*,portal.*" );
 
         boolean allowed = userServicesAccessManager.isOperationAllowed( site, "user", "create" );
         assertDenied( allowed );
@@ -192,9 +193,9 @@ public class UserServicesAccessManagerTest
     public void testInvalidConfigurationDuplicated()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny",
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY,
                                            "*,content.modify , content.changepwd , portal.forceLocale , content.*" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "content.* , portal.*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "content.* , portal.*" );
 
         try
         {
@@ -211,8 +212,8 @@ public class UserServicesAccessManagerTest
     public void testInvalidConfigurationDuplicatedAllowDeny()
     {
         SiteKey site = new SiteKey( 0 );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.deny", "*" );
-        sitePropertiesService.setProperty( site, "cms.site.httpServices.allow", "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_DENY_PROPERTY, "*" );
+        sitePropertiesService.setProperty( site, SitePropertyNames.HTTP_SERVICES_ALLOW_PROPERTY, "*" );
 
         try
         {

@@ -7,24 +7,21 @@ package com.enonic.cms.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UrlPathHelper;
 
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesListener;
-import com.enonic.cms.core.structure.SitePropertiesService;
-import com.enonic.cms.core.structure.SitePropertyNames;
 
 @Component
 public class UrlPathHelperManager
     implements SitePropertiesListener
 {
-    private SitePropertiesService sitePropertiesService;
-
     private final Map<SiteKey, UrlPathHelper> urlPathHelperMapBySiteKey = new HashMap<SiteKey, UrlPathHelper>();
 
+    private String characterEncoding;
 
     @Override
     public void sitePropertiesLoaded( final SiteProperties siteProperties )
@@ -66,19 +63,15 @@ public class UrlPathHelperManager
 
     private UrlPathHelper createUrlPathHelper( SiteKey siteKey )
     {
-        String defaultEncoding =
-            sitePropertiesService.getSiteProperties( siteKey ).getProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING );
-
-        SiteUrlPathHelper urlPathHelper = new SiteUrlPathHelper();
+        final SiteUrlPathHelper urlPathHelper = new SiteUrlPathHelper();
         urlPathHelper.setUrlDecode( true );
-        urlPathHelper.setDefaultEncoding( defaultEncoding );
+        urlPathHelper.setDefaultEncoding( characterEncoding );
         return urlPathHelper;
     }
 
-    @Autowired
-    public void setSitePropertiesService( SitePropertiesService value )
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( String characterEncoding )
     {
-        this.sitePropertiesService = value;
+        this.characterEncoding = characterEncoding;
     }
-
 }

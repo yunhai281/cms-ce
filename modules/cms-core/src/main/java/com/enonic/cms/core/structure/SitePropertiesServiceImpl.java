@@ -42,8 +42,6 @@ public class SitePropertiesServiceImpl
 
     private ResourceLoader resourceLoader = new FileSystemResourceLoader();
 
-    private String characterEncoding;
-
     private SiteDao siteDao;
 
     private List<SitePropertiesListener> sitePropertiesListeners = new ArrayList<SitePropertiesListener>();
@@ -138,9 +136,14 @@ public class SitePropertiesServiceImpl
         return StringUtils.trimToNull( props.getProperty( key ) );
     }
 
-    public Boolean getPropertyAsBoolean( String key, SiteKey siteKey )
+    public String getSiteProperty( SiteKey siteKey, SitePropertyNames key )
     {
-        String svalue = getProperty( key, siteKey );
+        return getSiteProperties( siteKey ).getProperty( key.getKeyName() );
+    }
+
+    public Boolean getPropertyAsBoolean( SitePropertyNames key, SiteKey siteKey )
+    {
+        String svalue = getProperty( key.getKeyName(), siteKey );
 
         return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
     }
@@ -175,22 +178,23 @@ public class SitePropertiesServiceImpl
     private SiteProperties loadSiteProperties( final SiteKey siteKey )
     {
         final Properties properties = new Properties( defaultProperties );
-        properties.setProperty( "sitekey", String.valueOf( siteKey ) );
 
         final String relativePathToCmsHome = "/config/site-" + siteKey + ".properties";
-        boolean custom = false;
+
+        String propertiesType = "default";
+
         try
         {
-            String resourcePath = this.homeDir.toURI().toURL() + relativePathToCmsHome;
-            Resource resource = resourceLoader.getResource( resourcePath );
-            boolean useCustomProperties = resource.exists();
-            if ( useCustomProperties )
+            final String resourcePath = this.homeDir.toURI().toURL() + relativePathToCmsHome;
+            final Resource resource = resourceLoader.getResource( resourcePath );
+
+            if ( resource.exists() )
             {
-                InputStream stream = resource.getInputStream();
+                final InputStream stream = resource.getInputStream();
                 properties.load( stream );
-                properties.setProperty( "customSiteProperties", "true" );
-                custom = true;
                 stream.close();
+
+                propertiesType = "custom";
             }
         }
         catch ( IOException e )
@@ -198,20 +202,10 @@ public class SitePropertiesServiceImpl
             throw new RuntimeException( "Failed to load site properties file: " + relativePathToCmsHome, e );
         }
 
-        properties.setProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, this.characterEncoding );
+        LOG.info( "Loaded {} properties for site #{}", propertiesType, siteKey );
 
         final SiteProperties siteProperties = new SiteProperties( siteKey, properties );
         sitePropertiesMap.put( siteKey, siteProperties );
-
-        if ( custom )
-        {
-            LOG.info( "Loaded custom properties for site #{}", siteKey );
-        }
-        else
-        {
-            LOG.info( "Loaded default properties for site #{}", siteKey );
-        }
-
         return siteProperties;
     }
 
@@ -219,12 +213,6 @@ public class SitePropertiesServiceImpl
     public void setHomeDir( File homeDir )
     {
         this.homeDir = homeDir;
-    }
-
-    @Value("${cms.url.characterEncoding}")
-    public void setCharacterEncoding( final String encoding )
-    {
-        this.characterEncoding = encoding;
     }
 
     public void setResourceLoader( ResourceLoader resourceLoader )

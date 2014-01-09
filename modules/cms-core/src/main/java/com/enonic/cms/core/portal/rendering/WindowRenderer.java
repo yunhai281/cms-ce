@@ -296,6 +296,7 @@ public class WindowRenderer
     private SiteURLResolver createSiteURLResolver( boolean escapeHtmlParameterAmps )
     {
         SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( this.siteURLResolver.getCharacterEncoding() );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
         siteURLResolver.setHtmlEscapeParameterAmps( escapeHtmlParameterAmps );
 
@@ -376,6 +377,7 @@ public class WindowRenderer
         }
 
         final SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setCharacterEncoding( this.siteURLResolver.getCharacterEncoding() );
         siteURLResolver.setOverridingSitePropertyCreateUrlAsPath( context.getOverridingSitePropertyCreateUrlAsPath() );
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
@@ -599,6 +601,7 @@ public class WindowRenderer
         else
         {
             SiteURLResolver siteURLResolver = new SiteURLResolver();
+            siteURLResolver.setCharacterEncoding( this.siteURLResolver.getCharacterEncoding() );
             siteURLResolver.setOverridingSitePropertyCreateUrlAsPath( context.getOverridingSitePropertyCreateUrlAsPath() );
             siteURLResolver.setSitePropertiesService( sitePropertiesService );
             return siteURLResolver;
