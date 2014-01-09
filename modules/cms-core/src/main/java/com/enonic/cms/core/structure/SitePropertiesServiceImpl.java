@@ -136,9 +136,14 @@ public class SitePropertiesServiceImpl
         return StringUtils.trimToNull( props.getProperty( key ) );
     }
 
-    public Boolean getPropertyAsBoolean( String key, SiteKey siteKey )
+    public String getSiteProperty( SiteKey siteKey, SitePropertyNames key )
     {
-        String svalue = getProperty( key, siteKey );
+        return getSiteProperties( siteKey ).getProperty( key.getKeyName() );
+    }
+
+    public Boolean getPropertyAsBoolean( SitePropertyNames key, SiteKey siteKey )
+    {
+        String svalue = getProperty( key.getKeyName(), siteKey );
 
         return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
     }

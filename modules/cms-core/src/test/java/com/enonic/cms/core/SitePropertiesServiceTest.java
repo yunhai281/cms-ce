@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.store.dao.SiteDao;
 
 import static org.easymock.EasyMock.createMock;
@@ -34,29 +35,27 @@ public class SitePropertiesServiceTest
 
     private static final int TEST_SITE_KEY_ID = 0;
 
-    private static final String BOOLEAN_TRUE = "boolean.true";
+    private static final SitePropertyNames BOOLEAN_TRUE = SitePropertyNames.ATTACHMENT_CACHE_HEADERS_ENABLED;
 
-    private static final String BOOLEAN_FALSE = "boolean.false";
+    private static final SitePropertyNames BOOLEAN_FALSE = SitePropertyNames.ATTACHMENT_CACHE_HEADERS_FORCENOCACHE;
 
-    private static final String BOOLEAN_TRUE_WHITESPACE = "boolean.true.whitespaces";
+    private static final SitePropertyNames BOOLEAN_TRUE_WHITESPACE = SitePropertyNames.ATTACHMENT_CACHE_HEADERS_MAXAGE;
 
-    private static final String BOOLEAN_FALSE_WHITESPACE = "boolean.false.whitespaces";
+    private static final SitePropertyNames BOOLEAN_FALSE_WHITESPACE = SitePropertyNames.RESOURCE_CACHE_HEADERS_ENABLED;
 
-    private static final String INTEGER_0 = "integer.0";
+    private static final SitePropertyNames INTEGER_0 = SitePropertyNames.RESOURCE_CACHE_HEADERS_FORCENOCACHE;
+
+    private static final SitePropertyNames INTEGER_POSITIVE_WHITESPACES = SitePropertyNames.IMAGE_CACHE_HEADERS_ENABLED;
+
+    private static final SitePropertyNames INTEGER_POSITIVE = SitePropertyNames.RESOURCE_CACHE_HEADERS_MAXAGE;
+
+    private static final SitePropertyNames TEXT_PROPERTY = SitePropertyNames.IMAGE_CACHE_HEADERS_FORCENOCACHE;
+
+    private static final SitePropertyNames EMPTY_PROPERTY = SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED;
+
+    private static final SitePropertyNames EMPTY_PROPERTY_WHITESPACES = SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE;
 
     private static final Integer INTEGER_POSITIVE_VALUE = 100;
-
-    private static final String INTEGER_POSITIVE_WHITESPACES = "integer.positive.whitespaces";
-
-    private static final String INTEGER_POSITIVE = "integer.positive";
-
-    private static final String TEXT_PROPERTY = "text.property";
-
-    private static final String NONEXISTING_PROPERTY = "apples.and.fish";
-
-    private static final String EMPTY_PROPERTY = "empty.property";
-
-    private static final String EMPTY_PROPERTY_WHITESPACES = "empty.property.whitespaces";
 
     private SitePropertiesServiceImpl sitePropertiesService;
 
@@ -123,17 +122,17 @@ public class SitePropertiesServiceTest
 
     /* Shorthands */
 
-    private String getProp( String propertyName )
+    private String getProp( SitePropertyNames propertyName )
     {
-        return sitePropertiesService.getSiteProperties( siteKey ).getProperty( propertyName );
+        return sitePropertiesService.getSiteProperties( siteKey ).getProperty( propertyName.getKeyName() );
     }
 
-    private Boolean getBooleanProp( String propertyName )
+    private Boolean getBooleanProp( SitePropertyNames propertyName )
     {
         return sitePropertiesService.getPropertyAsBoolean( propertyName, siteKey );
     }
 
-    private Integer getIntegerProp( String propertyName )
+    private Integer getIntegerProp( SitePropertyNames propertyName )
     {
         return sitePropertiesService.getSiteProperties( siteKey ).getPropertyAsInteger( propertyName );
     }
@@ -154,24 +153,6 @@ public class SitePropertiesServiceTest
         assertFalse( "BOOLEAN_FALSE expected to be false", getBooleanProp( BOOLEAN_FALSE ) );
         assertTrue( "BOOLEAN_TRUE_WHITESPACE expected to be true", getBooleanProp( BOOLEAN_TRUE_WHITESPACE ) );
         assertFalse( "BOOLEAN_FALSE_WHITESPACE expected to be false", getBooleanProp( BOOLEAN_FALSE_WHITESPACE ) );
-    }
-
-    @Test
-    public void testNonExistingProperty()
-    {
-        assertNull( "NON_EXISTING_PROPERTY expected to be null", getProp( NONEXISTING_PROPERTY ) );
-    }
-
-    @Test
-    public void testNonExistingBooleanProperty()
-    {
-        assertFalse( "NON_EXISTING_PROPERTY expected to be false", getBooleanProp( NONEXISTING_PROPERTY ) );
-    }
-
-    @Test
-    public void testNonExistingIntegerProperty()
-    {
-        assertNull( "NON_EXISTING_PROPERTY expected to be null", getIntegerProp( NONEXISTING_PROPERTY ) );
     }
 
     @Test

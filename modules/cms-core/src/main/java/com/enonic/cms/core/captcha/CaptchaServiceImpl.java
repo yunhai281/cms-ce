@@ -24,6 +24,7 @@ import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertyNames;
 
 @Component("captchaService")
 public class CaptchaServiceImpl
@@ -37,8 +38,6 @@ public class CaptchaServiceImpl
 
     @Autowired
     private CaptchaRepository captchaRepository;
-
-    private final String SITE_PROPERTY_CAPTCHA_ENABLE = "cms.site.httpServices.captchaEnabled";
 
     /**
      * @inheritDoc
@@ -68,7 +67,7 @@ public class CaptchaServiceImpl
         {
             return false;
         }
-        String sitePropertyVariable = SITE_PROPERTY_CAPTCHA_ENABLE + "." + handler;
+        String sitePropertyVariable = SitePropertyNames.SITE_PROPERTY_CAPTCHA_ENABLE.getKeyName() + "." + handler;
         String sitePropertySetting = sitePropertiesService.getSiteProperties( siteKey ).getProperty( sitePropertyVariable );
         if ( sitePropertySetting == null )
         {

@@ -27,7 +27,7 @@ public class SiteProperties
 
     public String getSiteURL()
     {
-        return properties.getProperty( SitePropertyNames.SITE_URL );
+        return properties.getProperty( SitePropertyNames.SITE_URL.getKeyName() );
     }
 
     public String getProperty( final String propertyKey )
@@ -55,9 +55,9 @@ public class SiteProperties
         return getPropertyAsBoolean( SitePropertyNames.LOGGING_AUTHENTICATION );
     }
 
-    public Integer getPropertyAsInteger( final String key )
+    public Integer getPropertyAsInteger( final SitePropertyNames key )
     {
-        String svalue = StringUtils.trimToNull( properties.getProperty( key ) );
+        String svalue = StringUtils.trimToNull( properties.getProperty( key.getKeyName() ) );
 
         if ( svalue != null && !StringUtils.isNumeric( svalue ) )
         {
@@ -67,9 +67,9 @@ public class SiteProperties
         return svalue == null ? null : new Integer( svalue );
     }
 
-    public Boolean getPropertyAsBoolean( final String key )
+    public Boolean getPropertyAsBoolean( final SitePropertyNames key )
     {
-        String svalue = properties.getProperty( key );
+        String svalue = properties.getProperty( key.getKeyName() );
 
         return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
     }

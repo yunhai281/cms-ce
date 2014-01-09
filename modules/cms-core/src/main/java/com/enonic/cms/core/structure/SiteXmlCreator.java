@@ -11,7 +11,7 @@ import java.util.Set;
 import org.jdom.Document;
 import org.jdom.Element;
 
-import com.enonic.vertical.adminweb.PropertiesXmlCreator;
+import com.enonic.vertical.adminweb.SitePropertiesXmlCreator;
 
 import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -467,7 +467,7 @@ public class SiteXmlCreator
         // include site-x.properties
         if ( includeProperties && siteProperties != null)
         {
-            final PropertiesXmlCreator xmlCreator = new PropertiesXmlCreator();
+            final SitePropertiesXmlCreator xmlCreator = new SitePropertiesXmlCreator();
             xmlDoc.startElement( "advanced" );
             xmlDoc.getCurrentElement().addContent( xmlCreator.createElement( "properties", "property", siteProperties.getProperties() ) );
             xmlDoc.endElement();
