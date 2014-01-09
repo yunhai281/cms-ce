@@ -1091,3 +1091,10 @@ input.calendar-icon[disabled] {
     font-weight: bold;
     text-decoration: underline;
 }
+
+.overlay
+{
+    -ms-filter: "alpha(opacity=50)"; /* ie 8 */
+    filter: alpha(opacity=50); /* ie lt 7 */
+    opacity: 0.5;
+}

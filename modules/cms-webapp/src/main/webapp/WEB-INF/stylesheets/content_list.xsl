@@ -696,8 +696,10 @@
                   }
                 }
 
+                waitsplash();
                 AjaxService.isContentInUse(toBeRemoved, {
                   callback:function(bInUse) {
+                    removeWaitsplash();
                     verifyBatchRemoval(bInUse, form);
                   }
                 });
@@ -720,7 +722,9 @@
 
               if ( confirm(alertMsg) )
               {
+                waitsplash();
                 form.submit();
+                // no need to remove because page will be reloaded
               }
 
             }
@@ -735,8 +739,10 @@
               var toBeRemoved = [];
               toBeRemoved.push(contentKey);
 
+              waitsplash();
               AjaxService.isContentInUse(toBeRemoved, {
                   callback:function(bInUse) {
+                    removeWaitsplash();
                     doRemoveContent(bInUse, contentKey, page, cat);
                   }
               });
@@ -782,6 +788,7 @@
             function batchApprove() {
               if( confirm('%msgConfirmApproveSelected%') )
               {
+                waitsplash();
                 document.forms['formAdmin'].op.value = 'batch_approve';
                 document.forms['formAdmin'].submit();
               }
@@ -806,8 +813,10 @@
                   }
                 }
 
+                waitsplash();
                 AjaxService.isContentInUse(toBeArchived, {
                   callback:function(bInUse) {
+                    removeWaitsplash();
                     verifyBatchArchive(bInUse, form);
                   }
                 });
@@ -831,6 +840,7 @@
 
               if ( confirm(alertMsg) )
               {
+                waitsplash();
                 form.submit();
               }
 
