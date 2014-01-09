@@ -1633,7 +1633,7 @@
                     </xsl:if>
 
                     <xsl:for-each select="$contenttypes">
-                      <xsl:sort select="name"/>
+                      <xsl:sort select="upper-case(name)"/>
 
                       <xsl:variable name="varkey">
                         <xsl:value-of select="@key"/>
@@ -1694,7 +1694,7 @@
                   <select multiple="multiple" style="width: 13em; height: 10em;" name="contenttypekey"
                           id="contenttypekey">
                     <xsl:for-each select="$selectedcontenttypes">
-                      <xsl:sort select="name"/>
+                      <xsl:sort select="upper-case(name)"/>
 
                       <xsl:variable name="varkey">
                         <xsl:value-of select="@key"/>
@@ -2315,7 +2315,7 @@
       </xsl:if>
 
       <xsl:for-each select="/menus/pagetemplates/pagetemplate">
-        <xsl:sort select="name"/>
+        <xsl:sort select="upper-case(name)"/>
         <option value="{@key}">
           <xsl:if test="$selpagetemplatekey = @key and $type != 'label' and $type != 'externalurl' and $type != 'none' and $type != 'section'">
             <xsl:attribute name="selected">selected</xsl:attribute>

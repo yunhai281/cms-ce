@@ -227,7 +227,7 @@
                           </xsl:choose>
 
                           <xsl:for-each select="/data/sitecontenttypes/contenttype">
-                            <xsl:sort select="name" order="ascending"/>
+                            <xsl:sort select="upper-case(name)" order="ascending"/>
                             <xsl:variable name="count-key-in-contenttype-string">
                               <xsl:call-template name="count-key-in-contenttype-string">
                                 <xsl:with-param name="key" select="@key"/>

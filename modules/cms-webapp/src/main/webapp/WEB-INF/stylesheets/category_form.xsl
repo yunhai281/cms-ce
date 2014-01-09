@@ -257,7 +257,7 @@
                         <select name="contenttypekey">
                           <option value="">%sysDropDownNone%</option>
                           <xsl:for-each select="/categories/unit/contenttypes/contenttype">
-                            <xsl:sort select="/categories/contenttypes/contenttype[@key = current()/@key]/name" order="ascending"/>
+                            <xsl:sort select="upper-case(/categories/contenttypes/contenttype[@key = current()/@key]/name)" order="ascending"/>
                             <xsl:variable name="ctykey"><xsl:value-of select="@key"/></xsl:variable>
                             <xsl:if test="/categories/contenttypes/contenttype[@key = $ctykey]">
                               <option value="{$ctykey}">
