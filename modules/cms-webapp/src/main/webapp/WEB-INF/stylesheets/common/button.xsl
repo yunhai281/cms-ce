@@ -242,7 +242,7 @@
                         </xsl:if>
                     </xsl:variable>
 
-                    <xsl:if test="$onclick_1 != '' and $useOnClick = 'true'">
+                    <xsl:if test="$onclick_1 != '' and $useOnClick = 'true' and $disabled != 'true'">
                         <xsl:attribute name="onclick">
                             <xsl:value-of select="$onclick_1" />
                         </xsl:attribute>
