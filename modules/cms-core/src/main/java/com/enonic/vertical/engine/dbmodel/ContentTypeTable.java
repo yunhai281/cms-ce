@@ -18,7 +18,7 @@ public final class ContentTypeTable
 
     public Column cty_sName = new Column( "cty_sName", "name", true, false, Constants.COLUMN_VARCHAR, 32 );
 
-    public Column cty_sDescription = new Column( "cty_sDescription", "description", false, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column cty_sDescription = new Column( "cty_sDescription", "description", false, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column cty_mbData = new Column( "cty_mbData", "moduledata", true, false, Constants.COLUMN_XML, 1 );
 

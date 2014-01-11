@@ -19,7 +19,7 @@ public final class ContentObjectTable
     public ForeignKeyColumn cob_men_lKey =
         new ForeignKeyColumn( "cob_men_lKey", "null", false, false, Constants.COLUMN_INTEGER, null, "tMenu", "men_lKey", false, -1 );
 
-    public Column cob_sName = new Column( "cob_sName", "null", true, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column cob_sName = new Column( "cob_sName", "null", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column cob_xmlData = new Column( "cob_xmlData", "null", false, false, Constants.COLUMN_XML, 10 );
 

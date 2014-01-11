@@ -153,6 +153,7 @@
                               <xsl:call-template name="textfield">
                                 <xsl:with-param name="label" select="'%fldName%:'"/>
                                 <xsl:with-param name="name" select="'name'"/>
+                                <xsl:with-param name="maxlength" select="'255'"/>
                                 <xsl:with-param name="selectnode" select="group/displayName"/>
                                 <xsl:with-param name="size" select="'50'"/>
                                 <xsl:with-param name="disabled" select="group/@type = 2 or group/@type = 0 or $canUpdateGroup = 'false'"/>

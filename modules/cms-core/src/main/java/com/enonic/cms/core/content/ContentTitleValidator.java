@@ -11,7 +11,7 @@ import com.enonic.cms.core.content.contentdata.custom.TitleDataEntryNotFoundExce
 public class ContentTitleValidator
 {
 
-    public static final int CONTENT_TITLE_MAX_LENGTH = 256;
+    public static final int CONTENT_TITLE_MAX_LENGTH = 255;
 
     public static void validate( ContentData contentData )
         throws IllegalArgumentException

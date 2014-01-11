@@ -466,6 +466,7 @@
                                   <x:call-template name="textfield">
                                     <x:with-param name="label" select="'%fldUID%:'"/>
                                     <x:with-param name="name" select="'uid_dummy'"/>
+                                    <x:with-param name="maxlength" select="'255'"/>
                                     <x:with-param name="selectnode" select="/users/user/block/uid"/>
                                     <x:with-param name="readonly" select="false()"/>
                                     <x:with-param name="required" select="'true'"/>
@@ -1053,6 +1054,7 @@
                   <tr>
                     <x:call-template name="textfield">
                       <x:with-param name="name" select="'uid_dummy'"/>
+                      <x:with-param name="maxlength" select="'255'"/>
                       <x:with-param name="label" select="'%fldUID%:'"/>
                       <x:with-param name="readonly" select="false()"/>
                       <x:with-param name="required" select="true()"/>
@@ -1128,6 +1130,7 @@
               <x:call-template name="textfield">
                 <x:with-param name="name" select="'email'"/>
                 <x:with-param name="label" select="'%fldEmail%:'"/>
+                <x:with-param name="maxlength" select="'255'"/>
                 <x:with-param name="selectnode" select="$user/block/email"/>
                 <x:with-param name="readonly" select="not($is-email-editable)"/>
                 <x:with-param name="required" select="true()"/>

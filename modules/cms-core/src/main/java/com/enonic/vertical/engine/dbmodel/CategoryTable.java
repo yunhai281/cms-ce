@@ -34,7 +34,7 @@ public final class CategoryTable
 
     public Column cat_bDeleted = new Column( "cat_bDeleted", "@deleted", true, false, Constants.COLUMN_BOOLEAN, -1 );
 
-    public Column cat_sName = new Column( "cat_sName", "@name", true, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column cat_sName = new Column( "cat_sName", "@name", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column cat_sDescription = new Column( "cat_sDescription", "description", false, false, Constants.COLUMN_VARCHAR, 1024 );
 

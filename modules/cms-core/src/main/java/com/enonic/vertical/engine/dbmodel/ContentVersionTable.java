@@ -21,7 +21,7 @@ public final class ContentVersionTable
 
     public Column cov_lStatus = new Column( "cov_lStatus", "@status", true, false, Constants.COLUMN_INTEGER, -1 );
 
-    public Column cov_sTitle = new Column( "cov_sTitle", "title", true, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column cov_sTitle = new Column( "cov_sTitle", "title", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column cov_sDescription = new Column( "cov_sDescription", "description", false, false, Constants.COLUMN_VARCHAR, 1024 );
 
