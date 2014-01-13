@@ -158,7 +158,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <forkMode>once</forkMode>
-            <argLine>-Xmx2048m -XX:MaxPermSize=700m -Djava.awt.headless=true</argLine>
+            <argLine>-Xmx2048m -XX:MaxPermSize=700m -Djava.awt.headless=true -Duser.timezone=Europe/Oslo</argLine>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>

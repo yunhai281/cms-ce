@@ -33,6 +33,12 @@ public final class IndexValueConverter
 
     private final static DateTimeFormatter DATETIME_WITHOUT_SECS_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
+    // new format from CMS-2545
+    private final static DateTimeFormatter DATETIME_WITH_SECS_FORMAT_Z = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ssZ" );
+
+    // new format from CMS-2545
+    private final static DateTimeFormatter DATETIME_WITHOUT_SECS_FORMAT_Z = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mmZ" );
+
     /**
      * Private constructor.
      */
@@ -136,7 +142,8 @@ public final class IndexValueConverter
         }
 
         final DateTimeFormatter[] dateTimeFormatterArray =
-            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, FULL_DATE_FORMAT_WITH_TIME_ZONE};
+            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, FULL_DATE_FORMAT_WITH_TIME_ZONE, DATETIME_WITH_SECS_FORMAT_Z,
+                            DATETIME_WITHOUT_SECS_FORMAT_Z};
 
         for ( final DateTimeFormatter dateTimeFormatter : dateTimeFormatterArray )
         {

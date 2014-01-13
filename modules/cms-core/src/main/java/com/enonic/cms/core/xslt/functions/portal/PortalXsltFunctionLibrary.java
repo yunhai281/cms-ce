@@ -46,6 +46,7 @@ public final class PortalXsltFunctionLibrary
         doRegister( new Md5DigestFunction() );
         doRegister( new ShaDigestFunction() );
         doRegister( new CreateImagePlaceholderFunction() );
+        doRegister( new DateTimeFunction() );
     }
 
     private void doRegister( final AbstractPortalFunction function )

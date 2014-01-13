@@ -5,6 +5,8 @@
 
 package com.enonic.cms.core.xslt.lib;
 
+import java.util.Date;
+
 public interface PortalFunctionsMediator
 {
     public String getInstanceKey();
@@ -54,4 +56,6 @@ public interface PortalFunctionsMediator
     public String md5( String value );
 
     public String sha( String value );
+
+    public Date dateTime( String date );
 }

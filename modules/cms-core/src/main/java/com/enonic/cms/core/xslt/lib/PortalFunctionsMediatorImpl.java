@@ -5,6 +5,8 @@
 
 package com.enonic.cms.core.xslt.lib;
 
+import java.util.Date;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionExcept
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctions;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsContext;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory;
+import com.enonic.cms.core.search.query.IndexValueConverter;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
@@ -389,6 +392,12 @@ public final class PortalFunctionsMediatorImpl
     public String sha( final String value )
     {
         return DigestUtils.shaHex( value );
+    }
+
+    @Override
+    public Date dateTime( final String date )
+    {
+        return IndexValueConverter.toDate( date ).toDateTime().toDate();
     }
 
     private static String buildFailureMessage( String functionName, String failureReason )
