@@ -164,7 +164,7 @@
                           <label for="uname">%fldUserId%</label>
                         </td>
                         <td class="input-container">
-                          <input value="" name="username" id="uname" maxlength="256" type="text"/>
+                          <input value="" name="username" id="uname" maxlength="255" type="text"/>
                         </td>
                       </tr>
                       <tr>

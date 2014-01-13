@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class ContentNameValidator
 {
-    public static final int CONTENT_NAME_MAX_LENGTH = 256;
+    public static final int CONTENT_NAME_MAX_LENGTH = 255;
 
     private static final String FORBIDDEN_CHARS = "/\\#;";
 

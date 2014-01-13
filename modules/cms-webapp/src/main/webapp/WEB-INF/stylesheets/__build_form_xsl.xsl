@@ -3422,7 +3422,7 @@
               <xsl:otherwise>
                 <xsl:choose>
                   <xsl:when test="/config/form/title/@name = $input/@name">
-                    <xsl:text>'256'</xsl:text>
+                    <xsl:text>'255'</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:text>''</xsl:text>

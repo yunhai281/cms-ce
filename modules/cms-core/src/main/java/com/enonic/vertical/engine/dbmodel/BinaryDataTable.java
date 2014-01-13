@@ -15,7 +15,7 @@ public final class BinaryDataTable
 
     public Column bda_lKey = new Column( "bda_lKey", "@key", true, true, Constants.COLUMN_INTEGER, -1 );
 
-    public Column bda_sFileName = new Column( "bda_sFileName", "@filename", false, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column bda_sFileName = new Column( "bda_sFileName", "@filename", false, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column bda_lFileSize = new Column( "bda_lFileSize", "@filesize", true, false, Constants.COLUMN_INTEGER, -1 );
 

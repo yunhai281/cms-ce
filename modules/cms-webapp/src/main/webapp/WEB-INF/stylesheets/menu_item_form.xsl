@@ -2004,7 +2004,7 @@
             <xsl:with-param name="size" select="'51'"/>
             <xsl:with-param name="readonly" select="true()"/>
             <xsl:with-param name="disabled" select="$selectnode2 = $text-auto-generated"/>
-            <xsl:with-param name="maxlength" select="'256'"/>
+            <xsl:with-param name="maxlength" select="'255'"/>
             <xsl:with-param name="colspan" select="'1'"/>
             <xsl:with-param name="onkeyup">
               <xsl:text>javascript: updateBreadCrumbHeader('titlename', this);</xsl:text>

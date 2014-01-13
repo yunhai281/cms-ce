@@ -16,7 +16,7 @@ public final class UserTable
 
     public Column usr_hKey = new Column( "usr_hKey", "@key", true, true, Constants.COLUMN_CHAR, 40 );
 
-    public Column usr_sUID = new Column( "usr_sUID", "@uid", true, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column usr_sUID = new Column( "usr_sUID", "@uid", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column usr_sFullName = new Column( "usr_sFullName", "@fullname", true, false, Constants.COLUMN_VARCHAR, 256 );
 
@@ -32,7 +32,7 @@ public final class UserTable
 
     public Column usr_sSyncValue2 = new Column( "usr_sSyncValue2", "@syncvalue", true, false, Constants.COLUMN_VARCHAR, 255 );
 
-    public Column usr_sEmail = new Column( "usr_sEmail", "null", false, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column usr_sEmail = new Column( "usr_sEmail", "null", false, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column usr_sPassword = new Column( "usr_sPassword", "null", false, false, Constants.COLUMN_VARCHAR, 64 );
 

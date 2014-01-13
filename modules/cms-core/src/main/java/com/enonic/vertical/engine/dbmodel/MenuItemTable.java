@@ -16,7 +16,7 @@ public final class MenuItemTable
 
     public Column mei_lKey = new Column( "mei_lKey", "null", true, true, Constants.COLUMN_INTEGER, -1 );
 
-    public Column mei_sName = new Column( "mei_sName", "null", true, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column mei_sName = new Column( "mei_sName", "null", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public ForeignKeyColumn mei_men_lKey =
         new ForeignKeyColumn( "mei_men_lKey", "null", true, false, Constants.COLUMN_INTEGER, null, "tMenu", "men_lKey", false, -1 );
@@ -54,7 +54,7 @@ public final class MenuItemTable
     public ForeignKeyColumn mei_lan_lKey =
         new ForeignKeyColumn( "mei_lan_lKey", "null", false, false, Constants.COLUMN_INTEGER, null, "tLanguage", "lan_lKey", false, -1 );
 
-    public Column mei_sURL = new Column( "mei_sURL", "null", false, false, Constants.COLUMN_VARCHAR, 256 );
+    public Column mei_sURL = new Column( "mei_sURL", "null", false, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column mei_bURLOpenNewWin = new Column( "mei_bURLOpenNewWin", "null", false, false, Constants.COLUMN_BOOLEAN, -1 );
 
