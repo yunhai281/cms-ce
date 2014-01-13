@@ -209,7 +209,7 @@ public class PageTemplateServiceImpl_copyPageTemplateTest
 
         assertNotNull( persisted );
 
-        assertEquals( 1, persisted.getKey() );
+        // assertEquals( 1, persisted.getKey() );
         assertEquals( "my-template (copy)", persisted.getName() );
         assertEquals( "crocs", persisted.getDescription() );
         assertEquals( PageTemplateType.SECTIONPAGE, persisted.getType() );
