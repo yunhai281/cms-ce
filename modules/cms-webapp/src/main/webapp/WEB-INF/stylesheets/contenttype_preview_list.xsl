@@ -329,7 +329,7 @@
         <xsl:choose>
           <xsl:when test="@name">
             <xsl:apply-templates select="$selectnode" mode="dropdown">
-              <xsl:sort select="upper-case(@name)" order="ascending"/>
+              <xsl:sort select="lower-case(@name)" order="ascending"/>
               <xsl:with-param name="selectedkey" select="$selectedkey"/>
               <xsl:with-param name="defaultkey" select="$defaultkey"/>
               <xsl:with-param name="create" select="$create"/>
@@ -337,7 +337,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates select="$selectnode" mode="dropdown">
-              <xsl:sort select="upper-case(name)" order="ascending"/>
+              <xsl:sort select="lower-case(name)" order="ascending"/>
               <xsl:with-param name="selectedkey" select="$selectedkey"/>
               <xsl:with-param name="defaultkey" select="$defaultkey"/>
               <xsl:with-param name="create" select="$create"/>

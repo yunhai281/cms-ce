@@ -149,7 +149,7 @@
 
                 <xsl:for-each select="/contentobjects/contentobject">
 
-                  <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="upper-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
+                  <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="lower-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
 
                   <tr>
 

@@ -304,7 +304,7 @@
 
 	                                        <select multiple="multiple" style="width: 13em; height: 10em;" name="availablect" id="availablect">
 	                                        	<xsl:for-each select="/categories/contenttypes/contenttype">
-	                                        		<xsl:sort select="upper-case(name)"/>
+	                                        		<xsl:sort select="lower-case(name)"/>
 
 		                                        	<xsl:variable name="varkey">
 			                                            <xsl:value-of select="@key"/>
@@ -343,7 +343,7 @@
 
 	                                        <select multiple="multiple" style="width: 13em; height: 10em;" name="contenttypekey" id="contenttypekey">
 	                                        	<xsl:for-each select="/categories/contenttypes/contenttype">
-	                                        		<xsl:sort select="upper-case(name)"/>
+	                                        		<xsl:sort select="lower-case(name)"/>
 
 		                                        	<xsl:variable name="varkey">
 			                                            <xsl:value-of select="@key"/>

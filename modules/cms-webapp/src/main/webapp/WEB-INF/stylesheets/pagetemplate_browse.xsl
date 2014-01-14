@@ -116,7 +116,7 @@
 								<xsl:variable name="temp">
 									<types>
 										<xsl:for-each select="/pagetemplates/pagetemplate">
-											<xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="upper-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
+											<xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="lower-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
 											<type>
 												<xsl:value-of select="@type"/>
 											</type>
@@ -126,7 +126,7 @@
 
                 <xsl:for-each select="/pagetemplates/pagetemplate">
                   <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
-                            select="upper-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
+                            select="lower-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
                   <xsl:variable name="prevPosition" select="position()-1"/>
 
                   <xsl:variable name="className">
