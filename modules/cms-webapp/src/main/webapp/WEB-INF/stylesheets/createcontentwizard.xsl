@@ -227,7 +227,7 @@
 
   <xsl:template name="step1">
     <xsl:for-each select="/contenttypes/contenttype">
-      <xsl:sort select="upper-case(name)"/>
+      <xsl:sort select="lower-case(name)"/>
       <a>
         <xsl:attribute name="href">
           <xsl:text>adminpage?page=960&amp;op=createcontentwizard_step2&amp;contenttypekey=</xsl:text>
