@@ -49,7 +49,7 @@
 
     <table width="100%" border="0" cellspacing="2" cellpadding="2">
         <xsl:for-each select="/contenttypes/contenttype">
-	  <xsl:sort select="name"/>
+	        <xsl:sort select="upper-case(name)"/>
           <tr>
             <td>
 

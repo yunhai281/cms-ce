@@ -158,7 +158,7 @@
                 <xsl:variable name="sortby-data-type">text</xsl:variable>
 
                 <xsl:for-each select="/contentobjects/contentobject">
-                  <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="*[name() = $sortby] | @*[concat('@',name()) = $sortby]"/>
+                  <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}" select="upper-case(*[name() = $sortby] | @*[concat('@',name()) = $sortby])"/>
 
                   <xsl:variable name="className">
                     <xsl:choose>
