@@ -134,7 +134,7 @@
                 </xsl:with-param>
                 <xsl:with-param name="readonly" select="true()"/>
                 <xsl:with-param name="size" select="'46'"/>
-                <xsl:with-param name="maxlength" select="'256'"/>
+                <xsl:with-param name="maxlength" select="'255'"/>
                 <xsl:with-param name="colspan" select="'1'"/>
                 <xsl:with-param name="onkeyup">
                   javascript: updateBreadCrumbHeader('titlename', this);
