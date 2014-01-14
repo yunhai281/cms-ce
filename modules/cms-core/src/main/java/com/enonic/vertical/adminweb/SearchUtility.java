@@ -372,6 +372,7 @@ public final class SearchUtility
         xmlCreator.setIncludeUserRightsInfo( includeUserRight, new CategoryAccessResolver( groupDao ),
                                              new ContentAccessResolver( groupDao ) );
         xmlCreator.setIncludeRepositoryPathInfo( true );
+        xmlCreator.setIncludeVersionsInfoForAdmin( true );
         return xmlCreator.createContentsDocument( userEntity, contents, relatedContents );
     }
 
