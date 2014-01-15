@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.product.LicenseChecker;
 import com.enonic.cms.core.product.NopLicenseChecker;
@@ -91,8 +94,10 @@ public final class WelcomeController
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView welcomePage( final HttpServletRequest req )
+    public ModelAndView welcomePage( final HttpServletRequest req, final HttpServletResponse response )
     {
+        HttpServletUtil.setCacheControlNoCache( response );
+
         final boolean modelUpgradeNeeded = this.upgradeService.needsUpgrade();
         final boolean softwareUpgradeNeeded = this.upgradeService.needsSoftwareUpgrade();
         final boolean upgradeNeeded = modelUpgradeNeeded || softwareUpgradeNeeded;
