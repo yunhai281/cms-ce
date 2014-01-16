@@ -87,6 +87,11 @@ class FindContentByKeysQuerier
 
     private boolean eagerFetchingIsSafe( final Collection<ContentKey> contentKeys )
     {
+        if ( !contentEagerFetches.hasTable( ContentEagerFetches.Table.SECTION_CONTENT ) )
+        {
+            return true;
+        }
+
         final Number number = (Number) hibernateSession.createCriteria( SectionContentEntity.class ).
             add( Restrictions.in( "content.key", contentKeys ) ).
             setProjection( Projections.rowCount() ).
