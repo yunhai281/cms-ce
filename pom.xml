@@ -197,19 +197,6 @@
         <module>cms-ee</module>
       </modules>
     </profile>
-    <profile>
-      <id>sonar</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <sonar.jdbc.url>jdbc:postgresql://sonar:5432/sonar</sonar.jdbc.url>
-        <sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
-        <sonar.jdbc.username>sonar</sonar.jdbc.username>
-        <sonar.jdbc.password>sonar123</sonar.jdbc.password>
-        <sonar.host.url>http://sonar:9000</sonar.host.url>
-      </properties>
-    </profile>
   </profiles>
 
 
