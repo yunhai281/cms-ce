@@ -117,7 +117,7 @@ public final class ConfigLoader
     {
         final Properties props = new Properties();
         props.load( in );
-
+        in.close();
         return props;
     }
 }
