@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         metadata-complete="true"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
@@ -17,8 +18,8 @@
   </filter>
 
   <filter>
-      <filter-name>asciiCharactersFilter</filter-name>
-      <filter-class>com.enonic.cms.web.filter.ASCIICharactersFilter</filter-class>
+    <filter-name>asciiCharactersFilter</filter-name>
+    <filter-class>com.enonic.cms.web.filter.ASCIICharactersFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -27,9 +28,9 @@
   </filter-mapping>
 
   <filter-mapping>
-      <filter-name>asciiCharactersFilter</filter-name>
-      <url-pattern>/admin/adminpage</url-pattern>
-      <dispatcher>REQUEST</dispatcher>
+    <filter-name>asciiCharactersFilter</filter-name>
+    <url-pattern>/admin/adminpage</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
 
   <listener>
