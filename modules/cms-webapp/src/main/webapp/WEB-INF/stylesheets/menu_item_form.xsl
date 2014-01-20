@@ -1014,7 +1014,7 @@
                                       </xsl:choose>
                                     </xsl:with-param>
                                     <xsl:with-param name="size" select="'50'"/>
-                                    <xsl:with-param name="maxlength" select="'256'"/>
+                                    <xsl:with-param name="maxlength" select="'255'"/>
                                     <xsl:with-param name="colspan" select="'1'"/>
                                     <xsl:with-param name="required" select="'false'"/>
                                   </xsl:call-template>
