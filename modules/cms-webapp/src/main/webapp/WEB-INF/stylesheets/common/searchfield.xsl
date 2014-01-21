@@ -87,6 +87,7 @@
                       <xsl:if test="string-length($selectnode) &gt; 0">
                         <xsl:attribute name="title"><xsl:value-of select="$selectnode"/></xsl:attribute>
                       </xsl:if>
+                        <xsl:attribute name="data-pos"><xsl:value-of select="position()"/></xsl:attribute>
                     </input>
                 </xsl:when>
                 <xsl:when test="$type = 'span'">
@@ -161,6 +162,7 @@
 				<xsl:if test="$onchange != ''">
 					<xsl:attribute name="onchange"><xsl:value-of select="$onchange"/></xsl:attribute>
 				</xsl:if>
+                <xsl:attribute name="data-pos"><xsl:value-of select="position()"/></xsl:attribute>
             </input>
         </td>
     </xsl:template>
