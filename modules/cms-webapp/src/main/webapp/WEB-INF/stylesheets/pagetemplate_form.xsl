@@ -240,6 +240,19 @@
                   }
                 }
 
+                function removeParameterWithPosition(position) {
+                    var matchingElements = [];
+                    var allElements = document.getElementsByTagName('*');
+                    for (var i = 0; i &lt; allElements.length; i++)
+                    {
+                        if (allElements[i].getAttribute("data-pos") == position) {
+                            allElements[i].value = '';
+                        }
+                    }
+                }
+
+
+
                 function addObjectSelector( name, idx )
                 {
 					var tbody = document.getElementsByName("tbl" + name)[0];
@@ -938,7 +951,8 @@
                                                               <xsl:text>javascript: OpenSelectorWindowForPages( this, 850, 'parameter_value</xsl:text><xsl:value-of select="position()"/><xsl:text>', 'viewparameter_value</xsl:text><xsl:value-of select="position()"/><xsl:text>', 260, 360 )</xsl:text>
                                                             </xsl:variable>
                                                             <xsl:variable name="removefunction">
-                                                                <xsl:text>javascript: removeParameter(this)</xsl:text>
+                                                                <xsl:value-of select="concat('javascript: removeParameterWithPosition(', position(), ')')"/>
+                                                                <!--<xsl:text>javascript: removeParameter(this)</xsl:text>-->
                                                             </xsl:variable>
                                                             <xsl:call-template name="searchfield">
                                                                 <xsl:with-param name="name" select="'parameter_value'"/>
