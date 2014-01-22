@@ -115,6 +115,8 @@
 %altContentMoveUp%|Flytt opp|Move up|Flyt op|Flytta upp
 %altContentMoveDown%|Flytt ned|Move down|Flyt ned|Flytta ned
 %altCannotRemoveSection%|Kan ikke slette seksjonen fordi den ikke er tom|Cannot delete the section because it is not empty|Kan ikke slette sektionen fordi den ikke er tom|Kan inte radera sektionen eftersom den inte är tom
+%publishedAndApprovedInSection%|Publisert og godkjent i minst en seksjon|Published and approved in at least one section|Udgivet og godkendt i mindst en sektion|Publicerad och godkänts i minst en sektion|
+%publishedAndUnapprovedInSection%|Publisert til, men ikke godkjent i noen seksjon|Published to, but not approved in any section|Udgivet til, men ikke godkendt i noget sektion|Publicerad i, men inte godkänt i någon sektion|
 %altContentPreview%|Forhåndsvis|Preview|Forhåndsvis|Förhandsgranska
 %altContentPreviewNotSupportedByAnySite%|Forhåndsvisning av denne typen innhold er ikke støttet av noe nettsted|Preview of this type of content is not supported by any site|Forhåndsvisning af et sådant indhold er ikke understøttet af nogen site|Förhandsgranskning av sådant innehåll stöds inte av någon webbplats
 %altContentPreviewNotSupportedByThisSite%|Forhåndsvisning av denne typen innhold er ikke støttet av dette nettstedet|Preview of this type of content by this site is not supported|Forhåndsvisning af et sådant indhold er ikke understøttet af denne site|Förhandsgranskning av sådant innehåll stöds inte av denna webbplats

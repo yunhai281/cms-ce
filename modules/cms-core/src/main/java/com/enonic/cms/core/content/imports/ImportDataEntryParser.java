@@ -92,7 +92,7 @@ public class ImportDataEntryParser
         {
             final DataEntryConfig dataEntryConfig = contentTypeConfig.getInputConfig( configAndValue.getKey().getDestination() );
 
-            DataEntrySet dataEntrySet = null;
+            DataEntrySet dataEntrySet;
             final boolean inBlockGroup = dataEntryConfig.getSetConfig().getGroupXPath() != null;
             if ( inBlockGroup && allowBlockCreation )
             {

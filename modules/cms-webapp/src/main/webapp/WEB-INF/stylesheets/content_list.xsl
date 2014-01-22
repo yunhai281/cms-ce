@@ -1889,13 +1889,13 @@
                                 <xsl:choose>
                                   <xsl:when test="@published = 'published'">
                                     <td align="center">
-                                      <img src="./images/icon_content_approve.gif"/>
+                                      <img src="./images/icon_content_approve.gif" title="%publishedAndApprovedInSection%"/>
                                     </td>
                                   </xsl:when>
 
                                   <xsl:when test="@published = 'unpublished'">
                                     <td align="center">
-                                      <img src="./images/icon_content_unapprove.gif"/>
+                                      <img src="./images/icon_content_unapprove.gif" title="%publishedAndUnapprovedInSection%"/>
                                     </td>
                                   </xsl:when>
                                 </xsl:choose>
