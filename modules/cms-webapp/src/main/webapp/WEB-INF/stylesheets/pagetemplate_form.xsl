@@ -954,6 +954,7 @@
                                                                 <xsl:value-of select="concat('javascript: removeParameterWithPosition(', position(), ')')"/>
                                                                 <!--<xsl:text>javascript: removeParameter(this)</xsl:text>-->
                                                             </xsl:variable>
+                                                            wtf?
                                                             <xsl:call-template name="searchfield">
                                                                 <xsl:with-param name="name" select="'parameter_value'"/>
                                                                 <xsl:with-param name="id" select="concat('parameter_value',position())"/>
@@ -1078,7 +1079,8 @@
                                                               <xsl:text>javascript: OpenSelectorWindowForPages( this, 850, 'parameter_value</xsl:text><xsl:value-of select="position()"/><xsl:text>', 'viewparameter_value</xsl:text><xsl:value-of select="position()"/><xsl:text>', 260, 360 )</xsl:text>
                                                             </xsl:variable>
                                                             <xsl:variable name="removefunction">
-                                                                <xsl:text>javascript: removeParameter(this)</xsl:text>
+                                                                <xsl:value-of select="concat('javascript: removeParameterWithPosition(', position(), ')')"/>
+                                                                <!--xsl:text>javascript: removeParameter(this)</xsl:text-->
                                                             </xsl:variable>
                                                             <xsl:call-template name="searchfield">
                                                                 <xsl:with-param name="name" select="'parameter_value'"/>

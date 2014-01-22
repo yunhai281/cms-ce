@@ -204,6 +204,16 @@
                       form.submit();
                   }
 
+                    function removeParameterWithPosition(position) {
+                        var matchingElements = [];
+                        var allElements = document.getElementsByTagName('*');
+                        for (var i = 0; i &lt; allElements.length; i++) {
+                            if (allElements[i].getAttribute("data-pos") == position) {
+                                allElements[i].value = '';
+                            }
+                        }
+                    }
+
                   function removeStyleSheetParam(objThis)
                   {
                       var count = itemcount(document.formAdmin[objThis.name]);
@@ -766,7 +776,8 @@
                                           <xsl:text>&apos;, 250, 300 )</xsl:text>
                                         </xsl:variable>
                                         <xsl:variable name="removefunction">
-                                            <xsl:text>javascript:removeStyleSheetParam(this)</xsl:text>
+                                            <xsl:value-of select="concat('javascript: removeParameterWithPosition(', position(), ')')"/>
+                                            <!--xsl:text>javascript:removeStyleSheetParam(this)</xsl:text-->
                                         </xsl:variable>
                                         <xsl:call-template name="searchfield">
                                             <xsl:with-param name="name" select="'xslparam_value'"/>
@@ -913,7 +924,8 @@
                                           <xsl:text>&apos;, 250, 300 )</xsl:text>
                                         </xsl:variable>
                                         <xsl:variable name="removefunction">
-                                            <xsl:text>javascript:removeStyleSheetParam(this)</xsl:text>
+                                            <xsl:value-of select="concat('javascript: removeParameterWithPosition(', position(), ')')"/>
+                                            <!--xsl:text>javascript:removeStyleSheetParam(this)</xsl:text-->
                                         </xsl:variable>
                                         <xsl:call-template name="searchfield">
                                             <xsl:with-param name="name" select="'borderparam_value'"/>
