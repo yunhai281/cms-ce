@@ -83,7 +83,6 @@
             if ( !checkAll(formName, validatedFields) )
               return;
 
-            tabPane1.element.style.display="none";
             waitsplash();
             disableFormButtons();
             f.submit();
