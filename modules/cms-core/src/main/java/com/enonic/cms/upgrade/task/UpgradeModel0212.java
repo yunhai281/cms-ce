@@ -16,6 +16,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.util.StringUtils;
 
+import com.enonic.cms.framework.jdbc.dialect.Db2Dialect;
+
 import com.enonic.cms.upgrade.UpgradeContext;
 
 final class UpgradeModel0212
@@ -400,6 +402,27 @@ final class UpgradeModel0212
         context.getJdbcTemplate().execute( "UPDATE tContentHandler SET han_sClass = han_sClass2" );
         context.getJdbcTemplate().execute( "UPDATE tCategory SET cat_sName = cat_sName2" );
         context.getJdbcTemplate().execute( "UPDATE tBinaryData SET bda_sFileName = bda_sFileName2" );
+
+        trimStringForDb2( context );
+    }
+
+    private boolean isDb2Database( final UpgradeContext context )
+    {
+        return ( context.getDialect() instanceof Db2Dialect );
+    }
+
+    private void trimStringForDb2( final UpgradeContext context )
+        throws Exception
+    {
+        if ( isDb2Database( context ) )
+        {
+            context.logWarning( "Db2Dialect: Trim indexed VARCHAR columns" );
+
+            for ( LargeIndexedColumn column : LargeIndexedColumn.values() )
+            {
+                context.getJdbcTemplate().execute( "UPDATE " + column.getTable() + " SET " + column.name() + " = " + "RTRIM(" + column.name() + ")" );
+            }
+        }
     }
 
     private void dropTemporaryColumns( final UpgradeContext context )
