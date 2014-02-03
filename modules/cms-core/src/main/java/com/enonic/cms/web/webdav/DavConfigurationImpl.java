@@ -5,6 +5,7 @@
 package com.enonic.cms.web.webdav;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,8 @@ public final class DavConfigurationImpl
 
     private MimeTypeResolver mimeTypeResolver;
 
+    private Pattern webdavIgnorePattern;
+
     @Override
     public File getResourceRoot()
     {
@@ -37,6 +40,12 @@ public final class DavConfigurationImpl
     public void setResourceRoot( final File value )
     {
         this.resourceRoot = value;
+    }
+
+    @Value("${cms.webdav.ignorepattern}")
+    public void setWebdavIgnorePattern( final String value )
+    {
+        this.webdavIgnorePattern = Pattern.compile(value, Pattern.CASE_INSENSITIVE);
     }
 
     @Override
@@ -78,6 +87,6 @@ public final class DavConfigurationImpl
     @Override
     public boolean isHidden( final String name )
     {
-        return name.startsWith( "." );
+        return this.webdavIgnorePattern.matcher(name).matches();
     }
 }
