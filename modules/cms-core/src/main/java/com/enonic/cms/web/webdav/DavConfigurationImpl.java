@@ -28,7 +28,7 @@ public final class DavConfigurationImpl
 
     private MimeTypeResolver mimeTypeResolver;
 
-    private Pattern webdavIgnorePattern;
+    private Pattern excludePattern;
 
     @Override
     public File getResourceRoot()
@@ -42,10 +42,10 @@ public final class DavConfigurationImpl
         this.resourceRoot = value;
     }
 
-    @Value("${cms.webdav.ignorepattern}")
-    public void setWebdavIgnorePattern( final String value )
+    @Value("${cms.webdav.excludePattern}")
+    public void setExcludePattern( final String value )
     {
-        this.webdavIgnorePattern = Pattern.compile(value, Pattern.CASE_INSENSITIVE);
+        this.excludePattern = Pattern.compile(value, Pattern.CASE_INSENSITIVE);
     }
 
     @Override
@@ -87,6 +87,6 @@ public final class DavConfigurationImpl
     @Override
     public boolean isHidden( final String name )
     {
-        return this.webdavIgnorePattern.matcher(name).matches();
+        return this.excludePattern.matcher(name).matches();
     }
 }
