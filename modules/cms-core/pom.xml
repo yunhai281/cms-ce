@@ -230,12 +230,24 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>
-      <artifactId>spring-osgi-io</artifactId>
+      <artifactId>spring-osgi-core</artifactId>
       <version>1.2.1</version>
       <exclusions>
         <exclusion>
+          <artifactId>org.springframework.aop</artifactId>
           <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.springframework.beans</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.springframework.context</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>org.springframework.core</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
       </exclusions>
     </dependency>
