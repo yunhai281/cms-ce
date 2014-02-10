@@ -172,7 +172,7 @@
                           <label for="upasswd">%fldPassword%</label>
                         </td>
                         <td class="input-container">
-                          <input value="" name="password" id="upasswd" maxlength="20" type="password"/>
+                          <input value="" name="password" id="upasswd" maxlength="30" type="password"/>
                         </td>
                       </tr>
                       <tr>

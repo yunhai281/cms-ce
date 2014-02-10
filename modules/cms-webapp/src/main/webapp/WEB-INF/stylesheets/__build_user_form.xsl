@@ -482,6 +482,7 @@
                                     <x:with-param name="readonly" select="false()"/>
                                     <x:with-param name="required" select="'true'"/>
                                     <x:with-param name="disableAutoComplete" select="true()"/>
+                                    <x:with-param name="maxlength" select="'30'"/>
                                   </x:call-template>
                                 </tr>
                               </table>
@@ -1085,6 +1086,7 @@
                       <x:with-param name="useIcon" select="$isRemote"/>
                       <x:with-param name="iconClass" select="'icon-remote'"/>
                       <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+                      <x:with-param name="maxlength" select="'30'"/>
                     </x:call-template>
 
                     <script type="text/javascript">
@@ -1099,6 +1101,7 @@
                       <x:with-param name="label" select="'%fldRepeatPassword%:'"/>
                       <x:with-param name="disableAutoComplete" select="true()"/>
                       <x:with-param name="required" select="true()"/>
+                      <x:with-param name="maxlength" select="'30'"/>
                     </x:call-template>
 
                     <script type="text/javascript">
