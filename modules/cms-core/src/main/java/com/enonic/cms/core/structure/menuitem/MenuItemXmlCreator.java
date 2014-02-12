@@ -196,6 +196,10 @@ public class MenuItemXmlCreator
         {
             xmlDoc.setAttribute( "parent", menuItem.getParent().getKey().toInt() );
         }
+        if ( menuItem.getMenuItemShortcut() != null )
+        {
+            xmlDoc.setAttribute( "shortcut", menuItem.getMenuItemShortcut().getKey().toInt() );
+        }
         if ( includeSiteInfo )
         {
             xmlDoc.setAttribute( "site-name", menuItem.getSite().getName() );
