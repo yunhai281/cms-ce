@@ -42,12 +42,12 @@ public class GetGroupsParams
     public boolean includeMemberships = false;
 
     /**
-     * Specify start position in the list of matching users. Default is 0.
+     * Specify start position in the list of matching groups. Default is 0.
      */
     public int index = 0;
 
     /**
-     * Specify the number of users to return. Default is 100.
+     * Specify the maximum number of groups to return. Default is 100.
      */
     public int count = 100;
 
