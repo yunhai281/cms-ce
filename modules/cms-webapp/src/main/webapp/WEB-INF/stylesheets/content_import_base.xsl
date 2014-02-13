@@ -62,7 +62,7 @@
                   <xsl:with-param name="label" select="'%fldChooseFile%:'"/>
                   <xsl:with-param name="name" select="'zipfile'"/>
                   <xsl:with-param name="size" select="'60'"/>
-                  <xsl:with-param name="maxlength" select="'255"/>
+                  <xsl:with-param name="maxlength" select="'255'"/>
                   <xsl:with-param name="imagekey" select="'0'"/>
                   <xsl:with-param name="required" select="'true'"/>
                 </xsl:call-template>
