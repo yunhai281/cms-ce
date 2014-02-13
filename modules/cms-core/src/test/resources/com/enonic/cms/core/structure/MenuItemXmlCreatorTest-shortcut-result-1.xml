@@ -7,7 +7,9 @@
     <show-in-menu>true</show-in-menu>
     <description/>
     <keywords/>
-    <parameters/>
+    <parameters>
+      <parameter name="key" override="false">2</parameter>
+    </parameters>
     <shortcut forward="true" key="2" name="two"/>
   </menuitem>
 </menuitems>

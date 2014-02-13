@@ -265,6 +265,7 @@ public class MenuItemXmlCreator
         if ( !menuItem.hasXmlData() )
         {
             xmlDoc.startElement( "parameters" );
+            addShortcutAsParameter( menuItem, xmlDoc.getCurrentElement() );
             xmlDoc.endElement();
             return;
         }
@@ -276,11 +277,13 @@ public class MenuItemXmlCreator
         Element parametersEl = dataEl.getChild( "parameters" );
         if ( parametersEl != null )
         {
+            addShortcutAsParameter( menuItem, parametersEl );
             addParametersElement( xmlDoc, (Element) parametersEl.detach() );
         }
         else
         {
             xmlDoc.startElement( "parameters" );
+            addShortcutAsParameter( menuItem, xmlDoc.getCurrentElement() );
             xmlDoc.endElement();
         }
 
@@ -297,6 +300,18 @@ public class MenuItemXmlCreator
 
         // data element
         addDataElement( xmlDoc, (Element) dataEl.detach() );
+    }
+
+    private void addShortcutAsParameter( final MenuItemEntity menuItem, final Element parametersEl )
+    {
+        if ( menuItem.getMenuItemShortcut() != null )
+        {
+            Element element = new Element( "parameter" );
+            element.setAttribute( "name", "key" );
+            element.setAttribute( "override", "false" );
+            element.setText( menuItem.getMenuItemShortcut().getKey().toString() );
+            parametersEl.addContent( 0, element );
+        }
     }
 
     private void addDataElement( XMLBuilder xmlDoc, Element dataEl )
