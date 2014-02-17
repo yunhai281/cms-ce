@@ -23,7 +23,16 @@
 
         <div class="content-list-image-container">
             <xsl:variable name="imageKey" select="saxon:evaluate(concat($contentxpath, @xpath))"/>
-            <xsl:variable name="imageText" select="saxon:evaluate(concat($contentxpath, @textxpath))"/>
+            <xsl:variable name="imageText" >
+                <xsl:choose>
+                    <xsl:when test="@textxpath and @textxpath != ''">
+                        <xsl:value-of select="saxon:evaluate(concat($contentxpath, @textxpath))"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
             <xsl:if test="$imageKey != ''">
                 <img src="_image/{$imageKey}/label/source?_filter=scalemax({$width})">
                     <xsl:if test="$imageText != ''">
