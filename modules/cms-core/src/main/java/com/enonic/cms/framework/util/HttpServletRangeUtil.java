@@ -314,8 +314,10 @@ public class HttpServletRangeUtil
 
                 Range root = new Range( 0, file.length() - 1, file.length() );
                 response.setContentType( contentType );
-                String header = String.format( "bytes %d-%d/%d", root.getStart(), root.getEnd(), root.getTotal() );
-                response.setHeader( HttpHeaders.CONTENT_RANGE, header );
+
+                // do not send CONTENT_RANGE for HTTP 200
+                // String header = String.format( "bytes %d-%d/%d", root.getStart(), root.getEnd(), root.getTotal() );
+                // response.setHeader( HttpHeaders.CONTENT_RANGE, header );
 
                 if ( acceptGzip )
                 {
