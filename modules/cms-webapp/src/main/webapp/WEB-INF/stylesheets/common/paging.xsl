@@ -58,7 +58,7 @@
                 <xsl:when test="$index &gt; 0">
                   <a title="%cmdFirstPage%">
                     <xsl:attribute name="href">
-                      <xsl:value-of select="$url"/>
+                      <xsl:value-of select="replace($url, '%', '%25')"/>
                       <xsl:text>&amp;index=</xsl:text>
                       <xsl:value-of select="0"/>
                       <xsl:text>&amp;count=</xsl:text>
@@ -78,7 +78,7 @@
                 <xsl:when test="not($prevIndex = $index)">
                   <a title="%cmdPrevious%">
                     <xsl:attribute name="href">
-                      <xsl:value-of select="$url"/>
+                      <xsl:value-of select="replace($url, '%', '%25')"/>
                       <xsl:text>&amp;index=</xsl:text>
                       <xsl:value-of select="$prevIndex"/>
                       <xsl:text>&amp;count=</xsl:text>
@@ -141,7 +141,7 @@
 
                 <xsl:call-template name="createPaging">
                   <xsl:with-param name="numPages" select="$numPages"/>
-                  <xsl:with-param name="url" select="$url"/>
+                  <xsl:with-param name="url" select="replace($url, '%', '%25')"/>
                   <xsl:with-param name="index" select="$index"/>
                   <xsl:with-param name="count" select="$count"/>
                   <xsl:with-param name="pagingStart" select="$pagingStart"/>
@@ -155,7 +155,7 @@
                 <xsl:when test="not($nextIndex = $index)">
                   <a title="%cmdNext%">
                     <xsl:attribute name="href">
-                      <xsl:value-of select="$url"/>
+                      <xsl:value-of select="replace($url, '%', '%25')"/>
                       <xsl:text>&amp;index=</xsl:text>
                       <xsl:value-of select="$nextIndex"/>
                       <xsl:text>&amp;count=</xsl:text>
@@ -175,7 +175,7 @@
                 <xsl:when test="$totalcount &gt; ($index + $count)">
                   <a title="%cmdLastPage%">
                     <xsl:attribute name="href">
-                      <xsl:value-of select="$url"/>
+                      <xsl:value-of select="replace($url, '%', '%25')"/>
                       <xsl:text>&amp;index=</xsl:text>
                       <xsl:value-of select="($numPages * $count) - $count"/>
                       <xsl:text>&amp;count=</xsl:text>

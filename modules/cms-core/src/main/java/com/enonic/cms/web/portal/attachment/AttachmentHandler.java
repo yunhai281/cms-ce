@@ -231,13 +231,17 @@ public final class AttachmentHandler
 
         final String mimeType = this.mimeTypeResolver.getMimeType( binaryData.getName() );
 
+        final HttpServletResponse response = context.getResponse();
         if ( file != null )
         {
-            HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), binaryData.getName(), mimeType, file );
+            if ( download )
+            {
+                HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
+            }
+            HttpServletRangeUtil.processRequest( context.getRequest(), response, binaryData.getName(), mimeType, file );
         }
         else
         {
-            final HttpServletResponse response = context.getResponse();
             HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
             response.setContentType( mimeType );

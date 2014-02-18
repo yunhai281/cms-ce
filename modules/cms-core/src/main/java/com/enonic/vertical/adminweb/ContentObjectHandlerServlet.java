@@ -739,29 +739,42 @@ public final class ContentObjectHandlerServlet
     private void addStyleSheet( Element contentobjectElem, String elemName, ResourceKey styleSheetKey )
         throws VerticalAdminException
     {
+        Element element = XMLTool.getElement( contentobjectElem, elemName.replace( "_xsl", "" ) );
 
         ResourceFile resource = resourceService.getResourceFile( styleSheetKey );
-        if ( resource == null )
+
+        if ( element != null )
         {
-            throw new StylesheetNotFoundException( styleSheetKey );
-        }
-        Document styleSheetDoc;
-        try
-        {
-            styleSheetDoc = resource.getDataAsXml().getAsDOMDocument();
-        }
-        catch ( XMLException e )
-        {
-            throw new InvalidStylesheetException( styleSheetKey, e );
+            element.setAttribute( "exist", resource == null ? "false" : "true" );
         }
 
-        Element styleSheetRoot = styleSheetDoc.getDocumentElement();
-        String attr = styleSheetRoot.getAttribute( "xmlns:xsl" );
-        styleSheetRoot.removeAttribute( "xmlns:xsl" );
-        styleSheetRoot.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xsl", attr );
-        Document doc = contentobjectElem.getOwnerDocument();
-        Element elem = XMLTool.createElement( doc, contentobjectElem, elemName );
-        elem.appendChild( doc.importNode( styleSheetRoot, true ) );
+        if ( resource != null )
+        {
+            try
+            {
+                Document styleSheetDoc = resource.getDataAsXml().getAsDOMDocument();
+                if ( element != null )
+                {
+                    element.setAttribute( "valid", "true" );
+                }
+
+                Element styleSheetRoot = styleSheetDoc.getDocumentElement();
+                String attr = styleSheetRoot.getAttribute( "xmlns:xsl" );
+                styleSheetRoot.removeAttribute( "xmlns:xsl" );
+                styleSheetRoot.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xsl", attr );
+                Document doc = contentobjectElem.getOwnerDocument();
+                Element elem = XMLTool.createElement( doc, contentobjectElem, elemName );
+                elem.appendChild( doc.importNode( styleSheetRoot, true ) );
+
+            }
+            catch ( XMLException e )
+            {
+                if ( element != null )
+                {
+                    element.setAttribute( "valid", "false" );
+                }
+            }
+        }
     }
 
     public void handlerForm( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
