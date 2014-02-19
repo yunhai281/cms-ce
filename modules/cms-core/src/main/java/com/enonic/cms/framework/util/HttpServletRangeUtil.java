@@ -20,7 +20,7 @@ public class HttpServletRangeUtil
     // Format: "bytes=n-n,n-n,n-n..."
     private static final String PATTERN_RANGE = "^bytes=\\d*-\\d*(,\\d*-\\d*)*$";
 
-    private static final int DEFAULT_BUFFER_SIZE = 1<<15; // 32Kb
+    private static final int DEFAULT_BUFFER_SIZE = 1<<13; // 8KB
     private static final String SEPARATOR = "THIS_STRING_SEPARATES";
 
     /**
