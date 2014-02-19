@@ -25,7 +25,7 @@
 
         function startReindex() {
             if (confirm("Reindex all content now?")) {
-                location.href = 'reindexContent??op=custom&reindex=true';
+                location.href = 'reindexContent?op=custom&reindex=true';
             }
         }
     </script>

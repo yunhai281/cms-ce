@@ -161,6 +161,13 @@
         <a name="last"/>
     </div>
 </div>
+<script type="text/javascript">
+<!--
+    (function () {
+        location.href = "#last";
+    })();
+//-->
+</script>
 [/#if]
 </body>
 </html>

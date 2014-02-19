@@ -63,7 +63,7 @@
 
         function startReindex(){
             if (confirm("Are you sure you want to start the reindexing of all content?")) {
-                   location.href = 'reindexContent??op=custom&reindex=true';
+                   location.href = 'reindexContent?op=custom&reindex=true';
             }
         }
     //-->
@@ -93,6 +93,13 @@
             <a name="last"/>
         </div>
     </div>
+    <script type="text/javascript">
+    <!--
+        (function () {
+            location.href = "#last";
+        })();
+    //-->
+    </script>
     [/#if]
 </body>
 </html>
