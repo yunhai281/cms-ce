@@ -18,22 +18,24 @@ import com.google.common.net.HttpHeaders;
 public class HttpServletRangeUtil
 {
     // Format: "bytes=n-n,n-n,n-n..."
-    private static final String PATTERN_RANGE = "^bytes=\\d*-\\d*(,\\d*-\\d*)*$";
+    protected static final String PATTERN_RANGE = "^bytes=\\d*-\\d*(,\\s*\\d*-\\d*)*$";
 
-    private static final int DEFAULT_BUFFER_SIZE = 1<<13; // 8KB
+    private static final int DEFAULT_BUFFER_SIZE = 1 << 13; // 8KB
+
     private static final String SEPARATOR = "THIS_STRING_SEPARATES";
 
     /**
      * Process the range request.
      *
-     * @param request request to be processed
-     * @param response response to be created
-     * @param filename name of file
+     * @param request     request to be processed
+     * @param response    response to be created
+     * @param filename    name of file
      * @param contentType request contentType
-     * @param file file to be proceed
+     * @param file        file to be proceed
      * @throws java.io.IOException
      */
-    public static void processRequest( final HttpServletRequest request, final HttpServletResponse response, final String filename, String contentType, final File file )
+    public static void processRequest( final HttpServletRequest request, final HttpServletResponse response, final String filename,
+                                       String contentType, final File file )
         throws IOException
     {
         // I. File validation
@@ -52,7 +54,6 @@ public class HttpServletRangeUtil
         }
 
         final String eTag = resolveETag( file );
-
 
         // II. Header validation
         errorCode = checkIfNoneMatch( request, eTag );
@@ -85,7 +86,6 @@ public class HttpServletRangeUtil
             return;
         }
 
-
         // III. Process ranges
         final List<Range> ranges = new ArrayList<Range>();
 
@@ -100,11 +100,10 @@ public class HttpServletRangeUtil
         contentType = contentType != null ? contentType : "application/octet-stream";
 
         // IV. check if gzip accepted
-        boolean acceptGzip = acceptsGZip( request, response, contentType, filename, file, eTag );
-
+        final boolean acceptsGzip = acceptsGZip( request, response, contentType, filename, file, eTag );
 
         // V. Process download
-        processDownload( response, contentType, file, ranges, acceptGzip );
+        processDownload( response, contentType, file, ranges, acceptsGzip );
     }
 
     private static int checkRequestedFile( final HttpServletRequest request )
@@ -120,30 +119,34 @@ public class HttpServletRangeUtil
 
     private static String resolveETag( final File file )
     {
-        String fileName = file.getName();
-        long length = file.length();
-        long lastModified = file.lastModified();
+        final String fileName = file.getName();
+        final long length = file.length();
+        final long lastModified = file.lastModified();
 
         return String.format( "%s_%d_%d", fileName, length, lastModified );
     }
 
     /**
      * Check <code>If-None-Match</code> header contains "*" or ETag.
+     *
      * @param request HttpServletRequest
-     * @param eTag ETag issue
+     * @param eTag    ETag issue
      * @return success code (0), otherwise <code>304</code> indicating that a conditional GET operation found that the resource was available and not modified
      */
     private static int checkIfNoneMatch( final HttpServletRequest request, final String eTag )
     {
         final String ifNoneMatch = request.getHeader( HttpHeaders.IF_NONE_MATCH );
 
-        return ( ifNoneMatch != null && HttpServletUtil.checkHeaderContainsETag( ifNoneMatch, eTag ) ) ? HttpServletResponse.SC_NOT_MODIFIED : 0;
+        return ( ifNoneMatch != null && HttpServletUtil.checkHeaderContainsETag( ifNoneMatch, eTag ) )
+            ? HttpServletResponse.SC_NOT_MODIFIED
+            : 0;
     }
 
     /**
      * Check <code>If-Modified-Since</code> > LastModified.
+     *
      * @param request HttpServletRequest
-     * @param file File proceed
+     * @param file    File proceed
      * @return success code (0), otherwise <code>304</code> indicating that a conditional GET operation found that the resource was available and not modified
      */
     private static int checkIfModifiedSince( final HttpServletRequest request, final File file )
@@ -167,21 +170,25 @@ public class HttpServletRangeUtil
 
     /**
      * Check <code>If-Match</code> header contains "*" or ETag.
+     *
      * @param request HttpServletRequest
-     * @param eTag ETag issue
+     * @param eTag    ETag issue
      * @return success code (0), otherwise <code>412</code> indicating that the precondition given in one or more of the request-header fields evaluated to false when it was tested on the server
      */
     private static int checkIfMatch( final HttpServletRequest request, final String eTag )
     {
         final String ifMatch = request.getHeader( HttpHeaders.IF_MATCH );
 
-        return ( ifMatch != null && !HttpServletUtil.checkHeaderContainsETag( ifMatch, eTag ) ) ? HttpServletResponse.SC_PRECONDITION_FAILED : 0;
+        return ( ifMatch != null && !HttpServletUtil.checkHeaderContainsETag( ifMatch, eTag ) )
+            ? HttpServletResponse.SC_PRECONDITION_FAILED
+            : 0;
     }
 
     /**
      * Check <code>If-Unmodified-Since</code> > LastModified.
+     *
      * @param request HttpServletRequest
-     * @param file File proceed
+     * @param file    File proceed
      * @return success code (0), otherwise <code>412</code> indicating that the precondition given in one or more of the request-header fields evaluated to false when it was tested on the server
      */
     private static int checkIfUnmodifiedSince( final HttpServletRequest request, final File file )
@@ -194,10 +201,11 @@ public class HttpServletRangeUtil
 
     /**
      * Process ranges.
+     *
      * @param request HttpServletRequest
-     * @param ranges list of Ranges
-     * @param file File proceed
-     * @param eTag <code>ETag</code> header
+     * @param ranges  list of Ranges
+     * @param file    File proceed
+     * @param eTag    <code>ETag</code> header
      * @return success code (0), otherwise code <code>416</code> indicating that the server cannot serve the requested byte range
      * @throws IOException
      */
@@ -262,16 +270,16 @@ public class HttpServletRangeUtil
         boolean acceptsGzip = false;
         String disposition = "inline";
 
-        if ( contentType.startsWith( "text" ) || contentType.contains( "javascript" ))
+        if ( contentType.startsWith( "text" ) || contentType.contains( "javascript" ) )
         {
-            String acceptEncoding = request.getHeader( HttpHeaders.ACCEPT_ENCODING );
+            final String acceptEncoding = request.getHeader( HttpHeaders.ACCEPT_ENCODING );
             acceptsGzip = acceptEncoding != null && HttpServletUtil.checkHeaderContainsValue( acceptEncoding, "gzip" );
             // contentType += ";charset=UTF-8";
             disposition = "inline";
         }
         else if ( !contentType.startsWith( "image" ) )
         {
-            String accept = request.getHeader( HttpHeaders.ACCEPT );
+            final String accept = request.getHeader( HttpHeaders.ACCEPT );
             disposition = accept != null && HttpServletUtil.checkHeaderContainsValue( accept, contentType ) ? "inline" : "attachment";
         }
 
@@ -298,11 +306,14 @@ public class HttpServletRangeUtil
         return acceptsGzip;
     }
 
-    private static void processDownload( final HttpServletResponse response, final String contentType, final File file, final List<Range> ranges, final boolean acceptGzip )
+    private static void processDownload( final HttpServletResponse response, final String contentType, final File file,
+                                         final List<Range> ranges, final boolean acceptGzip )
         throws IOException
     {
         RandomAccessFile input = null;
         OutputStream output = null;
+
+        boolean aborted = false;
 
         try
         {
@@ -312,7 +323,7 @@ public class HttpServletRangeUtil
             if ( ranges.isEmpty() || ranges.get( 0 ).isRoot( file.length() ) )
             {
 
-                Range root = new Range( 0, file.length() - 1, file.length() );
+                final Range root = new Range( 0, file.length() - 1, file.length() );
                 response.setContentType( contentType );
 
                 // do not send CONTENT_RANGE for HTTP 200
@@ -330,12 +341,12 @@ public class HttpServletRangeUtil
                 }
 
                 // Copy complete file
-                copy( input, output, root );
+                aborted = copy( input, output, root );
             }
             else if ( ranges.size() == 1 )
             {
 
-                Range section = ranges.get( 0 );
+                final Range section = ranges.get( 0 );
 
                 response.setContentType( contentType );
                 response.setStatus( HttpServletResponse.SC_PARTIAL_CONTENT );
@@ -344,17 +355,34 @@ public class HttpServletRangeUtil
                 response.setHeader( HttpHeaders.CONTENT_LENGTH, String.valueOf( section.getLength() ) );
 
                 // Copy single section
-                copy( input, output, section );
+                aborted = copy( input, output, section );
             }
             else
             {
                 response.setStatus( HttpServletResponse.SC_PARTIAL_CONTENT );
                 response.setContentType( "multipart/byteranges; boundary=" + SEPARATOR );
 
-                for ( Range section : ranges )
+                for ( final Range section : ranges )
                 {
+                    write( output, "" );
+                    write( output, "--" + SEPARATOR );
+                    write( output, "Content-Type: " + contentType );
+                    write( output, "Content-Range: bytes " + section.getStart() + "-" + section.getEnd() + "/" + section.getTotal() );
+                    write( output, "" );
+
                     // Copy multiple sections
-                    copy( input, output, section );
+                    aborted = copy( input, output, section );
+
+                    if ( aborted )
+                    {
+                        break;
+                    }
+                }
+
+                if ( !aborted )
+                {
+                    write( output, "" );
+                    write( output, "--" + SEPARATOR + "--" );
                 }
             }
         }
@@ -366,7 +394,7 @@ public class HttpServletRangeUtil
                 input = null;
             }
 
-            if ( output != null )
+            if ( output != null && !aborted )
             {
                 output.close();
                 output = null;
@@ -374,52 +402,77 @@ public class HttpServletRangeUtil
         }
     }
 
+    private static void write( final OutputStream output, final String string )
+        throws IOException
+    {
+        output.write( string.getBytes() );
+        output.write( "\r\n".getBytes() );
+    }
+
     private static void setExpiresHeader( final HttpServletResponse response )
     {
-        DateTime now = new DateTime();
-        DateTime expirationDate = now.plusWeeks( 1 );
+        final DateTime now = new DateTime();
+        final DateTime expirationDate = now.plusWeeks( 1 );
 
         HttpServletUtil.setExpiresHeader( response, expirationDate.toDate() );
     }
 
     private static long splitLong( final String value, final int start, final int finish )
     {
-        String substring = value.substring( start, finish );
+        final String substring = value.substring( start, finish ).trim();
         return ( substring.length() > 0 ) ? Long.parseLong( substring ) : -1;
     }
 
-    private static void copy( final RandomAccessFile input, final OutputStream output, final Range range )
+    /**
+     * return true if downloading is aborted
+     */
+    private static boolean copy( final RandomAccessFile input, final OutputStream output, final Range range )
         throws IOException
     {
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int read;
-
-        // all
-        if ( input.length() == range.getLength() )
+        try
         {
-            while ( ( read = input.read( buffer ) ) > 0 )
-            {
-                output.write( buffer, 0, read );
-            }
-        }
-        // partition
-        else
-        {
-            input.seek( range.getStart() );
-            long length = range.getLength();
+            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int read;
 
-            while ( ( read = input.read( buffer ) ) > 0 )
+            // all
+            if ( input.length() == range.getLength() )
             {
-                if ( ( length -= read ) > 0 )
+                while ( ( read = input.read( buffer ) ) > 0 )
                 {
                     output.write( buffer, 0, read );
                 }
-                else
+            }
+            // partition
+            else
+            {
+                input.seek( range.getStart() );
+                long length = range.getLength();
+
+                while ( ( read = input.read( buffer ) ) > 0 )
                 {
-                    output.write( buffer, 0, (int) length + read );
-                    break;
+                    if ( ( length -= read ) > 0 )
+                    {
+                        output.write( buffer, 0, read );
+                    }
+                    else
+                    {
+                        output.write( buffer, 0, (int) length + read );
+                        break;
+                    }
                 }
             }
         }
+        catch ( final IOException e )
+        {
+
+            // MS IE may stop downloading ( for example PDF file ) to continue further downloading using Content-Range.
+            // In this case connection is closed and we will have here ClientAbortException for Apache Tomcat.
+
+            // this is typical situation for IE, so stack trace is not written to log/console.
+
+            return true; // stop sending content to client
+        }
+
+        return false;
     }
 }
