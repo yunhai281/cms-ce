@@ -290,7 +290,9 @@ var calendar = {
                 elm.e = [];
                 elm.e.push(elm.b.make("tr"));
                 var x = -1;
-                for (var i = 0; i < length; i++)
+
+                var from = firstDay.day.ofWeek >= 0 ? 0 : -7;
+                for (var i = from; i < length; i++)
                 {
 
                     day = i + 1 - firstDay.day.ofWeek;
