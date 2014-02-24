@@ -203,7 +203,7 @@ public class SchedulerServlet
                 if ( dateStr != null )
                 {
                     dateStr += " " + timeStr;
-                    workEntry.setStartTime( DateUtil.parseDateTime( dateStr, false ) );
+                    workEntry.setStartTime( DateUtil.parseDateTime( dateStr, true ) );
                 }
                 dateStr = formItems.getString( "dateend", null );
                 timeStr = formItems.getString( "timeend", null );
