@@ -283,6 +283,7 @@ var calendar = {
                 prvMonth = prvMonth.get();
 
                 var length = firstDay.month.length + firstDay.day.ofWeek + (6 - lastDay.day.ofWeek);
+                if (lastDay.day.ofWeek == -1) length -= 7;
                 elm.c.innerHTML = lang[a.lang][0][firstDay.month.ofYear] + " " + a.cursor[1];
 
                 for (x in elm.e)
