@@ -55,6 +55,8 @@
     <meta http-equiv="refresh" content="5"/>
     [/#if]
     
+    <script type="text/javascript" src="../javascript/lib/jquery/jquery-1.6.2.min.js"></script>
+
     <script type="text/javascript">
     <!--
         function jumpToLast() {
@@ -96,7 +98,8 @@
     <script type="text/javascript">
     <!--
         (function () {
-            location.href = "#last";
+            var area = $('.messages' ).first();
+            area.animate({ scrollTop: area.prop("scrollHeight") - area.height() }, 0);
         })();
     //-->
     </script>
