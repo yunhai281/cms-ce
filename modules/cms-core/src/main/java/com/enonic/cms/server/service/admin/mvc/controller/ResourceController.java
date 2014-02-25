@@ -6,6 +6,7 @@ package com.enonic.cms.server.service.admin.mvc.controller;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,19 @@ public class ResourceController
     extends AbstractController
     implements InitializingBean
 {
+    /* js files that contain i18n strings. must be not cached. */
+    private static final String[] sorted_js_files = {
+        "/admin/javascript/calendar_picker.js",
+        "/admin/javascript/domain.js",
+        "/admin/javascript/groups.js",
+        "/admin/javascript/log_filter.js",
+        "/admin/javascript/resource.js",
+        "/admin/javascript/section.js",
+        "/admin/javascript/user.js",
+        "/admin/javascript/validate.js",
+        "/admin/javascript/workentry.js"
+    };
+
     protected MimeTypeResolver mimeTypeResolver;
 
     private UrlPathHelper urlPathHelper;
@@ -60,16 +74,23 @@ public class ResourceController
 
         if ( resource.exists() )
         {
-            DateTime now = new DateTime();
-            DateTime expirationDate = now.plusHours( 1 );
+            if ( Arrays.binarySearch( sorted_js_files, request.getPathInfo() ) > 0 )
+            {
+                HttpServletUtil.setCacheControlNoCache( response );
+            }
+            else
+            {
+                DateTime now = new DateTime();
+                DateTime expirationDate = now.plusHours( 1 );
 
-            HttpCacheControlSettings cacheControlSettings = new HttpCacheControlSettings();
-            cacheControlSettings.maxAgeSecondsToLive = new Interval( now, expirationDate ).toDurationMillis() / 1000;
-            cacheControlSettings.publicAccess = true;
+                HttpCacheControlSettings cacheControlSettings = new HttpCacheControlSettings();
+                cacheControlSettings.maxAgeSecondsToLive = new Interval( now, expirationDate ).toDurationMillis() / 1000;
+                cacheControlSettings.publicAccess = true;
 
-            HttpServletUtil.setDateHeader( response, now.toDate() );
-            HttpServletUtil.setExpiresHeader( response, expirationDate.toDate() );
-            HttpServletUtil.setCacheControl( response, cacheControlSettings );
+                HttpServletUtil.setDateHeader( response, now.toDate() );
+                HttpServletUtil.setExpiresHeader( response, expirationDate.toDate() );
+                HttpServletUtil.setCacheControl( response, cacheControlSettings );
+            }
 
             serveResourceToResponse( request, response, resource );
         }
