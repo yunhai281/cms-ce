@@ -340,7 +340,8 @@ public class HttpServletRangeUtilTest
             throw new IllegalArgumentException( "Resource file [" + fileName + "] not found" );
         }
 
-        return Resources.toString( url, Charsets.UTF_8 );
+        final String s = Resources.toString( url, Charsets.UTF_8 );
+        return s.replaceAll( "\\r\\n", "\n" ).replaceAll( "\\n", "\r\n" );
     }
 
     private File input()
