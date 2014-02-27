@@ -75,7 +75,7 @@ public class RenderTraceTest
         PortalSecurityHolder.setLoggedInUser( user2 );
 
         // exercise
-        for ( int i = 1; i <= 30; i++ )
+        for ( int i = 1; i <= 40; i++ )
         {
             RenderTrace.enter();
             if ( i % 2 == 0 )
@@ -87,8 +87,8 @@ public class RenderTraceTest
 
         List<RenderTraceInfo> history = getHistoryForUser( user2 );
 
-        // verify: only 10 traces are left
-        assertEquals( 10, history.size() );
+        // verify: only 20 traces are left
+        assertEquals( 20, history.size() );
 
         // verify: all have page info
         for ( RenderTraceInfo info : history )
@@ -109,8 +109,8 @@ public class RenderTraceTest
         userTraceSimulator1.join();
         userTraceSimulator2.join();
 
-        assertEquals( 10, userTraceSimulator1.getHistory().size() );
-        assertEquals( 10, userTraceSimulator2.getHistory().size() );
+        assertEquals( 20, userTraceSimulator1.getHistory().size() );
+        assertEquals( 20, userTraceSimulator2.getHistory().size() );
     }
 
     private static List<RenderTraceInfo> getHistoryForUser( UserKey userKey )
@@ -144,7 +144,7 @@ public class RenderTraceTest
             RenderTrace.markRequestAsExecutedInDebugMode( request );
             PortalSecurityHolder.setLoggedInUser( user );
 
-            for ( int i = 1; i <= 30; i++ )
+            for ( int i = 1; i <= 40; i++ )
             {
                 RenderTrace.enter();
                 if ( i % 2 == 0 )
