@@ -422,6 +422,7 @@ public class PageRenderer
             return;
         }
 
+        RenderTrace.enter();
         PageTraceInfo info = RenderTrace.enterPage( menuItem.getKey().toInt() );
         if ( info != null )
         {
@@ -443,6 +444,7 @@ public class PageRenderer
         }
 
         RenderTrace.exitPage();
+        RenderTrace.exit();
     }
 
     private boolean useCache()

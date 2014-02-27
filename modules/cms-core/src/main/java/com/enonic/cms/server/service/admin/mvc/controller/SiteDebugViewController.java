@@ -23,6 +23,7 @@ import com.enonic.cms.core.portal.PageRequestContext;
 import com.enonic.cms.core.portal.PageRequestContextResolver;
 import com.enonic.cms.core.portal.SiteNotFoundException;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.store.dao.ContentDao;
@@ -72,9 +73,8 @@ public final class SiteDebugViewController
 
         HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper( request, sitePath.getParams() );
 
-        RenderTrace.enter();
+        RenderTrace.markRequestAsExecutedInDebugMode( ServletRequestAccessor.getRequest() );
         dispatcher.forward( wrappedRequest, response );
-        RenderTrace.exit();
         return null;
     }
 

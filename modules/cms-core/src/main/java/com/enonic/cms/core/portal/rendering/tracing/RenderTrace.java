@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.core.portal.rendering.tracing;
 
-import java.util.LinkedList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserKey;
@@ -23,11 +23,6 @@ public final class RenderTrace
      * Context key.
      */
     private final static String CONTEXT_KEY = TraceContext.class.getName();
-
-    /**
-     * History size per user.
-     */
-    private final static int HISTORY_SIZE_PER_USER = 10;
 
     /**
      * Return the current session.
@@ -53,81 +48,96 @@ public final class RenderTrace
         return ServletRequestAccessor.getRequest();
     }
 
-    /**
-     * Add render context.
-     */
-    private synchronized static void addTraceContext( RenderTraceInfo info )
+    private static RenderTraceHistory getHistoryFromSession()
     {
-        TraceContext context = new TraceContext( info );
-        getCurrentRequest().setAttribute( CONTEXT_KEY, context );
+        final UserKey userKey = PortalSecurityHolder.getLoggedInUser();
+        final HttpSession session = getSession();
 
-        LinkedList<RenderTraceInfo> history = getHistory();
-        history.addFirst( info );
-    }
-
-    private static LinkedList<RenderTraceInfo> getHistory()
-    {
-        LinkedList<RenderTraceInfo> history = getHistoryPerUser();
-
-        if ( history == null )
-        {
-            history = new LinkedList<RenderTraceInfo>();
-            setHistoryPerUser( history );
-        }
+        final RenderTraceHistory history = RenderTraceHistory.getFromSession( session, userKey );
+        Preconditions.checkState( history != null,
+                                  "Could not find RenderTraceHistory for user [" + userKey + "] in session [" + session.getId() + "]" );
         return history;
     }
 
-    @SuppressWarnings("unchecked")
-    private static LinkedList<RenderTraceInfo> getHistoryPerUser()
+    private static RenderTraceHistory getOrCreateHistoryInSession()
     {
         final UserKey userKey = PortalSecurityHolder.getLoggedInUser();
-        final RenderTraceHistory history = RenderTraceHistory.getFromSession( getSession(), userKey );
-        return history != null ? history.getHistory() : null;
+        final HttpSession session = getSession();
+
+        RenderTraceHistory history = RenderTraceHistory.getFromSession( session, userKey );
+        if ( history != null )
+        {
+            return history;
+        }
+
+        history = new RenderTraceHistory();
+        history.setInSession( session, userKey );
+        return history;
     }
 
-    private static void setHistoryPerUser( final LinkedList<RenderTraceInfo> history )
+    public static void markRequestAsExecutedInDebugMode( final HttpServletRequest request )
     {
-        final UserKey userKey = PortalSecurityHolder.getLoggedInUser();
-        final RenderTraceHistory obj = new RenderTraceHistory();
-        obj.setHistory( history );
-        obj.setInSession( getSession(), userKey );
+        if ( request != null )
+        {
+            request.setAttribute( "ICE", "ICE" );
+        }
+    }
+
+    private static boolean isExecutingInDebugMode()
+    {
+        HttpServletRequest currentRequest = getCurrentRequest();
+        return currentRequest != null && currentRequest.getAttribute( "ICE" ) != null;
     }
 
     /**
      * Start render trace.
      */
-    public static RenderTraceInfo enter()
+    public static void enter()
     {
+        if ( !isExecutingInDebugMode() )
+        {
+            return;
+        }
+
         RenderTraceInfo info = new RenderTraceInfo();
-        addTraceContext( info );
+
+        final TraceContext context = new TraceContext( info );
+        getCurrentRequest().setAttribute( CONTEXT_KEY, context );
+
+        final RenderTraceHistory history = getOrCreateHistoryInSession();
+        history.addFirst( info );
+
         info.enter();
-        return info;
     }
 
     /**
      * Stop render trace.
      */
-    public synchronized static RenderTraceInfo exit()
+    public synchronized static void exit()
     {
-        RenderTraceInfo info = getCurrentRenderTraceInfo();
+        if ( !isExecutingInDebugMode() )
+        {
+            return;
+        }
+
+        RenderTraceInfo renderTraceOnRequest = getCurrentRenderTraceInfo();
         getCurrentRequest().removeAttribute( CONTEXT_KEY );
 
-        RenderTraceInfo renderTraceInfo = getRenderTraceInfo( info.getKey() );
+        final RenderTraceHistory history = getOrCreateHistoryInSession();
+        final RenderTraceInfo renderTraceInHistory = history.getRenderTraceInfo( renderTraceOnRequest.getKey() );
 
-        LinkedList<RenderTraceInfo> history = getHistory();
-
-        if ( renderTraceInfo != null && renderTraceInfo.getPageInfo() == null )
+        if ( renderTraceInHistory != null )
         {
-            getHistory().remove( renderTraceInfo );
-            history.remove( renderTraceInfo );
+            renderTraceInHistory.exit();
+
+            if ( renderTraceInHistory.getPageInfo() == null )
+            {
+                // Remove non page traces
+                history.remove( renderTraceInHistory );
+            }
         }
 
-        while ( history.size() > HISTORY_SIZE_PER_USER )
-        {
-            history.removeLast();
-        }
-
-        return info;
+        history.ensureMaxSize();
     }
 
     /**
@@ -286,13 +296,6 @@ public final class RenderTrace
      */
     public synchronized static RenderTraceInfo getRenderTraceInfo( String key )
     {
-        for ( RenderTraceInfo info : getHistory() )
-        {
-            if ( info.getKey().equals( key ) )
-            {
-                return info;
-            }
-        }
-        return null;
+        return getHistoryFromSession().getRenderTraceInfo( key );
     }
 }

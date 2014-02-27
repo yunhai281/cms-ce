@@ -37,7 +37,9 @@ public class RenderTraceTest
     @Test
     public void only_traces_with_page_info_are_kept()
     {
-        ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAccessor.setRequest( request );
+        RenderTrace.markRequestAsExecutedInDebugMode( request );
         PortalSecurityHolder.setLoggedInUser( user1 );
 
         // exercise: simulate 4 page traces and 4 non-page traces
@@ -67,7 +69,9 @@ public class RenderTraceTest
     @Test
     public void max_ten_traces_are_kept_for_one_user()
     {
-        ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAccessor.setRequest( request );
+        RenderTrace.markRequestAsExecutedInDebugMode( request );
         PortalSecurityHolder.setLoggedInUser( user2 );
 
         // exercise
@@ -135,7 +139,9 @@ public class RenderTraceTest
         @Override
         public void run()
         {
-            ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            ServletRequestAccessor.setRequest( request );
+            RenderTrace.markRequestAsExecutedInDebugMode( request );
             PortalSecurityHolder.setLoggedInUser( user );
 
             for ( int i = 1; i <= 30; i++ )

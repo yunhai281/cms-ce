@@ -421,8 +421,9 @@ public class PortalResponseProcessorTest
                                                                                                                                       "political news shortcut" ).requestedAdminDebugAt().setupAtDefaultPath().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 
@@ -453,8 +454,9 @@ public class PortalResponseProcessorTest
                                                                                        "political news shortcut" ).requestedAdminDebugAt().setupAtRoot().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 
@@ -484,8 +486,9 @@ public class PortalResponseProcessorTest
                                                                                        "political news shortcut" ).requestedAdminDebugAt().setupAtDefaultPath().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 
@@ -515,8 +518,9 @@ public class PortalResponseProcessorTest
                                                                                        "political news shortcut" ).requestedAdminDebugAt().setupAtDefaultPath().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 
@@ -546,8 +550,9 @@ public class PortalResponseProcessorTest
                                                                                        "political news shortcut" ).requestedAdminDebugAt().setupAtRoot().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 
@@ -576,8 +581,9 @@ public class PortalResponseProcessorTest
                                                                                                                                       "political news shortcut" ).requestedAdminDebugAt().setupAtDefaultPath().back().setup(
             httpServletRequest );
 
-        RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
+        RenderTrace.markRequestAsExecutedInDebugMode( httpServletRequest );
+        RenderTrace.enter();
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
         portalResponseProcessor.setResponse( portalResponse );
 

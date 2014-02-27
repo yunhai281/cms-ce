@@ -24,7 +24,8 @@ public class RenderTraceHistoryTest
         assertNotNull( history.getHistory() );
         assertEquals( 0, history.getHistory().size() );
 
-        history.getHistory().add( new RenderTraceInfo() );
+        RenderTraceInfo trace = new RenderTraceInfo();
+        history.getHistory().add( trace );
         assertEquals( 1, history.getHistory().size() );
 
         final byte[] data = serialize( history );
