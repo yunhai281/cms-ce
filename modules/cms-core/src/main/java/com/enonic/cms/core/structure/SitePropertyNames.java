@@ -11,6 +11,8 @@ public enum SitePropertyNames
     PAGE_CACHE_HEADERS_FORCENOCACHE( "cms.site.page.http.forceNoCache" ),
     PAGE_CACHE_TIMETOLIVE( "cms.site.cache.page.timeToLive" ),
 
+    PAGE_DOCTYPE_HANDLER( "cms.site.page.doctype.handler" ),
+
     ATTACHMENT_CACHE_HEADERS_ENABLED( "cms.site.attachment.http.cacheHeadersEnabled" ),
     ATTACHMENT_CACHE_HEADERS_FORCENOCACHE( "cms.site.attachment.http.forceNoCache" ),
     ATTACHMENT_CACHE_HEADERS_MAXAGE( "cms.site.attachment.http.cache.maxAge" ),
