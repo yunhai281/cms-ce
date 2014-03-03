@@ -129,6 +129,7 @@
                   <!--xsl:if test="not($maximize) or $maximize = 'assignedto'"-->
                   <xsl:call-template name="displaytable">
                     <xsl:with-param name="type" select="'assignedto'"/>
+                    <xsl:with-param name="content-count-pr-group" select="'6'"/>
                     <xsl:with-param name="contentxpath" select="/data/contents[@type = 'assignedto']/content"/>
                   </xsl:call-template>
                   <!--/xsl:if-->
@@ -148,6 +149,7 @@
                   <!--xsl:if test="not($maximize) or $maximize = 'lastmodified'"-->
                   <xsl:call-template name="displaytable">
                     <xsl:with-param name="type" select="'lastmodified'"/>
+                    <xsl:with-param name="content-count-pr-group" select="'10'"/>
                     <xsl:with-param name="contentxpath" select="/data/logs[@type = 'lastmodified']/log/content"/>
                   </xsl:call-template>
                   <!--/xsl:if-->
@@ -161,6 +163,7 @@
             <xsl:if test="$maximize = 'lastmodified'">
               <xsl:call-template name="displaytable">
                 <xsl:with-param name="type" select="'lastmodified'"/>
+                <xsl:with-param name="content-count-pr-group" select="'10'"/>
                 <xsl:with-param name="contentxpath" select="/data/logs[@type = 'lastmodified']/log/content"/>
               </xsl:call-template>
             </xsl:if>
@@ -176,6 +179,7 @@
             <xsl:if test="$maximize = 'assignedto'">
               <xsl:call-template name="displaytable">
                 <xsl:with-param name="type" select="'assignedto'"/>
+                <xsl:with-param name="content-count-pr-group" select="'6'"/>
                 <xsl:with-param name="contentxpath" select="/data/contents[@type = 'assignedto']/content"/>
               </xsl:call-template>
             </xsl:if>
@@ -196,6 +200,7 @@
 
   <xsl:template name="displaytable">
     <xsl:param name="type"/>
+    <xsl:param name="content-count-pr-group" select="$default-content-count-pr-group"/>
     <xsl:param name="contentxpath" select="."/>
 
     <xsl:variable name="columncount">
@@ -317,7 +322,7 @@
             <xsl:if test="$totalcount > 0">
               <tr>
                 <td colspan="10" class="browsetablecell row-last" style="cursor: text">
-                  <xsl:if test="$totalcount > $default-content-count-pr-group">
+                  <xsl:if test="$totalcount > $content-count-pr-group">
                     <a href="{$pageURL}&amp;maximize={$type}">
                       <xsl:text>%cmdMore%...</xsl:text>
                     </a>
@@ -392,7 +397,6 @@
     <xsl:variable name="publishright" select="$content/userright/@categorypublish = 'true'"/>
     <xsl:variable name="unitkey" select="$content/@unitkey"/>
     <xsl:variable name="versionkey" select="$content/@versionkey"/>
-    <xsl:variable name="categorykey" select="$content/category/@key"/>
     <xsl:variable name="categoryxpath" select="$content/category"/>
     <xsl:variable name="tooltip">
       <xsl:choose>

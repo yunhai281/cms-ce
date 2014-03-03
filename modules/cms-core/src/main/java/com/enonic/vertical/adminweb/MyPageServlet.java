@@ -115,7 +115,7 @@ public class MyPageServlet
     private void addParameters( ExtendedMap formItems, ExtendedMap parameters, String maximize )
     {
         int index = formItems.getInt( "index", 0 );
-        int count = formItems.getInt( "count", maximize != null ? 20 : 3 );
+        int count = formItems.getInt( "count", maximize != null ? 20 : ASSIGNED_TO_COUNT );
 
         parameters.put( "index", index );
         parameters.put( "count", count );
