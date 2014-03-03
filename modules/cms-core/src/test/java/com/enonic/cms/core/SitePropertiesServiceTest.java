@@ -140,6 +140,10 @@ public class SitePropertiesServiceTest
     @Test
     public void testGetPropertyAsInteger()
     {
+        assertEquals( "100  ", sitePropertiesService.getSiteProperties( siteKey ).getProperties().getProperty(
+            SitePropertyNames.IMAGE_CACHE_HEADERS_ENABLED.getKeyName() ) );
+        assertEquals( "100", getProp( SitePropertyNames.IMAGE_CACHE_HEADERS_ENABLED ) );
+
         assertEquals( new Integer( 0 ), getIntegerProp( INTEGER_0 ) );
         assertEquals( "INTEGER_POSITIVE should be " + INTEGER_POSITIVE_VALUE, INTEGER_POSITIVE_VALUE, getIntegerProp( INTEGER_POSITIVE ) );
         assertEquals( "INTEGER_POSITIVE_WHITESPACES should be " + INTEGER_POSITIVE_VALUE, INTEGER_POSITIVE_VALUE,

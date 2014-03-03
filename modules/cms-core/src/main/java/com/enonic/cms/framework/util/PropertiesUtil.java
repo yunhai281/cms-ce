@@ -7,11 +7,13 @@ package com.enonic.cms.framework.util;
 import java.util.Map;
 import java.util.Properties;
 
-import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrLookup;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.springframework.core.env.Environment;
 import org.springframework.util.PropertyPlaceholderHelper;
+
+import com.google.common.base.Strings;
+
 import static org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 /**
@@ -44,7 +46,7 @@ public final class PropertiesUtil
      */
     public static Properties interpolate( final Properties props )
     {
-        Properties target = new Properties();
+        final Properties target = new Properties();
 
         Properties source = new Properties();
         source.putAll( System.getProperties() );
@@ -66,7 +68,7 @@ public final class PropertiesUtil
                 // Do nothing
             }
 
-            target.put( key, value );
+            target.put( key, StringUtils.trim( value ) );
         }
 
         return target;
@@ -74,26 +76,29 @@ public final class PropertiesUtil
 
     public static Properties interpolate( final Properties props, final Properties env )
     {
-        final PlaceholderResolver resolver = new PlaceholderResolver() {
-            public String resolvePlaceholder(final String key)
+        final PlaceholderResolver resolver = new PlaceholderResolver()
+        {
+            public String resolvePlaceholder( final String key )
             {
-                String value = props.getProperty(key);
-                if (!Strings.isNullOrEmpty(value)) {
+                String value = props.getProperty( key );
+                if ( !Strings.isNullOrEmpty( value ) )
+                {
                     return value;
                 }
 
-                return env.getProperty(key);
+                return env.getProperty( key );
             }
         };
 
-        final PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
+        final PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper( "${", "}", ":", true );
         final Properties result = new Properties();
-        
-        for (final Object o : props.keySet()) {
-            final String key = (String)o;
-            final String value = props.getProperty(key);
-            final String resolved = helper.replacePlaceholders(value, resolver);
-            result.put(key, resolved);
+
+        for ( final Object o : props.keySet() )
+        {
+            final String key = (String) o;
+            final String value = props.getProperty( key );
+            final String resolved = helper.replacePlaceholders( value, resolver );
+            result.put( key, StringUtils.trim( resolved ) );
         }
 
         return result;

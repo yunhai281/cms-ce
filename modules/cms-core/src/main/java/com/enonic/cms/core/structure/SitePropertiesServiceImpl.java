@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +132,7 @@ public class SitePropertiesServiceImpl
             throw new IllegalArgumentException( "No properties for site " + siteKey );
         }
 
-        return StringUtils.trimToNull( props.getProperty( key ) );
+        return props.getProperty( key );
     }
 
     public String getSiteProperty( SiteKey siteKey, SitePropertyNames key )
