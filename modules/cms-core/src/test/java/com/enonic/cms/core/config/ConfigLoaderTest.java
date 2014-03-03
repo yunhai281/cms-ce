@@ -138,4 +138,32 @@ public class ConfigLoaderTest
         Assert.assertEquals( "classpath", props.getProperty( "override" ) );
         Assert.assertEquals( "classpath.value system.value", props.getProperty( "interpolate" ) );
     }
+
+    @Test
+    public void testTrimWhiteSpace()
+        throws Exception
+    {
+        setupClassPathProperties();
+
+        final Properties props = new Properties();
+        props.setProperty( "property.outside.spaced", "  spaced outside  " );
+        props.setProperty( "property.inside.spaced", "spaced  inside" );
+        props.setProperty( "property.empty.spaced", "   " );
+        props.setProperty( "property.empty", "" );
+        props.setProperty( "property.null", "null" );
+
+        final File file = new File( this.homeDir, "config/cms.properties" );
+        file.getParentFile().mkdirs();
+
+        final FileOutputStream out = new FileOutputStream( file );
+        props.store( out, "" );
+        out.close();
+
+        final Properties loadedProps = this.configLoader.load();
+        Assert.assertEquals( "spaced outside", loadedProps.getProperty( "property.outside.spaced" ) );
+        Assert.assertEquals( "spaced  inside", loadedProps.getProperty( "property.inside.spaced" ) );
+        Assert.assertEquals( "", loadedProps.getProperty( "property.empty.spaced" ) );
+        Assert.assertEquals( "", loadedProps.getProperty( "property.empty" ) );
+        Assert.assertEquals( "null", loadedProps.getProperty( "property.null" ) );
+    }
 }

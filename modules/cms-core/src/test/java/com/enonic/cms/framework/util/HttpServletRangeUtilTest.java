@@ -6,7 +6,6 @@
 package com.enonic.cms.framework.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +24,20 @@ import static org.junit.Assert.*;
 
 public class HttpServletRangeUtilTest
 {
+    private File INPUT_FILE;
+
+    public HttpServletRangeUtilTest()
+        throws Exception
+    {
+        final URL url = getClass().getResource( "input.dat" );
+
+        INPUT_FILE = File.createTempFile( "range-test", "dat" );
+
+        FileUtils.writeStringToFile( INPUT_FILE, Resources.toString( url, Charsets.UTF_8 ) );
+
+        INPUT_FILE.deleteOnExit();
+    }
+    
     @Test
     public void test_range_regular_expression()
         throws Exception
@@ -48,7 +61,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=bad" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "", mockHttpServletResponse.getContentAsString() );
 
@@ -65,7 +78,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=5-1" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "", mockHttpServletResponse.getContentAsString() );
 
@@ -82,7 +95,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=50000-50100" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "", mockHttpServletResponse.getContentAsString() );
 
@@ -99,7 +112,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=0-5, 50000-50100" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "", mockHttpServletResponse.getContentAsString() );
 
@@ -116,7 +129,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.setPathInfo( "/input.dat" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( readFromFile( "input.dat" ), mockHttpServletResponse.getContentAsString() );
 
@@ -134,7 +147,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=0-0,-1" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( readFromFile( "response1.dat" ), mockHttpServletResponse.getContentAsString() );
 
@@ -154,7 +167,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=0-5" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "AaBbCc", mockHttpServletResponse.getContentAsString() );
 
@@ -175,7 +188,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=0-5,6-10,11-20" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( readFromFile( "response3.dat" ), mockHttpServletResponse.getContentAsString() );
 
@@ -195,7 +208,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=0-5, 6-10,     11-20" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( readFromFile( "response3.dat" ), mockHttpServletResponse.getContentAsString() );
 
@@ -214,7 +227,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=-50" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "BbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", mockHttpServletResponse.getContentAsString() );
 
@@ -235,7 +248,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=-48" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "CcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", mockHttpServletResponse.getContentAsString() );
 
@@ -256,7 +269,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=50-" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "Zz", mockHttpServletResponse.getContentAsString() );
 
@@ -277,7 +290,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.RANGE, "bytes=51-" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.dat", "application/pdf", INPUT_FILE );
 
         assertEquals( "z", mockHttpServletResponse.getContentAsString() );
 
@@ -299,7 +312,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.ACCEPT_ENCODING, "gzip" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.js", "application/javascript", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.js", "application/javascript", INPUT_FILE );
 
         assertEquals( readFromFile( "response4.dat" ), mockHttpServletResponse.getContentAsString() );
 
@@ -319,7 +332,7 @@ public class HttpServletRangeUtilTest
         httpServletRequest.addHeader( HttpHeaders.ACCEPT_ENCODING, "gzip" );
 
         final MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.js", "application/javascript", input() );
+        HttpServletRangeUtil.processRequest( httpServletRequest, mockHttpServletResponse, "input.js", "application/javascript", INPUT_FILE );
 
         assertTrue( mockHttpServletResponse.getContentAsByteArray().length > 0 );
 
@@ -342,16 +355,5 @@ public class HttpServletRangeUtilTest
 
         final String s = Resources.toString( url, Charsets.UTF_8 );
         return s.replaceAll( "\\r\\n", "\n" ).replaceAll( "\\n", "\r\n" );
-    }
-
-    private File input()
-        throws IOException
-    {
-        final URL url = getClass().getResource( "input.dat" );
-
-        File file = new File( "input.dat" );
-        FileUtils.writeStringToFile( file, Resources.toString( url, Charsets.UTF_8 ) );
-
-        return file;
     }
 }

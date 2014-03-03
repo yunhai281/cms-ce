@@ -37,7 +37,9 @@ public class RenderTraceTest
     @Test
     public void only_traces_with_page_info_are_kept()
     {
-        ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAccessor.setRequest( request );
+        RenderTrace.markRequestAsExecutedInDebugMode( request );
         PortalSecurityHolder.setLoggedInUser( user1 );
 
         // exercise: simulate 4 page traces and 4 non-page traces
@@ -67,11 +69,13 @@ public class RenderTraceTest
     @Test
     public void max_ten_traces_are_kept_for_one_user()
     {
-        ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAccessor.setRequest( request );
+        RenderTrace.markRequestAsExecutedInDebugMode( request );
         PortalSecurityHolder.setLoggedInUser( user2 );
 
         // exercise
-        for ( int i = 1; i <= 30; i++ )
+        for ( int i = 1; i <= 40; i++ )
         {
             RenderTrace.enter();
             if ( i % 2 == 0 )
@@ -83,8 +87,8 @@ public class RenderTraceTest
 
         List<RenderTraceInfo> history = getHistoryForUser( user2 );
 
-        // verify: only 10 traces are left
-        assertEquals( 10, history.size() );
+        // verify: only 20 traces are left
+        assertEquals( 20, history.size() );
 
         // verify: all have page info
         for ( RenderTraceInfo info : history )
@@ -105,8 +109,8 @@ public class RenderTraceTest
         userTraceSimulator1.join();
         userTraceSimulator2.join();
 
-        assertEquals( 10, userTraceSimulator1.getHistory().size() );
-        assertEquals( 10, userTraceSimulator2.getHistory().size() );
+        assertEquals( 20, userTraceSimulator1.getHistory().size() );
+        assertEquals( 20, userTraceSimulator2.getHistory().size() );
     }
 
     private static List<RenderTraceInfo> getHistoryForUser( UserKey userKey )
@@ -135,10 +139,12 @@ public class RenderTraceTest
         @Override
         public void run()
         {
-            ServletRequestAccessor.setRequest( new MockHttpServletRequest() );
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            ServletRequestAccessor.setRequest( request );
+            RenderTrace.markRequestAsExecutedInDebugMode( request );
             PortalSecurityHolder.setLoggedInUser( user );
 
-            for ( int i = 1; i <= 30; i++ )
+            for ( int i = 1; i <= 40; i++ )
             {
                 RenderTrace.enter();
                 if ( i % 2 == 0 )

@@ -9,7 +9,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.servlet.http.HttpSession;
@@ -25,6 +24,11 @@ import com.enonic.cms.core.security.user.UserKey;
 public final class RenderTraceHistory
     implements Externalizable
 {
+    /**
+     * History size.
+     */
+    public final static int MAX_SIZE = 20;
+
     private final static String HISTORY_PREFIX = "HISTORY_";
 
     private transient LinkedList<RenderTraceInfo> history;
@@ -32,31 +36,6 @@ public final class RenderTraceHistory
     public RenderTraceHistory()
     {
         this.history = Lists.newLinkedList();
-    }
-
-    public LinkedList<RenderTraceInfo> getHistory()
-    {
-        return history;
-    }
-
-    public void setHistory( final LinkedList<RenderTraceInfo> history )
-    {
-        this.history = history;
-    }
-
-    public static RenderTraceHistory getFromSession( final HttpSession session, final UserKey userKey )
-    {
-        final String key = HISTORY_PREFIX + userKey;
-        final Object value = session.getAttribute( key );
-
-        if ( value instanceof RenderTraceHistory )
-        {
-            return (RenderTraceHistory) value;
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public void setInSession( final HttpSession session, final UserKey userKey )
@@ -77,5 +56,60 @@ public final class RenderTraceHistory
         throws IOException, ClassNotFoundException
     {
         this.history = Lists.newLinkedList();
+    }
+
+    public LinkedList<RenderTraceInfo> getHistory()
+    {
+        return history;
+    }
+
+    public synchronized RenderTraceInfo getRenderTraceInfo( String key )
+    {
+        for ( RenderTraceInfo renderTraceInfo : this.history )
+        {
+            if ( renderTraceInfo.getKey().equals( key ) )
+            {
+                return renderTraceInfo;
+            }
+        }
+        return null;
+    }
+
+    public synchronized void addFirst( final RenderTraceInfo renderTraceInfo )
+    {
+        this.history.addFirst( renderTraceInfo );
+    }
+
+    public synchronized void remove( final RenderTraceInfo renderTraceInfo )
+    {
+        this.history.remove( renderTraceInfo );
+    }
+
+    public synchronized void ensureMaxSize()
+    {
+        while ( history.size() > MAX_SIZE )
+        {
+            history.removeLast();
+        }
+    }
+
+    public static RenderTraceHistory getFromSession( final HttpSession session, final UserKey userKey )
+    {
+        final String key = HISTORY_PREFIX + userKey;
+        final Object value = session.getAttribute( key );
+
+        if ( value instanceof RenderTraceHistory )
+        {
+            return (RenderTraceHistory) value;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public Object getSize()
+    {
+        return history.size();
     }
 }

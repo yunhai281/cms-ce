@@ -20,6 +20,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.common.base.Preconditions;
+
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.PagePortletTraceInfo;
@@ -59,10 +61,10 @@ public final class SiteDebugInfoController
             return null;
         }
 
-        RenderTraceInfo renderInfo = findRenderTraceInfo( key );
+        final RenderTraceInfo renderTraceInfo = findRenderTraceInfo( key );
         if ( "javascript".equals( type ) )
         {
-            serveJavaScriptFile( renderInfo, request, response );
+            serveJavaScriptFile( renderTraceInfo, request, response );
         }
         else if ( "css".equals( type ) )
         {
@@ -70,13 +72,12 @@ public final class SiteDebugInfoController
         }
         else if ( "renderXml".equals( type ) )
         {
-            serveRenderXml( findDataTraceInfo( renderInfo, key ), response );
+            serveRenderXml( findDataTraceInfo( renderTraceInfo, key ), response );
         }
         else if ( "renderTrace".equals( type ) )
         {
-            serveRenderTrace( findDataTraceInfo( renderInfo, key ), response );
+            serveRenderTrace( findDataTraceInfo( renderTraceInfo, key ), response );
         }
-
         return null;
     }
 
@@ -353,9 +354,10 @@ public final class SiteDebugInfoController
     /**
      * Find render trace info.
      */
-    private DataTraceInfo findDataTraceInfo( RenderTraceInfo info, String key )
+    private DataTraceInfo findDataTraceInfo( RenderTraceInfo renderTraceInfo, String key )
     {
-        PageTraceInfo pageInfo = info.getPageInfo();
+        Preconditions.checkNotNull( renderTraceInfo, "renderTraceInfo is unexpectedly null" );
+        PageTraceInfo pageInfo = renderTraceInfo.getPageInfo();
         int pos = key.indexOf( '-' );
         if ( pos > -1 )
         {

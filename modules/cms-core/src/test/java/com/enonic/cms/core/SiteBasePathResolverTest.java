@@ -53,6 +53,7 @@ public class SiteBasePathResolverTest
     @Test
     public void resolveAdminSiteDebugBasePath()
     {
+        RenderTrace.markRequestAsExecutedInDebugMode( request );
         RenderTrace.enter();
 
         SiteBasePath siteBasePath = SiteBasePathResolver.resolveSiteBasePath( request, siteKey1 );
