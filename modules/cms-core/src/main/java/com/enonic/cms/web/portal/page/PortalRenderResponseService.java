@@ -68,6 +68,7 @@ public class PortalRenderResponseService
         processor.setLocalizationEnabled( site.isLocalizationEnabled() );
         final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( requestedSiteKey );
         processor.setForceNoCacheForSite( siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE ) );
+        processor.setDoctypeHandler( siteProperties.getProperty( SitePropertyNames.PAGE_DOCTYPE_HANDLER.getKeyName() ) );
         processor.setEncodeRedirectUrl( encodeRedirectUrl );
         processor.setCacheHeadersEnabledForSite( siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED ) );
 

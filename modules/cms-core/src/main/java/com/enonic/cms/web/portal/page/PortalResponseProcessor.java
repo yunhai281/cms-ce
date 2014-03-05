@@ -83,6 +83,8 @@ public class PortalResponseProcessor
 
     private boolean encodeRedirectUrl;
 
+    private String doctypeHandler;
+
     public void serveResponse()
         throws Exception
     {
@@ -306,6 +308,9 @@ public class PortalResponseProcessor
     {
         try
         {
+            // internal filter. needs for doctypeHandler
+            response = new HTML5HttpResponseFilter( doctypeHandler ).filterResponse( httpRequest, response, contentType );
+
             //noinspection unchecked
             Set<HttpProcessor> executedPlugins = (Set<HttpProcessor>) httpRequest.getAttribute( EXECUTED_PLUGINS );
             if ( executedPlugins == null )
@@ -410,5 +415,15 @@ public class PortalResponseProcessor
     public void setEncodeRedirectUrl( final boolean encodeRedirectUrl )
     {
         this.encodeRedirectUrl = encodeRedirectUrl;
+    }
+
+    public void setDoctypeHandler( final String doctypeHandler )
+    {
+        this.doctypeHandler = doctypeHandler;
+    }
+
+    public String getDoctypeHandler()
+    {
+        return doctypeHandler;
     }
 }
