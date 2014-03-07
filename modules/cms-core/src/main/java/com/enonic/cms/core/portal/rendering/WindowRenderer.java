@@ -121,7 +121,8 @@ public class WindowRenderer
             if ( !context.isRenderedInline() )
             {
                 throw new IllegalStateException(
-                    "context is indicating that a render direct is expected, but render window inline was called" );
+                    "Context is indicating that a render direct is expected, but render window inline was called. " +
+                            "(WindowKey = " + (windowKey != null ? windowKey.asString() : "null") + ")" );
             }
 
             final Window window = context.getRegionsInPage().getWindowByKey( windowKey );

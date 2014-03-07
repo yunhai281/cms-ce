@@ -155,7 +155,7 @@ public final class ImageServiceImpl
         final BinaryDataEntity binaryData = new BinaryDataForImageRequestResolver( contentDao ).resolveBinaryData( req );
         if ( binaryData == null )
         {
-            throw new ImageProcessorException( "Image not found", null );
+            throw new ImageProcessorException( "Image not found (Content key = " + req.getContentKey().toString() + ")", null );
         }
 
         return binaryData.getCreatedAt().getTime();
