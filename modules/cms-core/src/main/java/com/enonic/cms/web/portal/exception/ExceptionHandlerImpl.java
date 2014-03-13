@@ -6,8 +6,6 @@
 package com.enonic.cms.web.portal.exception;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +32,6 @@ import com.enonic.cms.core.portal.ForbiddenErrorType;
 import com.enonic.cms.core.portal.PathRequiresAuthenticationException;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.portal.ServerError;
-import com.enonic.cms.core.portal.SiteErrorDetails;
 import com.enonic.cms.core.portal.UnauthorizedErrorType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
@@ -43,12 +40,13 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.web.error.ErrorDetails;
+import com.enonic.cms.web.error.ErrorPageRenderer;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
 import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.web.portal.page.DefaultRequestException;
-import com.enonic.cms.web.portal.template.TemplateProcessor;
 
 @SuppressWarnings("UnusedDeclaration")
 @Component
@@ -65,9 +63,8 @@ public final class ExceptionHandlerImpl
 
     private MenuItemDao menuItemDao;
 
-    private TemplateProcessor templateProcessor;
-
-    private boolean detailInformation;
+    @Autowired
+    protected ErrorPageRenderer errorPageRenderer;
 
     private boolean logRequestInfoOnException;
 
@@ -301,38 +298,7 @@ public final class ExceptionHandlerImpl
     private void serveBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
         throws IOException
     {
-        if ( this.detailInformation )
-        {
-            serveFullBuiltInExceptionPage( context, e );
-            return;
-        }
-
-        serveMinimalBuiltInExceptionPage( context, e );
-    }
-
-    private void serveMinimalBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
-        throws IOException
-    {
-        serveBuiltInExceptionPage( "errorPageMinimal.ftl", context, e );
-    }
-
-    private void serveFullBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
-        throws IOException
-    {
-        serveBuiltInExceptionPage( "errorPage.ftl", context, e );
-    }
-
-    private void serveBuiltInExceptionPage( final String templateName, final PortalWebContext context, final AbstractBaseError e )
-        throws IOException
-    {
-        final Map<String, Object> model = new HashMap<String, Object>();
-        model.put( "details", new SiteErrorDetails( context.getRequest(), e.getCause(), e.getStatusCode() ) );
-
-        final String result = this.templateProcessor.process( templateName, model );
-
-        context.getResponse().setContentType( "text/html" );
-        context.getResponse().setCharacterEncoding( "UTF-8" );
-        context.getResponse().getWriter().println( result );
+        this.errorPageRenderer.render( context.getResponse(), new ErrorDetails( context.getRequest(), e, e.getStatusCode() ) );
     }
 
     private void serveLoginPage( final PortalWebContext context )
@@ -441,18 +407,6 @@ public final class ExceptionHandlerImpl
     {
         final SiteEntity site = this.siteDao.findByKey( siteKey.toInt() );
         return site != null;
-    }
-
-    @Autowired
-    public void setTemplateProcessor( final TemplateProcessor templateProcessor )
-    {
-        this.templateProcessor = templateProcessor;
-    }
-
-    @Value("${cms.error.page.detailInformation}")
-    public void setDetailInformation( final boolean value )
-    {
-        this.detailInformation = value;
     }
 
     @Value("${cms.render.logRequestInfoOnException}")

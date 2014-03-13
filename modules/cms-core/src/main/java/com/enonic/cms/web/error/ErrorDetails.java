@@ -2,7 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal;
+package com.enonic.cms.web.error;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,13 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.enonic.cms.framework.util.HtmlEncoder;
 
 import com.enonic.cms.core.product.ProductVersion;
-import com.enonic.cms.core.xslt.XsltProcessorErrors;
-import com.enonic.cms.core.xslt.XsltProcessorException;
 
 /**
  * This class implements site error details.
  */
-public final class SiteErrorDetails
+public final class ErrorDetails
 {
     private final Request request;
 
@@ -35,7 +33,7 @@ public final class SiteErrorDetails
     /**
      * Constructs the error details.
      */
-    public SiteErrorDetails( HttpServletRequest request, Throwable throwable, int statusCode )
+    public ErrorDetails( HttpServletRequest request, Throwable throwable, int statusCode )
     {
         this.request = new Request( request );
         this.error = throwable;
@@ -56,6 +54,11 @@ public final class SiteErrorDetails
      */
     public String getMessage()
     {
+        if ( this.error == null )
+        {
+            return null;
+        }
+
         String message = this.error.getMessage();
         if ( message == null )
         {
@@ -179,7 +182,12 @@ public final class SiteErrorDetails
     private static List<Throwable> findAllExceptions( Throwable error )
     {
         ArrayList<Throwable> list = new ArrayList<Throwable>();
-        findAllExceptions( list, error );
+
+        if ( error != null )
+        {
+            findAllExceptions( list, error );
+        }
+
         return list;
     }
 
@@ -190,26 +198,7 @@ public final class SiteErrorDetails
     {
         if ( ( error != null ) && !list.contains( error ) )
         {
-            /*if ( error instanceof XsltProcessorException )
-            {
-                XsltProcessorErrors errors = ( (XsltProcessorException) error ).getErrors();
-                if ( errors != null )
-                {
-                    for ( Exception e : errors.getAllErrors() )
-                    {
-                        findAllExceptions( list, e );
-                    }
-                }
-                else
-                {
-                    list.add( error );
-                }
-            }
-            else
-            {*/
             list.add( error );
-            //}
-
             findAllExceptions( list, error.getCause() );
         }
     }
@@ -233,11 +222,6 @@ public final class SiteErrorDetails
         public Request( HttpServletRequest request )
         {
             this.request = request;
-        }
-
-        public String getQueryString()
-        {
-            return getAsSafe( HtmlEncoder.encode( request.getQueryString() ) );
         }
 
         public String getServletPath()

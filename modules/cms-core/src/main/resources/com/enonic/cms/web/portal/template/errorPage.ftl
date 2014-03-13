@@ -92,64 +92,53 @@
         }
     </style>
     <script type="text/javascript">
-        function showTab1()
-        {
-            showTab( 1 );
-            hideTab( 2 );
-            hideTab( 3 );
+        function showTab1() {
+            showTab(1);
+            hideTab(2);
+            hideTab(3);
         }
 
-        function showTab2()
-        {
-            showTab( 2 );
-            hideTab( 1 );
-            hideTab( 3 );
+        function showTab2() {
+            showTab(2);
+            hideTab(1);
+            hideTab(3);
         }
 
-        function showTab3()
-        {
-            showTab( 3 );
-            hideTab( 1 );
-            hideTab( 2 );
+        function showTab3() {
+            showTab(3);
+            hideTab(1);
+            hideTab(2);
         }
 
-        function showTab( num )
-        {
-            setLinkActive( num, true );
-            setBoxVisible( num, true );
+        function showTab(num) {
+            setLinkActive(num, true);
+            setBoxVisible(num, true);
         }
 
-        function hideTab( num )
-        {
-            setLinkActive( num, false );
-            setBoxVisible( num, false );
+        function hideTab(num) {
+            setLinkActive(num, false);
+            setBoxVisible(num, false);
         }
 
-        function setLinkActive( num, active )
-        {
+        function setLinkActive(num, active) {
             var linkId = "tab" + num + "link";
-            var linkElem = document.getElementById( linkId );
+            var linkElem = document.getElementById(linkId);
 
-            if ( active )
-            {
+            if (active) {
                 linkElem.className = "active";
             }
-            else
-            {
+            else {
                 linkElem.className = "";
             }
         }
 
-        function setBoxVisible( num, visible )
-        {
+        function setBoxVisible(num, visible) {
             var boxId = "tab" + num + "box";
-            var boxElem = document.getElementById( boxId );
-            if ( visible )
-            {
+            var boxElem = document.getElementById(boxId);
+            if (visible) {
                 boxElem.style.display = "block";
             }
-            else
-            {
+            else {
                 boxElem.style.display = "none";
             }
         }
@@ -194,7 +183,6 @@
                         <@printKeyValue key="contextPath" value="${details.request.contextPath}"/>
                         <@printKeyValue key="pathInfo" value="${details.request.pathInfo}"/>
                         <@printKeyValue key="requestURI" value="${details.request.requestURI}"/>
-                        <@printKeyValue key="queryString" value="${details.request.queryString}"/>
                         <@printKeyValue key="servletPath" value="${details.request.servletPath}"/>
                         <@printKeyValue key="remoteAddr" value="${details.request.remoteAddr}"/>
             </table>
