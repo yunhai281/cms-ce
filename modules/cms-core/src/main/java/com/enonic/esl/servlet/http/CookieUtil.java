@@ -39,6 +39,7 @@ public class CookieUtil
         Cookie cookie = new Cookie( cookieName, value );
         cookie.setMaxAge( maxAge );
         cookie.setPath( getCookiePath( path ) );
+        cookie.setSecure( true );
         response.addCookie( cookie );
     }
 
