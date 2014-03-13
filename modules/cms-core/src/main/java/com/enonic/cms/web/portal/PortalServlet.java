@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -27,8 +26,7 @@ import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 public final class PortalServlet
     extends HttpServlet
 {
-    private final static List<HttpMethod> ALLOWED_HTTP_METHODS =
-        Arrays.asList( HttpMethod.GET, HttpMethod.POST, HttpMethod.HEAD, HttpMethod.OPTIONS );
+    private final static List<String> ALLOWED_HTTP_METHODS = Arrays.asList( "GET", "POST", "HEAD", "OPTIONS" );
 
     private RequestDispatcher dispatcher;
 
@@ -55,7 +53,7 @@ public final class PortalServlet
     protected void service( final HttpServletRequest req, final HttpServletResponse res )
         throws ServletException, IOException
     {
-        final HttpMethod requestMethod = HttpMethod.valueOf( req.getMethod() );
+        final String requestMethod = req.getMethod();
 
         if ( !ALLOWED_HTTP_METHODS.contains( requestMethod ) )
         {
@@ -63,7 +61,7 @@ public final class PortalServlet
             return;
         }
 
-        if ( requestMethod.equals( HttpMethod.OPTIONS ) )
+        if ( requestMethod.equals( "OPTIONS" ) )
         {
             doOptions( req, res );
             return;
