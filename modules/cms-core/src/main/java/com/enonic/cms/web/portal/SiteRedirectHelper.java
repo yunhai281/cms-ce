@@ -50,15 +50,15 @@ public class SiteRedirectHelper
 
     public void sendRedirect( HttpServletRequest request, HttpServletResponse response, String path )
     {
-        String url;
+        String url = stripIllegalChars(path);
 
-        if ( isAbsoluteUrl( path ) )
+        if ( isAbsoluteUrl( url ) )
         {
-            url = UrlPathEncoder.encodeURL( path );
+            url = UrlPathEncoder.encodeURL( url );
         }
         else
         {
-            url = doGetFullPathForRedirect( request, path );
+            url = doGetFullPathForRedirect( request, url );
         }
 
         doSendRedirect( response, url );
@@ -81,5 +81,20 @@ public class SiteRedirectHelper
 
         response.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
         response.setHeader( "Location", location );
+    }
+
+    private String stripIllegalChars( final String input )
+    {
+        StringBuilder sb = new StringBuilder();
+        for ( int i = 0; i < input.length(); i++ )
+        {
+            final char c = input.charAt( i );
+            if ( c >= 0x20 )
+            {
+                sb.append( c );
+            }
+        }
+
+        return sb.toString();
     }
 }

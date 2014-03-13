@@ -61,7 +61,6 @@ public class SiteRedirectHelperTest
     public void testSendRedirectWithHttpUrl()
         throws IOException
     {
-
         request.setScheme( "http" );
         siteRedirectHelper.sendRedirect( request, response, "http://someurl.com" );
         assertEquals( "http://someurl.com", response.getHeader( "Location" ) );
@@ -70,9 +69,15 @@ public class SiteRedirectHelperTest
     public void testSendRedirectWithHttpsUrl()
         throws IOException
     {
-
         request.setScheme( "http" );
         siteRedirectHelper.sendRedirect( request, response, "https://someurl.com" );
         assertEquals( "https://someurl.com", response.getHeader( "Location" ) );
+    }
+
+    public void testSendRedirectHeaderInjectionProtection()
+        throws IOException
+    {
+        siteRedirectHelper.sendRedirect( request, response, "https://someurl.com?create=\n\rX-Header:hacked" );
+        assertEquals( "https://someurl.com?create=X-Header:hacked", response.getHeader( "Location" ) );
     }
 }
