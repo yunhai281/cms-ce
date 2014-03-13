@@ -83,7 +83,7 @@ public final class RenderTrace
         }
     }
 
-    private static boolean isExecutingInDebugMode()
+    public static boolean isExecutingInDebugMode()
     {
         HttpServletRequest currentRequest = getCurrentRequest();
         return currentRequest != null && currentRequest.getAttribute( "ICE" ) != null;

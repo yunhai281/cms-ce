@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Maps;
 
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.web.portal.template.TemplateProcessor;
 
 @Component
@@ -40,6 +41,7 @@ public final class ErrorPageRendererImpl
 
     private String getTemplateName()
     {
-        return this.detailInformation ? "errorPage.ftl" : "errorPageMinimal.ftl";
+        final boolean details = this.detailInformation || RenderTrace.isExecutingInDebugMode();
+        return details ? "errorPage.ftl" : "errorPageMinimal.ftl";
     }
 }
