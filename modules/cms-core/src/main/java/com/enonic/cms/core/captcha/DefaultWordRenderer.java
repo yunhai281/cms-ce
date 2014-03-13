@@ -17,7 +17,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -25,62 +24,26 @@ import nl.captcha.text.renderer.WordRenderer;
 
 /**
  * Renders the answer onto the image.
- *
- * @author <a href="mailto:james.childers@gmail.com">James Childers</a>
  */
-public class DefaultWordRenderer
+final class DefaultWordRenderer
     implements WordRenderer
 {
-
     private static final Random RAND = new SecureRandom();
 
-    private static final List<Color> DEFAULT_COLORS = new ArrayList<Color>();
-
-    private static final List<Font> DEFAULT_FONTS = new ArrayList<Font>();
-
-    // The text will be rendered 50%/5% of the image height/width from the X and Y axes
     private static final double YOFFSET = 0.5;
 
     private static final double XOFFSET = 0.05;
 
-    static
+    private final List<Color> colors;
+
+    private final List<Font> fonts;
+
+    public DefaultWordRenderer( final List<Color> colors, final List<Font> fonts )
     {
-        DEFAULT_COLORS.add( Color.BLACK );
-        DEFAULT_FONTS.add( new Font( "Arial", Font.BOLD, 40 ) );
-        DEFAULT_FONTS.add( new Font( "Courier", Font.BOLD, 40 ) );
+        this.colors = colors;
+        this.fonts = fonts;
     }
 
-    private final List<Color> _colors = new ArrayList<Color>();
-
-    private final List<Font> _fonts = new ArrayList<Font>();
-
-    /**
-     * Use the default color (black) and fonts (Arial and Courier).
-     */
-    public DefaultWordRenderer()
-    {
-        this( DEFAULT_COLORS, DEFAULT_FONTS );
-    }
-
-    /**
-     * Build a <code>WordRenderer</code> using the given <code>Color</code>s and
-     * <code>Font</code>s.
-     *
-     * @param colors
-     * @param fonts
-     */
-    public DefaultWordRenderer( List<Color> colors, List<Font> fonts )
-    {
-        _colors.addAll( colors );
-        _fonts.addAll( fonts );
-    }
-
-    /**
-     * Render a word onto a BufferedImage.
-     *
-     * @param word  The word to be rendered.
-     * @param image The BufferedImage onto which the word will be painted.
-     */
     @Override
     public void render( final String word, BufferedImage image )
     {
@@ -99,10 +62,10 @@ public class DefaultWordRenderer
         {
             chars[0] = c;
 
-            g.setColor( _colors.get( RAND.nextInt( _colors.size() ) ) );
+            g.setColor( this.colors.get( RAND.nextInt( this.colors.size() ) ) );
 
-            int choiceFont = RAND.nextInt( _fonts.size() );
-            Font font = _fonts.get( choiceFont );
+            int choiceFont = RAND.nextInt( this.fonts.size() );
+            Font font = this.fonts.get( choiceFont );
             g.setFont( font );
 
             GlyphVector gv = font.createGlyphVector( frc, chars );

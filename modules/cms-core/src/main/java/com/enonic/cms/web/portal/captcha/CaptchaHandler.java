@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,8 +46,8 @@ public final class CaptchaHandler
             byte[] captchaChallengeAsJpeg;
             ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
 
-            String captchaId = request.getSession().getId();
-            BufferedImage challenge = captchaRepository.getImageChallengeForID( captchaId, request.getLocale() );
+            HttpSession session = request.getSession();
+            BufferedImage challenge = captchaRepository.createCaptcha( session ).getImage();
 
             ImageIO.write( challenge, "png", imageOutputStream );
             captchaChallengeAsJpeg = imageOutputStream.toByteArray();

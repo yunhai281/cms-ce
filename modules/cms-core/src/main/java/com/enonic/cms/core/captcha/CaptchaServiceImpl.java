@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core.captcha;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -42,7 +40,7 @@ public class CaptchaServiceImpl
     /**
      * @inheritDoc
      */
-    public Boolean validateCaptcha( Map<String, Object> formItems, HttpServletRequest request, String handler, String operation )
+    public Boolean validateCaptcha( ExtendedMap formItems, HttpServletRequest request, String handler, String operation )
     {
         SitePath originalSitePath = (SitePath) request.getAttribute( Attribute.ORIGINAL_SITEPATH );
         Object captchaResponse = getCaptchaResponse( formItems );
@@ -80,41 +78,27 @@ public class CaptchaServiceImpl
         return sitePropertySetting.equals( "*" ) || sitePropertySetting.equals( operation );
     }
 
-    private Boolean validateInput( HttpSession session, Object captchaResponse )
+    private boolean validateInput( HttpSession session, Object captchaResponse )
     {
-        return captchaRepository.validateResponseForID( session.getId(), captchaResponse );
+        return ( captchaResponse != null ) && this.captchaRepository.validateCaptcha( session, captchaResponse.toString() );
     }
 
-    private Object getCaptchaResponse( Map<String, Object> formItems )
+    private Object getCaptchaResponse( ExtendedMap formItems )
     {
-        Object response;
-        if ( formItems instanceof ExtendedMap )
-        {
-
-            response = ( (ExtendedMap) formItems ).get( FORM_VARIABLE_CAPTCHA_RESPONSE, null );
-        }
-        else
-        {
-            response = formItems.get( FORM_VARIABLE_CAPTCHA_RESPONSE );
-        }
-
-        return response;
+        return formItems.get( FORM_VARIABLE_CAPTCHA_RESPONSE, null );
     }
 
     /**
      * @inheritDoc
      */
-    public XMLDocument buildErrorXMLForSessionContext( Map<String, Object> formItems )
+    public XMLDocument buildErrorXMLForSessionContext( ExtendedMap formItems )
     {
         Element root = new Element( "form" );
         Document doc = new Document( root );
-        for ( String name : formItems.keySet() )
+        for ( Object key : formItems.keySet() )
         {
-            if ( ( name.charAt( 0 ) == '_' ) && ( name.charAt( 1 ) != '_' ) )
-            {
-                // Variables that start with underscore are Vertical Site internal variable that shall not be forwarded.
-            }
-            else
+            final String name = key.toString();
+            if ( !( ( name.charAt( 0 ) == '_' ) && ( name.charAt( 1 ) != '_' ) ) )
             {
                 Object value = formItems.get( name );
                 if ( value instanceof String[] )

@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.captcha;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
+
+import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
@@ -34,9 +34,9 @@ public interface CaptchaService
      * @param handler   The current calling handler, which is checked to see if captcha validation is required.
      * @param operation The current calling operation, which is checked to see if captcha validation is required.
      * @return <code>true</code> if the captcha validated OK, <code>false</code> if the captcha did not validate OK, and <code>null</code>
-     *         if no captcha validation was required.
+     * if no captcha validation was required.
      */
-    Boolean validateCaptcha( Map<String, Object> formItems, HttpServletRequest request, String handler, String operation );
+    Boolean validateCaptcha( ExtendedMap formItems, HttpServletRequest request, String handler, String operation );
 
     /**
      * This is a utility method that builds an XML of all the parameters for error handling purposes.  The result should be placed in the
@@ -49,7 +49,7 @@ public interface CaptchaService
      *                  included in the returned XML.
      * @return An XML document containing all the parameters that the user entered.
      */
-    XMLDocument buildErrorXMLForSessionContext( Map<String, Object> formItems );
+    XMLDocument buildErrorXMLForSessionContext( ExtendedMap formItems );
 
     /**
      * Checks the system properties to see whether a request to the given site and handler, using the given operation, will be captcha
