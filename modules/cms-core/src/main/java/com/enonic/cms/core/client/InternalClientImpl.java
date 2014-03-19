@@ -2273,8 +2273,7 @@ public abstract class InternalClientImpl
                                                                  ? new PreferenceScopeKey( params.scope.getKey() )
                                                                  : null, params.key );
 
-            PreferenceEntity preference = new PreferenceEntity();
-            preference.setKey( preferenceKey );
+            PreferenceEntity preference = preferenceService.getPreference( preferenceKey );
             preference.setValue( "" );
             preferenceService.removePreference( preference );
         }
