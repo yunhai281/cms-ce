@@ -83,6 +83,8 @@ public abstract class AdminHandlerBaseServlet
 
     private FileUpload fileUpload;
 
+    private String defaultDataSourceRootElementName;
+
     private long multiPartRequestMaxSize;
 
     private String storeXHTML;
@@ -1560,10 +1562,21 @@ public abstract class AdminHandlerBaseServlet
         return doc;
     }
 
+    protected String getDefaultDataSourceRootElementName()
+    {
+        return defaultDataSourceRootElementName;
+    }
+
     @Value("${cms.admin.binaryUploadMaxSize}")
     public void setMultiPartRequestMaxSize( final long value )
     {
         this.multiPartRequestMaxSize = value;
+    }
+
+    @Value("${cms.datasource.defaultResultRootElement}")
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 
     @Value("${cms.xml.storeXHTML}")

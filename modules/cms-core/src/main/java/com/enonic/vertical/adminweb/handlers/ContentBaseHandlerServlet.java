@@ -1208,7 +1208,7 @@ public class ContentBaseHandlerServlet
                 }
                 Document reportDoc = XMLTool.domparse( reportXML );
                 Element contentsElem = reportDoc.getDocumentElement();
-                Element verticaldataElem = XMLTool.createElement( reportDoc, "result" );
+                Element verticaldataElem = XMLTool.createElement( reportDoc, getDefaultDataSourceRootElementName() );
                 reportDoc.replaceChild( verticaldataElem, contentsElem );
                 verticaldataElem.appendChild( contentsElem );
                 DOMSource reportSource = new DOMSource( reportDoc );
