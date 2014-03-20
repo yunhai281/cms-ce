@@ -194,7 +194,7 @@ public final class UserServicesProcessor
 
         if ( operation.equals( "logout" ) )
         {
-            processLogout( siteContext, request, response, session, formItems, userServices );
+            processLogout( siteContext, request, response, session, formItems );
         }
         else if ( operation.equals( "login" ) )
         {
@@ -1130,12 +1130,10 @@ public final class UserServicesProcessor
         throws VerticalUserServicesException, RemoteException
     {
         String username = null;
-        User user = null;
-        UserStoreKey userStoreKey = null;
 
         try
         {
-            userStoreKey = parseUserStoreKeyFromUidAndUserstore( formItems );
+            UserStoreKey userStoreKey = parseUserStoreKeyFromUidAndUserstore( formItems );
             username = parseUsername( formItems );
 
             if ( StringUtils.isBlank( username ) && formItems.containsKey( FORMITEM_EMAIL ) )
@@ -1152,8 +1150,6 @@ public final class UserServicesProcessor
 
             String password = formItems.getString( FORMITEM_PASSWORD, null );
 
-            user = null;
-
             if ( StringUtils.isBlank( username ) || StringUtils.isBlank( password ) )
             {
                 String message = "Missing user name and/or password.";
@@ -1163,7 +1159,7 @@ public final class UserServicesProcessor
             }
 
             securityService.loginPortalUser( new QualifiedUsername( userStoreKey, username ), password );
-            user = securityService.getLoggedInPortalUser();
+            User user = securityService.getLoggedInPortalUser();
 
             if ( user == null )
             {
@@ -1371,12 +1367,9 @@ public final class UserServicesProcessor
     }
 
     private void processLogout( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, HttpSession session,
-                                ExtendedMap formItems, UserServicesService userServices )
+                                ExtendedMap formItems )
         throws VerticalUserServicesException, RemoteException
     {
-
-        UserStoreKey userStoreKey = parseUserStoreKeyFromUidAndUserstore( formItems );
-
         if ( session != null )
         {
             // Create log entry:
@@ -1406,7 +1399,8 @@ public final class UserServicesProcessor
             }
 
             removeGuidCookie( response, DeploymentPathResolver.getSiteDeploymentPath( request ), siteContext );
-            securityService.logoutPortalUser();
+            this.securityService.logoutPortalUser();
+            this.loginService.removeRememberedLogin( user.getKey() );
 
             redirectToPage( request, response, formItems );
         }

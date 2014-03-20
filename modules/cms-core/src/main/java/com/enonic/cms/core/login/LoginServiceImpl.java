@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.login;
 
-import java.rmi.server.UID;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +19,6 @@ import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.RememberedLoginDao;
 
-/**
- * Jul 10, 2009
- */
 @Service
 public class LoginServiceImpl
     implements LoginService
@@ -92,16 +89,7 @@ public class LoginServiceImpl
 
     private String createCookieSafeUID()
     {
-        String uid = new UID().toString();
-
-        // IE/Tomcat 6.0.18 hack - IE won't return cookies that got quoted (") values. Tomcat 6.0.18 will quote all values containing ()<>@,;:\\\"[]?={} \t
-        // http://cephas.net/blog/2008/11/18/tomcat-6018-version-1-cookies-acegi-remember-me-and-ie/
-        final String charsToReplace = "()<>@,;:\\\"[]?={} \t";
-        for ( int i = 0; i < charsToReplace.length(); i++ )
-        {
-            uid = uid.replace( charsToReplace.charAt( i ), '_' );
-        }
-        return uid;
+        return UUID.randomUUID().toString().replace( "-", "" );
     }
 
     @Autowired
@@ -122,5 +110,10 @@ public class LoginServiceImpl
         this.autologinTimeoutInMilliSeconds = (long) 1000 * 60 * 60 * 24 * value;
     }
 
-
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void removeRememberedLogin( final UserKey userKey )
+    {
+        this.rememberedLoginDao.removeUsage( userKey );
+    }
 }

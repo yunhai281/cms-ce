@@ -513,6 +513,7 @@ public class SecurityServiceImpl
 
     private void doLogoutPortalUser( boolean invalidateSession )
     {
+
         PortalSecurityHolder.setLoggedInUser( null );
         PortalSecurityHolder.setImpersonatedUser( null );
 

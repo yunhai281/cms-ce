@@ -16,4 +16,5 @@ public interface LoginService
 
     UserKey getRememberedLogin( String guid, SiteKey sitekey );
 
+    void removeRememberedLogin( UserKey userKey );
 }
