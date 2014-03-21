@@ -10,7 +10,7 @@
     </id>
     <property name="value" type="string" column="PRF_SVALUE" length="1024" not-null="true"/>
   </class>
-  <query name="PreferenceEntity.findByKeyLike" cacheable="true">
+  <query name="PreferenceEntity.findByKeyLike" cacheable="false">
     from PreferenceEntity x
     where x.key like :key
   </query>
