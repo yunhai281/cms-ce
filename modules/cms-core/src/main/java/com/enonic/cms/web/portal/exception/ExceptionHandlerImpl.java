@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Throwables;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.BadRequestErrorType;
 import com.enonic.cms.core.InvalidKeyException;
@@ -92,7 +94,8 @@ public final class ExceptionHandlerImpl
 
     private boolean isConnectionError( final Throwable error )
     {
-        return error instanceof SocketException;
+        final Throwable rootCause = Throwables.getRootCause( error );
+        return rootCause instanceof SocketException;
     }
 
     @Override
