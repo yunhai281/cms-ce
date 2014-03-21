@@ -6,6 +6,7 @@
 package com.enonic.cms.web.portal.exception;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +90,11 @@ public final class ExceptionHandlerImpl
         this.menuItemDao = menuItemDao;
     }
 
+    private boolean isConnectionError( final Throwable error )
+    {
+        return error instanceof SocketException;
+    }
+
     @Override
     public void handle( final PortalWebContext context, final Exception outerException )
         throws ServletException, IOException
@@ -120,6 +126,12 @@ public final class ExceptionHandlerImpl
         }
 
         logException( outerException, causingException, request );
+
+        if ( isConnectionError( causingException ) )
+        {
+            return;
+        }
+
         final AbstractBaseError error = getError( causingException );
         response.setStatus( error.getStatusCode() );
 
@@ -130,7 +142,6 @@ public final class ExceptionHandlerImpl
         }
 
         context.increaseProcessingExceptionCount();
-
         handleExceptions( context, causingException, error );
     }
 
@@ -189,7 +200,8 @@ public final class ExceptionHandlerImpl
                                                                                       new Class[]{DefaultRequestException.class,
                                                                                           AttachmentRequestException.class,
                                                                                           ImageRequestException.class,
-                                                                                          ResourceNotFoundException.class} );
+                                                                                          ResourceNotFoundException.class}
+        );
         final boolean innerExceptionIsQuietException =
             isExceptionAnyOfThose( causingException, new Class[]{StacktraceLoggingUnrequired.class} );
 
