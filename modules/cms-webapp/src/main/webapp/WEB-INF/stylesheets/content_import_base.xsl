@@ -39,21 +39,21 @@
         <script type="text/javascript" language="JavaScript">
           var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
         </script>
-        
+
         <div class="tab-page" id="tab-page-step">
           <span class="tab">%headStep% 1 %of% 2: %headChooseZipFile%</span>
-          
+
           <script type="text/javascript" language="JavaScript">
             tabPane1.addTabPage( document.getElementById( "tab-page-step" ) );
           </script>
-          
+
           <fieldset>
             <legend>&nbsp;%blockDescription%&nbsp;</legend>
             <img src="images/shim.gif" height="4" class="shim" border="0"/>
             <br/>
             <xsl:text>%txtDescChooseZipFile%</xsl:text>
           </fieldset>
-          
+
           <fieldset>
             <legend>&nbsp;%blockZipFile%&nbsp;</legend>
             <table border="0" cellspacing="0" cellpadding="0" class="formtable">
@@ -65,37 +65,51 @@
                   <xsl:with-param name="maxlength" select="'255'"/>
                   <xsl:with-param name="imagekey" select="'0'"/>
                   <xsl:with-param name="required" select="'true'"/>
+                  <xsl:with-param name="onchange" select="'setButtonStatus()'"/>
                 </xsl:call-template>
               </tr>
             </table>
           </fieldset>
         </div>
       </div>
-        
+
       <script type="text/javascript" language="JavaScript">
         setupAllTabs();
+
+        function setButtonStatus()
+        {
+            var zipfile = document.getElementById('zipfile');
+            var buttons = document.getElementsByName('next');
+
+            var enabled = zipfile.value == "";
+            if (buttons.length == 2)
+            {
+                buttons[0].disabled = enabled;
+                buttons[1].disabled = enabled;
+            }
+        }
       </script>
     </xsl:template>
-    
+
     <xsl:template name="step1">
 
       <div class="tab-pane" id="tab-pane-1">
         <script type="text/javascript" language="JavaScript">
           var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
         </script>
-        
+
         <div class="tab-page" id="tab-page-step">
           <span class="tab">%headStep% 2 %of% 2: %headSelectFoldersAndFiles%</span>
-          
+
           <script type="text/javascript" language="JavaScript">
             tabPane1.addTabPage( document.getElementById( "tab-page-step" ) );
-            
+
             var branchOpen = new Array;
 
             document.getElementsByTagName('body')[0].className = "jquery-ui";
             function isChoosen() {}
           </script>
-          
+
           <fieldset>
             <legend>&nbsp;%blockDescription%&nbsp;</legend>
             <img src="images/shim.gif" height="4" class="shim" border="0"/>
@@ -104,7 +118,7 @@
           </fieldset>
           <link rel="stylesheet" type="text/css" href="css/calendar_picker.css"/>
 		      <script type="text/javascript" src="javascript/calendar_picker.js">//</script>
-		  
+
           <fieldset>
             <legend>&nbsp;%blockPublishing%&nbsp;</legend>
 
@@ -165,7 +179,7 @@
           <div id="assignment-fieldset" style="display:none">
             <xsl:call-template name="assignment-fieldset"/>
           </div>
-          
+
           <fieldset>
             <legend>&nbsp;%blockFiles%&nbsp;</legend>
             <img src="images/shim.gif" height="4" class="shim" border="0"/>
@@ -180,7 +194,7 @@
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
-            
+
             <xsl:if test="exslt-common:node-set($errors)/errors/error[@name = 'files']">
               <xsl:call-template name="displayerror">
                 <xsl:with-param name="code" select="exslt-common:node-set($errors)/errors/error[@name = 'files']/@code"/>
@@ -202,7 +216,7 @@
                     </xsl:if>
                   </input>
                 </td>
-                
+
                 <td>
                   <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                   <img src="images/icon_imagefolder.gif" border="0"/>
@@ -210,7 +224,7 @@
                   <xsl:value-of select="$categoryname"/>
                 </td>
               </tr>
-              
+
               <tr>
                 <td width="16">
                   <img border="0" src="images/shim.gif"/>
@@ -225,7 +239,7 @@
           </fieldset>
         </div>
       </div>
-      
+
       <script type="text/javascript" language="JavaScript">
         setupAllTabs();
         var publishDropdown = document.getElementById("stepstate_zip_@publish");
@@ -301,7 +315,7 @@
               <xsl:text>_</xsl:text>
               <xsl:value-of select="position()"/>
             </xsl:variable>
-            
+
             <input type="checkbox" name="{$checkboxid}" id="{$checkboxid}" value="{@name}">
               <xsl:if test="( @type = 'file' and not( @exists = 'true' ) ) or @allchecked = 'true'">
                 <xsl:attribute name="checked">
@@ -374,25 +388,25 @@
           </xsl:if>
         </td>
       </tr>
-      
+
       <xsl:if test="@type = 'dir'">
         <tr valign="top">
           <xsl:attribute name="id">
             <xsl:text>id</xsl:text>
             <xsl:value-of select="$entryname"/>
           </xsl:attribute>
-          
+
           <td width="16">
             <xsl:if test="position() != last()">
               <xsl:attribute name="background">javascript/images/I.png</xsl:attribute>
             </xsl:if>
             <img border="0" src="images/shim.gif"/>
           </td>
-          
+
           <td width="16">
             <img border="0" src="images/shim.gif"/>
           </td>
-          
+
           <td colspan="2">
             <table cellspacing="0" cellpadding="0" class="menuItem">
               <xsl:call-template name="entrytree">

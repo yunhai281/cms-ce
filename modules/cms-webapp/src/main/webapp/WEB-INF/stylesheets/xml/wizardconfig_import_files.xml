@@ -63,7 +63,7 @@
       </form>
 
       <buttons>
-        <button name="next" caption="%cmdNext%" type="next">
+        <button name="next" caption="%cmdNext%" type="next" disabled="true">
 	  <default goto="step1"/>
 	</button>
       </buttons>
