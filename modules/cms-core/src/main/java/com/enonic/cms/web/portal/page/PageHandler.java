@@ -25,6 +25,7 @@ import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
+import com.enonic.cms.core.portal.ticket.TicketGenerator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SiteProperties;
@@ -93,7 +94,7 @@ public final class PageHandler
             request.setRequestTime( timeService.getNowAsDateTime() );
             request.setSitePath( sitePath );
             request.setRequestParams( getRequestParameters( httpRequest ) );
-            request.setTicketId( httpSession.getId() );
+            request.setTicketId( TicketGenerator.getOrGenerate( httpRequest ) );
             request.setOriginalSitePath( originalSitePath );
             request.setVerticalSession( getAndEnsureVerticalSessionOnHttpSession( httpSession ) );
             request.setHttpReferer( httpRequest.getHeader( "referer" ) );

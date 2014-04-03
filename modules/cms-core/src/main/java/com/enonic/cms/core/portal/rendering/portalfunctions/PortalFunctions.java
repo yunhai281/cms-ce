@@ -31,7 +31,6 @@ import com.enonic.cms.core.image.ImageRequestParser;
 import com.enonic.cms.core.localization.LocalizationResourceBundleUtils;
 import com.enonic.cms.core.localization.LocalizationService;
 import com.enonic.cms.core.portal.ReservedLocalPaths;
-import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.image.ImageService;
 import com.enonic.cms.core.portal.instruction.CreateAttachmentUrlInstruction;
 import com.enonic.cms.core.portal.instruction.CreateContentUrlInstruction;
@@ -44,6 +43,7 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.ViewFunctionTrace;
 import com.enonic.cms.core.portal.livetrace.ViewFunctionTracer;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
+import com.enonic.cms.core.portal.ticket.TicketConstants;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -281,7 +281,8 @@ public class PortalFunctions
         {
             throw new PortalFunctionException(
                 "Not able to create link to site " + siteEntity.getKey().toInt() + ": No valid cms.site.url defined in site" +
-                    siteEntity.getKey().toInt() + ".properties: " + siteUrl );
+                    siteEntity.getKey().toInt() + ".properties: " + siteUrl
+            );
         }
 
         SitePath pageSitePath = new SitePath( siteEntity.getKey(), new Path( path ) );
@@ -363,7 +364,7 @@ public class PortalFunctions
             //addRedirectParameter( redirect, sitePath );
         }
 
-        sitePath.addParam( Ticket.getParameterName(), Ticket.getPlaceholder() );
+        sitePath.addParam( TicketConstants.PARAMETER_NAME, TicketConstants.PLACEHOLDER );
         addParamsToSitePath( params, sitePath );
         return siteURLResolver.createUrl( request, sitePath, true );
     }

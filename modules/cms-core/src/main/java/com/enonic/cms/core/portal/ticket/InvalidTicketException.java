@@ -2,7 +2,9 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal;
+package com.enonic.cms.core.portal.ticket;
+
+import com.enonic.cms.core.portal.ForbiddenErrorType;
 
 public class InvalidTicketException
     extends RuntimeException

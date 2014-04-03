@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.portal.InvalidParameterValueException;
-import com.enonic.cms.core.portal.InvalidTicketException;
+import com.enonic.cms.core.portal.ticket.InvalidTicketException;
 import com.enonic.cms.core.portal.ticket.TicketValidator;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertyNames;

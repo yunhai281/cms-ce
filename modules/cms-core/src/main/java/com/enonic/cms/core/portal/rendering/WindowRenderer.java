@@ -21,7 +21,6 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalRenderingException;
-import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.WindowReference;
 import com.enonic.cms.core.portal.cache.PageCache;
@@ -52,6 +51,7 @@ import com.enonic.cms.core.portal.rendering.viewtransformer.TemplateParameterTra
 import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParameterOrigin;
 import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParams;
 import com.enonic.cms.core.portal.rendering.viewtransformer.ViewTransformationResult;
+import com.enonic.cms.core.portal.ticket.TicketConstants;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -124,7 +124,8 @@ public class WindowRenderer
             {
                 throw new IllegalStateException(
                     "Context is indicating that a render direct is expected, but render window inline was called. " +
-                            "(WindowKey = " + (windowKey != null ? windowKey.asString() : "null") + ")" );
+                        "(WindowKey = " + ( windowKey != null ? windowKey.asString() : "null" ) + ")"
+                );
             }
 
             final Window window = context.getRegionsInPage().getWindowByKey( windowKey );
@@ -170,7 +171,7 @@ public class WindowRenderer
 
             requestParameters = context.getSitePath().getRequestParameters();
             RenderedWindowResult result = doRenderWindow( window );
-            result.setContent( result.getContent().replace( Ticket.getPlaceholder(), context.getTicketId() ) );
+            result.setContent( result.getContent().replace( TicketConstants.PLACEHOLDER, context.getTicketId() ) );
             final WindowReference windowReference = context.getSitePath().getWindowReference();
             if ( windowReference.hasExtension() )
             {

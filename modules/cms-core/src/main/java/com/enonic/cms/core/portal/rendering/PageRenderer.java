@@ -18,7 +18,6 @@ import com.enonic.cms.core.CachedObject;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.portal.PortalInstanceKey;
-import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
@@ -46,6 +45,7 @@ import com.enonic.cms.core.portal.rendering.viewtransformer.TemplateParameterTra
 import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParameterOrigin;
 import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParams;
 import com.enonic.cms.core.portal.rendering.viewtransformer.ViewTransformationResult;
+import com.enonic.cms.core.portal.ticket.TicketConstants;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
@@ -144,7 +144,7 @@ public class PageRenderer
             executePostProcessInstructions( pageTemplate, renderedPageResult.getContent(), renderedPageResult.getOutputMethod() );
 
         renderedPageContentIncludingRenderedWindows =
-            renderedPageContentIncludingRenderedWindows.replace( Ticket.getPlaceholder(), context.getTicketId() );
+            renderedPageContentIncludingRenderedWindows.replace( TicketConstants.PLACEHOLDER, context.getTicketId() );
 
         renderedPageResult.setContent( renderedPageContentIncludingRenderedWindows );
 
@@ -268,7 +268,8 @@ public class PageRenderer
         {
             viewTransformationResult.setContent(
                 TraceMarkerHelper.writePageMarker( RenderTrace.getCurrentRenderTraceInfo(), viewTransformationResult.getContent(),
-                                                   viewTransformationResult.getOutputMethod() ) );
+                                                   viewTransformationResult.getOutputMethod() )
+            );
         }
 
         final RenderedPageResult renderedPageResult = new RenderedPageResult();
