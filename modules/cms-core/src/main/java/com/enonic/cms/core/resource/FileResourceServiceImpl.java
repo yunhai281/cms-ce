@@ -154,20 +154,29 @@ public class FileResourceServiceImpl
     public List<FileResourceName> getChildren( final FileResourceName name )
     {
         final ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
-
         final File parent = getFile( name );
 
-        if ( parent.exists() && parent.isDirectory() )
+        if ( !parent.exists() )
         {
-            final File[] files = parent.listFiles();
+            return list;
+        }
 
-            // sort files, because listFiles does not guaranty any order.
-            Arrays.sort( files );
+        if ( !parent.isDirectory() )
+        {
+            return list;
+        }
 
-            for ( final File file : files )
-            {
-                list.add( new FileResourceName( name, file.getName() ) );
-            }
+        final File[] files = parent.listFiles();
+        if ( files == null )
+        {
+            return list;
+        }
+
+        // sort files, because listFiles does not guaranty any order.
+        Arrays.sort( files );
+        for ( final File file : files )
+        {
+            list.add( new FileResourceName( name, file.getName() ) );
         }
 
         return list;
@@ -399,9 +408,12 @@ public class FileResourceServiceImpl
         try
         {
             final FileInputStream in = new FileInputStream( file );
-            if (ignoreBom) {
+            if ( ignoreBom )
+            {
                 return new BOMInputStream( in, false );
-            } else {
+            }
+            else
+            {
                 return in;
             }
         }
