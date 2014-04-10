@@ -77,6 +77,7 @@ function searchShortcuts( element, display, isLast ) {
 }
 
 function toggleShortcuts( toggle ) {
+    // WebFXTabPane is not available inside related content popup
     var show = WebFXTabPane.getCookie( 'shortcuts' ) != 'false';
     show = toggle ? !show : show;
     WebFXTabPane.setCookie( 'shortcuts', show, 30 );
@@ -90,8 +91,10 @@ function toggleShortcuts( toggle ) {
     if (menu) searchShortcuts( menu, show ? '' : 'none', true );
 }
 
-function openTree() {
-    toggleShortcuts( false );
+function openTree(isToggleShortcuts) {
+    if(isToggleShortcuts != false) {
+        toggleShortcuts( false );
+    }
 
     for( var key in branchOpen ) {
 
