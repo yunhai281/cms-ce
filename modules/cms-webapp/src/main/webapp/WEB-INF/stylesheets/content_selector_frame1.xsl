@@ -75,6 +75,8 @@
                       }
 
                       function onLoad() {
+                        openMenuTree();
+
                         <xsl:if test="$redirect = 'true' and $is-related-content-popup or $is-editor-image-picker">
 
                         var disabledParam =
@@ -127,7 +129,7 @@
                           }
                         }
 
-                        openTree();
+                        openTree(false);
                       }
                     </script>
 
@@ -150,8 +152,7 @@
             <body id="popup">
                 <xsl:if test="$subop != 'callback'">
                     <xsl:attribute name="onload">
-                        <xsl:text>javascript:openMenuTree();</xsl:text>
-                        <xsl:text>onLoad();</xsl:text>
+                        <xsl:text>javascript:onLoad();</xsl:text>
                     </xsl:attribute>
                 </xsl:if>
 
