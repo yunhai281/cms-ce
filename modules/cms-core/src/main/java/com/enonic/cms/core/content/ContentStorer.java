@@ -600,7 +600,7 @@ public class ContentStorer
         newVersionToPersist.setContentDataXml( persistedVersion.getContentDataAsXmlString() );
         newVersionToPersist.setTitle( persistedVersion.getTitle() );
 
-        final boolean modifiedByUserModifyableProperties = doUpdateContentVersionProperties( newVersionToPersist, updateContentCommand );
+        final boolean modifiedByUserModifiableProperties = doUpdateContentVersionProperties( newVersionToPersist, updateContentCommand );
 
         new ContentValidator( contentDao ).validate( newVersionToPersist );
 
@@ -611,7 +611,7 @@ public class ContentStorer
                 updateContentCommand.getBinaryDataToAdd().size() > 0 || updateContentCommand.getBinaryDataToRemove().size() > 0;
         }
 
-        boolean noChanges = !modifiedByUserModifyableProperties && !anyBinaryChanges;
+        boolean noChanges = !modifiedByUserModifiableProperties && !anyBinaryChanges;
         // No changes made and no forcing of creating new version - lets return by doing nothing
         if ( noChanges && !updateContentCommand.forceNewVersionEventIfUnchanged() )
         {

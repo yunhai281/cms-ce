@@ -260,7 +260,7 @@ public class ContentImporterImpl
             if ( existingContentStatus.equals( ContentStatus.DRAFT ) )
             {
                 command = UpdateContentCommand.updateExistingVersion2( versionToBaseNewVersionOn.getKey() );
-                command.setStatus( existingContentStatus );
+                command.setStatus( ContentStatus.DRAFT );
                 command.setUpdateAsMainVersion( true );
             }
             else if ( existingContentStatus.equals( ContentStatus.ARCHIVED ) )
@@ -290,7 +290,19 @@ public class ContentImporterImpl
         else if ( importConfig.getUpdateStrategy().equals( CtyImportUpdateStrategyConfig.UPDATE_AND_APPROVE_CONTENT ) )
         {
             final UpdateContentCommand command;
-            command = UpdateContentCommand.storeNewVersionIfChanged( versionToBaseNewVersionOn.getKey() );
+            if ( existingContentStatus == ContentStatus.DRAFT )
+            {
+                command = UpdateContentCommand.updateExistingVersion2( versionToBaseNewVersionOn.getKey() );
+            }
+            else if ( existingContentStatus == ContentStatus.APPROVED )
+            {
+                command = UpdateContentCommand.storeNewVersionIfChanged( versionToBaseNewVersionOn.getKey() );
+            }
+            else  // Status == ARCHIVED
+            {
+                command = UpdateContentCommand.storeNewVersionEvenIfUnchanged( versionToBaseNewVersionOn.getKey() );
+            }
+
             command.setStatus( ContentStatus.APPROVED );
             command.setUpdateAsMainVersion( true );
             return command;

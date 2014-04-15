@@ -124,7 +124,8 @@ public abstract class AbstractDataEntrySet
         if ( !inputConfig.getType().isCompatible( entry.getType() ) )
         {
             throw new IllegalArgumentException( "Configuration for entry '" + entry.getName() + "' not compatible. Expected " +
-                inputConfig.getType().getCompatibleDataEntryTypesAsCommaSeparatedString() + ", got " + entry.getType() + "." );
+                                                    inputConfig.getType().getCompatibleDataEntryTypesAsCommaSeparatedString() + ", got " +
+                                                    entry.getType() + "." );
         }
     }
 
@@ -161,6 +162,33 @@ public abstract class AbstractDataEntrySet
             }
         }
         return entriesOfType;
+    }
+
+    public List<DataEntry> getNonNullEntries()
+    {
+        List<DataEntry> noNullEntriesOfType = new ArrayList<DataEntry>();
+        for ( DataEntry entry : entries )
+        {
+            if ( entry.hasValue() )
+            {
+                noNullEntriesOfType.add( entry );
+            }
+        }
+        return noNullEntriesOfType;
+    }
+
+    public List<DataEntry> getNonNullEntries( DataEntryType type )
+    {
+        List<DataEntry> allEntriesOfType = getEntries( type );
+        List<DataEntry> noNullEntriesOfType = new ArrayList<DataEntry>();
+        for ( DataEntry entry : allEntriesOfType )
+        {
+            if ( entry.hasValue() )
+            {
+                noNullEntriesOfType.add( entry );
+            }
+        }
+        return noNullEntriesOfType;
     }
 
     public DataEntry getEntry( String name )
@@ -431,11 +459,12 @@ public abstract class AbstractDataEntrySet
         }
 
         AbstractDataEntrySet that = (AbstractDataEntrySet) o;
-        if ( !equalsEntriesOrder( this.getEntries( DataEntryType.GROUP ), that.getEntries( DataEntryType.GROUP ) ) )
+        if ( !equalsEntriesOrder( this.getNonNullEntries( DataEntryType.GROUP ), that.getNonNullEntries( DataEntryType.GROUP ) ) )
         {
             return false;
         }
-        if ( !equalsEntriesIgnoreOrder( this.getEntries(), that.getEntries() ) )
+
+        if ( !equalsEntriesIgnoreOrder( this.getNonNullEntries(), that.getNonNullEntries() ) )
         {
             return false;
         }

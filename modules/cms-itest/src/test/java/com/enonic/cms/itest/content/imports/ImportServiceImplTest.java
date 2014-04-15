@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -64,9 +63,6 @@ import static org.junit.Assert.*;
 public class ImportServiceImplTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
     @Autowired
@@ -1791,7 +1787,7 @@ public class ImportServiceImplTest
     }
 
     @Test
-    public void update_strategy_approve()
+    public void updateStrategy_UPDATEANDAPPROVECONTENT_when_new_content_is_changed_then_content_is_approved_and_old_version_is_archived()
         throws UnsupportedEncodingException
     {
         ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();
@@ -1857,19 +1853,107 @@ public class ImportServiceImplTest
         assertEquals( 3, result.getUpdated().size() );
         assertEquals( 3, fixture.countAllContent() );
 
-        // verify: content Draft have unchanged status
+        // verify: content Draft is changed and approved
         assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_draft ).getMainVersion().getStatus() );
-        assertEquals( 2, fixture.countContentVersionsByContent( contentKey_draft ) );
-        assertEquals( ContentStatus.ARCHIVED, fixture.findContentVersionByContent( 0, contentKey_draft ).getStatus() );
-        assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 1, contentKey_draft ).getStatus() );
+        assertEquals( 1, fixture.countContentVersionsByContent( contentKey_draft ) );
+        assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 0, contentKey_draft ).getStatus() );
+        assertEquals( "Draft updated", fixture.findContentVersionByContent( 0, contentKey_draft ).getContentData().getTitle() );
 
-        // verify: content Approved is unchanged and new draft is updated
+        // verify: the previous APPROVED version is unchanged and ARCHIVED, while a new APPROVED version have been created with changes.
         assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_approved ).getMainVersion().getStatus() );
         assertEquals( 2, fixture.countContentVersionsByContent( contentKey_approved ) );
         assertEquals( ContentStatus.ARCHIVED, fixture.findContentVersionByContent( 0, contentKey_approved ).getStatus() );
+        assertEquals( "Approved", fixture.findContentVersionByContent( 0, contentKey_approved ).getContentData().getTitle() );
         assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 1, contentKey_approved ).getStatus() );
+        assertEquals( "Approved updated", fixture.findContentVersionByContent( 1, contentKey_approved ).getContentData().getTitle() );
 
-        // verify: content Archived have become a draft, and the previous main version is still archived
+        // verify: the previous main version is still ARCHIVED and unchanged, while a new APPROVED version has been created with changes.
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_archived ).getMainVersion().getStatus() );
+        assertEquals( 2, fixture.countContentVersionsByContent( contentKey_archived ) );
+        assertEquals( ContentStatus.ARCHIVED, fixture.findContentVersionByContent( 0, contentKey_archived ).getStatus() );
+        assertEquals( "Archived", fixture.findContentVersionByContent( 0, contentKey_archived).getContentData().getTitle() );
+        assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 1, contentKey_archived ).getStatus() );
+        assertEquals( "Archived updated", fixture.findContentVersionByContent( 1, contentKey_archived).getContentData().getTitle() );
+    }
+
+    @Test
+    public void updateStrategy_UPDATEANDAPPROVECONTENT_when_content_is_not_changed_approved_content_is_not_changed_but_archived_and_draft_content_get_new_approved_main_version()
+        throws UnsupportedEncodingException
+    {
+        ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();
+
+        // setup: create one content for each status
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.DRAFT );
+        CustomContentData contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "0" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Draft" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_draft = contentService.createContent( createCommand );
+
+        createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.APPROVED );
+        contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "2" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Approved" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_approved = contentService.createContent( createCommand );
+
+        createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.ARCHIVED );
+        contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "3" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Archived" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_archived = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
+
+        // verify setup content
+        assertEquals( 3, fixture.countAllContent() );
+
+        // setup content type with needed import configuration
+        String importsConfig = "";
+        importsConfig += "<imports>";
+        importsConfig +=
+            "<import base='/persons/person' mode='xml' name='xml-import' update-strategy='UPDATE-AND-APPROVE-CONTENT' sync='person-no'>";
+        importsConfig += "  <mapping src='@id' dest='person-no'/>";
+        importsConfig += "  <mapping src='name' dest='name'/>";
+        importsConfig += "  <mapping src='html' dest='htmlarea'/>";
+        importsConfig += "</import>";
+        importsConfig += "</imports>";
+
+        String changedContentTypeXml = personContentTypeXml.replace( "<imports/>", importsConfig );
+        updateContentType( "PersonCty", changedContentTypeXml );
+
+        String importData = "";
+        importData += "<persons>";
+        importData += "  <person id='0'><name>Draft</name></person>";
+        importData += "  <person id='2'><name>Approved</name></person>";
+        importData += "  <person id='3'><name>Archived</name></person>";
+        importData += "</persons>";
+
+        // exercise: import with status = 0
+        ImportContentCommand command = new ImportContentCommand();
+        command.importer = fixture.findUserByName( "testuser" );
+        command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
+        command.importName = "xml-import";
+        command.inputStream = new ByteArrayInputStream( importData.getBytes( "UTF-8" ) );
+        ImportJob job = importJobFactory.createImportJob( command );
+        ImportResult result = job.start();
+
+        // verify
+        assertEquals( 2, result.getUpdated().size() );
+        assertEquals( 3, fixture.countAllContent() );
+
+        // verify: content Draft have been made APPROVED.
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_draft ).getMainVersion().getStatus() );
+        assertEquals( 1, fixture.countContentVersionsByContent( contentKey_draft ) );
+        assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 0, contentKey_draft ).getStatus() );
+
+        // verify: content Approved is unchanged and new version is not created
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_approved ).getMainVersion().getStatus() );
+        assertEquals( 1, fixture.countContentVersionsByContent( contentKey_approved ) );
+        assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 0, contentKey_approved ).getStatus() );
+
+        // verify: content Archived is still archived, but a new APPROVED version has been created
         assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_archived ).getMainVersion().getStatus() );
         assertEquals( 2, fixture.countContentVersionsByContent( contentKey_archived ) );
         assertEquals( ContentStatus.ARCHIVED, fixture.findContentVersionByContent( 0, contentKey_archived ).getStatus() );
