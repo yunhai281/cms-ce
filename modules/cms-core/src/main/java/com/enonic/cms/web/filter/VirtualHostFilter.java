@@ -40,8 +40,11 @@ public final class VirtualHostFilter
     @Value("${cms.security.vhost.require}")
     private boolean requireVirtualHost;
 
+    @Value("${cms.vhost.require}")
+    private boolean accessVirtualHost;
+
     protected void doFilterInternal( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws IOException, ServletException
+        throws IOException, ServletException
     {
         try
         {
@@ -63,22 +66,25 @@ public final class VirtualHostFilter
     }
 
     private void doFilter( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws Exception
+        throws Exception
     {
 
         String fullTargetPath = null;
 
-        VirtualHost virtualHost = this.virtualHostResolver != null ? this.virtualHostResolver.resolve( req ) : null;
-        if ( virtualHost != null )
+        if ( accessVirtualHost )
         {
-            fullTargetPath = virtualHost.getFullTargetPath( req );
-            String fullSourcePath = virtualHost.getFullSourcePath( req );
-            VirtualHostHelper.setBasePath( req, fullSourcePath );
-        }
-        else if ( requireVirtualHost )
-        {
-            res.setStatus( HttpServletResponse.SC_NOT_FOUND );
-            return;
+            VirtualHost virtualHost = this.virtualHostResolver != null ? this.virtualHostResolver.resolve( req ) : null;
+            if ( virtualHost != null )
+            {
+                fullTargetPath = virtualHost.getFullTargetPath( req );
+                String fullSourcePath = virtualHost.getFullSourcePath( req );
+                VirtualHostHelper.setBasePath( req, fullSourcePath );
+            }
+            else if ( requireVirtualHost )
+            {
+                res.setStatus( HttpServletResponse.SC_NOT_FOUND );
+                return;
+            }
         }
 
         if ( urlRewriterBean.isEnabled() )
