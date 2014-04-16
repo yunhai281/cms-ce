@@ -202,8 +202,6 @@ public class ContentImporterImpl
         }
         command.setModifier( importer );
         command.setContentKey( existingContent.getKey() );
-        command.setAvailableFrom( existingContent.getAvailableFrom() );
-        command.setAvailableTo( existingContent.getAvailableTo() );
         command.setLanguage( existingContent.getLanguage() );
         command.setOwner( existingContent.getOwner().getKey() );
         command.setPriority( existingContent.getPriority() );
@@ -234,6 +232,15 @@ public class ContentImporterImpl
     {
         ContentStatus existingContentStatus = existingContent.getMainVersion().getStatus();
 
+        final Date keepAvailableFrom = existingContent.getAvailableFrom();
+        final Date updateAvailableFrom = existingContent.getAvailableFrom() == null
+            ? ( defaultPublishFrom == null ? null : defaultPublishFrom.toDate() )
+            : existingContent.getAvailableFrom();
+        final Date keepAvailableTo = existingContent.getAvailableTo();
+        final Date updateAvailableTo = existingContent.getAvailableTo() == null
+            ? ( defaultPublishTo == null ? null : defaultPublishTo.toDate() )
+            : existingContent.getAvailableTo();
+
         if ( importConfig.getUpdateStrategy().equals( CtyImportUpdateStrategyConfig.UPDATE_CONTENT_KEEP_STATUS ) )
         {
             final UpdateContentCommand command;
@@ -243,12 +250,24 @@ public class ContentImporterImpl
                 command = UpdateContentCommand.updateExistingVersion2( versionToBaseNewVersionOn.getKey() );
                 command.setStatus( existingContentStatus );
                 command.setUpdateAsMainVersion( true );
+                command.setAvailableFrom( keepAvailableFrom );
+                command.setAvailableTo( keepAvailableTo );
             }
             else
             {
                 command = UpdateContentCommand.storeNewVersionIfChanged( versionToBaseNewVersionOn.getKey() );
                 command.setStatus( existingContentStatus );
                 command.setUpdateAsMainVersion( true );
+                if ( existingContentStatus.equals( ContentStatus.APPROVED ) )
+                {
+                    command.setAvailableFrom( updateAvailableFrom );
+                    command.setAvailableTo( updateAvailableTo );
+                }
+                else
+                {
+                    command.setAvailableFrom( keepAvailableFrom );
+                    command.setAvailableTo( keepAvailableTo );
+                }
             }
 
             return command;
@@ -285,6 +304,10 @@ public class ContentImporterImpl
                     command.setUpdateAsMainVersion( false );
                 }
             }
+
+            command.setAvailableFrom( keepAvailableFrom );
+            command.setAvailableTo( keepAvailableTo );
+
             return command;
         }
         else if ( importConfig.getUpdateStrategy().equals( CtyImportUpdateStrategyConfig.UPDATE_AND_APPROVE_CONTENT ) )
@@ -305,6 +328,9 @@ public class ContentImporterImpl
 
             command.setStatus( ContentStatus.APPROVED );
             command.setUpdateAsMainVersion( true );
+            command.setAvailableFrom( updateAvailableFrom );
+            command.setAvailableTo( updateAvailableTo );
+
             return command;
         }
         else if ( importConfig.getUpdateStrategy().equals( CtyImportUpdateStrategyConfig.UPDATE_AND_ARCHIVE_CONTENT ) )
@@ -313,6 +339,8 @@ public class ContentImporterImpl
             command = UpdateContentCommand.storeNewVersionIfChanged( versionToBaseNewVersionOn.getKey() );
             command.setStatus( ContentStatus.ARCHIVED );
             command.setUpdateAsMainVersion( true );
+            command.setAvailableFrom( keepAvailableFrom );
+            command.setAvailableTo( keepAvailableTo );
             return command;
         }
 

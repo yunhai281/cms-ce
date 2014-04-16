@@ -1871,13 +1871,13 @@ public class ImportServiceImplTest
         assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_archived ).getMainVersion().getStatus() );
         assertEquals( 2, fixture.countContentVersionsByContent( contentKey_archived ) );
         assertEquals( ContentStatus.ARCHIVED, fixture.findContentVersionByContent( 0, contentKey_archived ).getStatus() );
-        assertEquals( "Archived", fixture.findContentVersionByContent( 0, contentKey_archived).getContentData().getTitle() );
+        assertEquals( "Archived", fixture.findContentVersionByContent( 0, contentKey_archived ).getContentData().getTitle() );
         assertEquals( ContentStatus.APPROVED, fixture.findContentVersionByContent( 1, contentKey_archived ).getStatus() );
-        assertEquals( "Archived updated", fixture.findContentVersionByContent( 1, contentKey_archived).getContentData().getTitle() );
+        assertEquals( "Archived updated", fixture.findContentVersionByContent( 1, contentKey_archived ).getContentData().getTitle() );
     }
 
     @Test
-    public void updateStrategy_UPDATEANDAPPROVECONTENT_when_content_is_not_changed_approved_content_is_not_changed_but_archived_and_draft_content_get_new_approved_main_version()
+    public void updateStrategy_UPDATEANDAPPROVECONTENT_when_content_is_not_changed_then_draft_gets_main_version_approved_and_approved_content_is_not_changed_and_archived_content_gets_new_approved_main_version()
         throws UnsupportedEncodingException
     {
         ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();
@@ -1961,7 +1961,101 @@ public class ImportServiceImplTest
     }
 
     @Test
-    public void update_strategy_approve_updating_approved_content_with_draft()
+    public void updateStrategy_UPDATEANDAPPROVECONTENT_updating_publish_from_and_publish_to()
+        throws UnsupportedEncodingException
+    {
+        final DateTime testPublishFrom = new DateTime( 2010, 10, 20, 20, 10 );
+        final DateTime testPublishTo = new DateTime( 2110, 10, 21, 21, 10 );
+
+        ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();
+
+        // setup: create one content for each status
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.DRAFT );
+        CustomContentData contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "0" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Draft" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_draft = contentService.createContent( createCommand );
+
+        createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.APPROVED );
+        contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "2" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Approved" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_approved = contentService.createContent( createCommand );
+
+        createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.ARCHIVED );
+        contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "3" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Archived" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentKey_archived = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
+
+        // verify setup content
+        assertEquals( 3, fixture.countAllContent() );
+        assertNull( fixture.findContentByKey( contentKey_draft ).getAvailableFrom() );
+        assertNull( fixture.findContentByKey( contentKey_approved ).getAvailableFrom() );
+        assertNull( fixture.findContentByKey( contentKey_archived ).getAvailableFrom() );
+        assertNull( fixture.findContentByKey( contentKey_draft ).getAvailableTo() );
+        assertNull( fixture.findContentByKey( contentKey_approved ).getAvailableTo() );
+        assertNull( fixture.findContentByKey( contentKey_archived ).getAvailableTo() );
+
+        // setup content type with needed import configuration
+        String importsConfig = "";
+        importsConfig += "<imports>";
+        importsConfig +=
+            "<import base='/persons/person' mode='xml' name='xml-import' update-strategy='UPDATE-AND-APPROVE-CONTENT' sync='person-no'>";
+        importsConfig += "  <mapping src='@id' dest='person-no'/>";
+        importsConfig += "  <mapping src='name' dest='name'/>";
+        importsConfig += "  <mapping src='html' dest='htmlarea'/>";
+        importsConfig += "</import>";
+        importsConfig += "</imports>";
+
+        String changedContentTypeXml = personContentTypeXml.replace( "<imports/>", importsConfig );
+        updateContentType( "PersonCty", changedContentTypeXml );
+
+        String importData = "";
+        importData += "<persons>";
+        importData += "  <person id='0'><name>Draft</name></person>";
+        importData += "  <person id='2'><name>Approved</name></person>";
+        importData += "  <person id='3'><name>Archived</name></person>";
+        importData += "</persons>";
+
+        // exercise: import with status = 0
+        ImportContentCommand command = new ImportContentCommand();
+        command.importer = fixture.findUserByName( "testuser" );
+        command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
+        command.publishFrom = testPublishFrom;
+        command.publishTo = testPublishTo;
+        command.importName = "xml-import";
+        command.inputStream = new ByteArrayInputStream( importData.getBytes( "UTF-8" ) );
+        ImportJob job = importJobFactory.createImportJob( command );
+        ImportResult result = job.start();
+
+        // verify correct results.
+        assertEquals( 3, result.getUpdated().size() );
+        assertEquals( 3, fixture.countAllContent() );
+
+        // verify: status has been updated and publishing dates are set right
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_draft ).getMainVersion().getStatus() );
+        assertEquals( testPublishFrom, new DateTime( fixture.findContentByKey( contentKey_draft ).getAvailableFrom() ) );
+        assertEquals( testPublishTo, new DateTime( fixture.findContentByKey( contentKey_draft ).getAvailableTo() ) );
+        assertEquals( 1, fixture.countContentVersionsByContent( contentKey_draft ) );
+
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_approved ).getMainVersion().getStatus() );
+        assertEquals( testPublishFrom, new DateTime( fixture.findContentByKey( contentKey_approved ).getAvailableFrom() ) );
+        assertEquals( testPublishTo, new DateTime( fixture.findContentByKey( contentKey_approved ).getAvailableTo() ) );
+        assertEquals( 1, fixture.countContentVersionsByContent( contentKey_approved ) );
+
+        assertEquals( ContentStatus.APPROVED, fixture.findContentByKey( contentKey_archived ).getMainVersion().getStatus() );
+        assertEquals( testPublishFrom, new DateTime( fixture.findContentByKey( contentKey_archived ).getAvailableFrom() ) );
+        assertEquals( testPublishTo, new DateTime( fixture.findContentByKey( contentKey_archived ).getAvailableTo() ) );
+    }
+
+    @Test
+    public void updateStrategy_UPDATEANDAPPROVECONTENT_updating_approved_content_with_draft()
         throws UnsupportedEncodingException
     {
         ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();

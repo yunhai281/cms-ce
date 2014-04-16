@@ -330,6 +330,9 @@ public class ContentStorer
         if ( contentHasChanged )
         {
             result.markContentAsChanged();
+
+            // If only properties have changed, the current main version must be recognized as the changed version.
+            result.setTargetedVersion( persistedContent.getMainVersion() );
         }
 
         if ( updateCommand.getUpdateAsNewVersion() )
