@@ -15,6 +15,7 @@
     <xsl:include href="common/button.xsl"/>
     <xsl:include href="common/tablecolumnheader.xsl"/>
     <xsl:include href="common/tablerowpainter.xsl"/>
+    <xsl:include href="common/waitsplash.xsl"/>
 
     <xsl:param name="categoryname"/>
     <xsl:param name="contenttypekey"/>
@@ -27,6 +28,8 @@
             <script type="text/javascript" language="JavaScript" src="javascript/accessrights.js"/>
             <script type="text/javascript" language="JavaScript" src="javascript/tabpane.js"/>
 
+            <xsl:call-template name="waitsplash"/>
+
             <script type="text/javascript" language="JavaScript">
 
                 function changeSelection( key )
@@ -37,6 +40,8 @@
 
                 function submitForm( subop )
                 {
+                    waitsplash();
+
                     var f = document.forms["formAdmin"];
                     document.getElementById("subop").value = subop;
                     f.submit();
