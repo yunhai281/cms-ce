@@ -82,6 +82,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateGroupParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.log.LogEntry;
@@ -164,6 +165,7 @@ import com.enonic.cms.core.security.group.GroupXmlCreator;
 import com.enonic.cms.core.security.group.QualifiedGroupname;
 import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
 import com.enonic.cms.core.security.group.StoreNewGroupCommand;
+import com.enonic.cms.core.security.group.UpdateGroupCommand;
 import com.enonic.cms.core.security.user.DeleteUserCommand;
 import com.enonic.cms.core.security.user.DisplayNameResolver;
 import com.enonic.cms.core.security.user.QualifiedUsername;
@@ -688,6 +690,34 @@ public abstract class InternalClientImpl
                 GroupEntity createdGroup = groupDao.findByKey( createdGroupKey );
                 return xmlCreator.createGroupDocument( createdGroup, false, false, false );
             }
+        }
+        catch ( Exception e )
+        {
+            throw handleException( e );
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateGroup( final UpdateGroupParams params )
+        throws ClientException
+    {
+        try
+        {
+            if ( params.group == null )
+            {
+                throw new IllegalArgumentException( "group must be specified" );
+            }
+
+            GroupEntity group = parseAndGetGroup( params.group );
+
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
+
+            final UpdateGroupCommand command = new UpdateGroupCommand( runningUser.getKey(), group.getGroupKey() );
+            command.setName( params.name );
+            command.setDescription( params.description );
+            command.setRestricted( params.restricted );
+
+            userStoreService.updateGroup( command );
         }
         catch ( Exception e )
         {

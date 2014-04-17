@@ -56,6 +56,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateGroupParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.preference.Preference;
@@ -192,6 +193,12 @@ public abstract class ClientWrapper
         throws ClientException
     {
         return this.delegate.createGroup( params );
+    }
+
+    public void updateGroup( UpdateGroupParams params )
+        throws ClientException
+    {
+        this.delegate.updateGroup( params );
     }
 
     public void deleteGroup( DeleteGroupParams params )
