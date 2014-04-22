@@ -58,6 +58,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateGroupParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.preference.Preference;
@@ -182,6 +183,12 @@ public class MockClient
         throws ClientException
     {
         return null;
+    }
+
+    @Override
+    public void updateGroup( final UpdateGroupParams params )
+        throws ClientException
+    {
     }
 
     public void deleteGroup( DeleteGroupParams params )
