@@ -18,7 +18,7 @@
       table.style.width = (document.all) ? '102%' : '100%';
       table.style.height = (document.all) ? '110%' : '100%';
 
-      table.style.position = 'absolute';
+      table.style.position = 'fixed';
       table.style.zIndex = 100000000;
       table.style.top = 0;
       table.style.left = 0;
