@@ -86,6 +86,7 @@ import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
+import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
@@ -131,6 +132,8 @@ public final class UserServicesProcessor
     private LoginService loginService;
 
     private UserDao userDao;
+
+    private GroupDao groupDao;
 
     private UserStoreDao userStoreDao;
 
@@ -406,10 +409,22 @@ public final class UserServicesProcessor
 
     private void addSubmittedGroups( List<GroupKey> groupKeys, AbstractMembershipsCommand userCommand )
     {
-
         for ( GroupKey newGroupKey : groupKeys )
         {
-            userCommand.addMembership( newGroupKey );
+            final GroupEntity newGroup = groupDao.find( newGroupKey.toString() );
+
+            if ( newGroup != null && !newGroup.isRestricted() )
+            {
+                userCommand.addMembership( newGroupKey );
+            }
+            else if ( newGroup == null )
+            {
+                VerticalUserServicesLogger.warn( "Not able to join group with key: " + newGroupKey.toString() + ", not found" );
+            }
+            else
+            {
+                VerticalUserServicesLogger.warn( "Not able to join group with key: " + newGroupKey.toString() + ", not allowed" );
+            }
         }
     }
 
@@ -982,7 +997,8 @@ public final class UserServicesProcessor
 
             final SimpleMailTemplate adminMail = new SimpleMailTemplate();
 
-            adminMail.addRecipient( formItems.getString( "admin_name", "" ), formItems.getString( "admin_email" ), MailRecipientType.TO_RECIPIENT );
+            adminMail.addRecipient( formItems.getString( "admin_name", "" ), formItems.getString( "admin_email" ),
+                                    MailRecipientType.TO_RECIPIENT );
 
             adminMail.setFrom( formItems.getString( "from_name", "" ), formItems.getString( "from_email", "" ) );
 
@@ -1600,6 +1616,12 @@ public final class UserServicesProcessor
     public void setUserDao( final UserDao userDao )
     {
         this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setGroupDao( final GroupDao groupDao )
+    {
+        this.groupDao = groupDao;
     }
 
     @Autowired
