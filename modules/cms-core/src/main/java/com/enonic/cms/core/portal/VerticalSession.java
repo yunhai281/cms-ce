@@ -5,9 +5,7 @@
 package com.enonic.cms.core.portal;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,98 +13,58 @@ import org.w3c.dom.Element;
 import com.enonic.esl.xml.XMLTool;
 
 final public class VerticalSession
+    extends HashMap<String, Object>
 {
     public static final String VERTICAL_SESSION_OBJECT = "VERTICAL_SESSION_OBJECT";
 
-    final static int DEFAULT_SLOTS = 10;
-
-    private Map attributes = null;
-
-    public VerticalSession()
+    public void setAttribute( final String attributeName, final String value )
     {
-        this( DEFAULT_SLOTS );
+        final String trimmedValue = value.replaceAll( "\\r", "" );
+        put( attributeName, trimmedValue );
     }
 
-    public VerticalSession( int slots )
+    public void setAttribute( final String attributeName, final Document xmlDoc )
     {
-        attributes = new HashMap( slots );
+        put( attributeName, xmlDoc );
     }
 
-    public String[] getAttributeNames()
+    public Object getAttribute( final String attributeName )
     {
-        return (String[]) this.attributes.keySet().toArray( new String[this.attributes.size()] );
+        return get( attributeName );
     }
 
-    public void setAttribute( String attributeName, String value )
+    public void removeAttribute( final String name )
     {
-        // remove those nasty \r
-        value = value.replaceAll("\\r", "");
-        attributes.put( attributeName, value );
-    }
-
-    public void setAttribute( String attributeName, Document xmlDoc )
-    {
-        attributes.put( attributeName, xmlDoc );
-    }
-
-
-    public void setAttribute( String attributeName, Set set )
-    {
-        attributes.put( attributeName, set );
-    }
-
-
-    public Object getAttribute( String attributeName )
-    {
-        return attributes.get( attributeName );
-    }
-
-    public void removeAttribute( String name )
-    {
-        attributes.remove( name );
+        remove( name );
     }
 
     public Document toXML()
     {
-        Document doc = XMLTool.createDocument( "sessions" );
+        final Document doc = XMLTool.createDocument( "sessions" );
         toXML( doc.getDocumentElement() );
         return doc;
     }
 
-
-    public void toXML( Element parent )
+    private void toXML( final Element parent )
     {
-        Document doc = parent.getOwnerDocument();
-        Element sessionElem = XMLTool.createElement( doc, parent, "session" );
+        final Document doc = parent.getOwnerDocument();
+        final Element sessionElem = XMLTool.createElement( doc, parent, "session" );
 
-        Set set = attributes.entrySet();
-        Iterator iter = set.iterator();
-        while ( iter.hasNext() )
+        for ( final Map.Entry<String, Object> entry : entrySet() )
         {
-            Map.Entry entry = (Map.Entry) iter.next();
+            final Element attributeElem = XMLTool.createElement( doc, sessionElem, "attribute" );
+            attributeElem.setAttribute( "name", entry.getKey() );
 
-            Element attributeElem = XMLTool.createElement( doc, sessionElem, "attribute" );
-            attributeElem.setAttribute( "name", (String) entry.getKey() );
-
-            Object value = entry.getValue();
-            if ( value instanceof String )
+            final Object value = entry.getValue();
+            if ( value instanceof Document )
             {
-                XMLTool.createTextNode( doc, attributeElem, (String) value );
-            }
-            else if ( value instanceof Set )
-            {
-                Iterator iterator = ( (Set) value ).iterator();
-                while ( iterator.hasNext() )
-                {
-                    XMLTool.createElement( doc, attributeElem, "value", iterator.next().toString() );
-                }
-            }
-            else
-            {
-                // import the xml document into the new document
-                Document xmlDoc = (Document) value;
-                Element rootElem = xmlDoc.getDocumentElement();
+                final Document xmlDoc = (Document) value;
+                final Element rootElem = xmlDoc.getDocumentElement();
                 attributeElem.appendChild( doc.importNode( rootElem, true ) );
+            }
+            else if ( value != null )
+            {
+                XMLTool.createTextNode( doc, attributeElem, value.toString() );
             }
         }
 
@@ -116,5 +74,4 @@ final public class VerticalSession
     {
         return XMLTool.documentToString( toXML() );
     }
-
 }

@@ -7,8 +7,6 @@ package com.enonic.cms.core.portal.datasource.handler.context;
 
 import org.junit.Test;
 
-import com.google.common.collect.Sets;
-
 import com.enonic.cms.framework.xml.XMLDocumentHelper;
 
 import com.enonic.cms.core.portal.VerticalSession;
@@ -35,7 +33,6 @@ public class GetSessionContextHandlerTest
     {
         final VerticalSession verticalSession = new VerticalSession();
         verticalSession.setAttribute( "value-string", "data" );
-        verticalSession.setAttribute( "value-set", Sets.newHashSet( 1, 2, 3 ) );
         verticalSession.setAttribute( "value-xml", XMLDocumentHelper.convertToW3CDocument( "<xml-value>data</xml-value>" ) );
         this.request.setVerticalSession( verticalSession );
 
