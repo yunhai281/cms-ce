@@ -442,7 +442,6 @@ public final class UserServicesProcessor
 
     protected void addGroupsFromSetGroupsConfig( ExtendedMap formItems, UpdateUserCommand updateUserCommand, UserEntity user )
     {
-
         List<GroupKey> toBeAdded = getSubmittedGroupKeys( formItems, JOINGROUPKEY );
         List<GroupKey> toBeConsidered = getSubmittedGroupKeys( formItems, ALLGROUPKEYS );
 

@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -56,7 +57,6 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 
 /**
@@ -166,17 +166,17 @@ public class DomainFactory
 
     public GroupEntity createGlobalGroup( String name )
     {
-        GroupEntity group = createGroup( name, GroupType.GLOBAL_GROUP );
+        GroupEntity group = createGroup( name, GroupType.GLOBAL_GROUP, true );
         return group;
     }
 
-    public GroupEntity createGroup( String name, GroupType groupType )
+    public GroupEntity createGroup( String name, GroupType groupType, final boolean restriced )
     {
         GroupEntity group = new GroupEntity();
         group.setName( name );
         group.setSyncValue( "sync_" + name );
         group.setDeleted( 0 );
-        group.setRestricted( 1 );
+        group.setRestricted( restriced );
         group.setType( groupType );
         return group;
     }

@@ -24,6 +24,9 @@ import org.springframework.mock.web.MockHttpSession;
 import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.api.client.model.user.Gender;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
@@ -31,6 +34,7 @@ import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -39,14 +43,12 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
-import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 import com.enonic.cms.web.portal.SiteRedirectHelper;
@@ -62,6 +64,9 @@ public class UserServicesProcessorTest
 {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private GroupDao groupDao;
 
     @Autowired
     private UserStoreDao userStoreDao;
@@ -91,6 +96,7 @@ public class UserServicesProcessorTest
 
         userHandlerController = new UserServicesProcessor();
         userHandlerController.setUserDao( userDao );
+        userHandlerController.setGroupDao( groupDao );
         userHandlerController.setUserStoreDao( userStoreDao );
         userHandlerController.setSecurityService( securityService );
         userHandlerController.setUserStoreService( userStoreService );
@@ -115,10 +121,21 @@ public class UserServicesProcessorTest
     @Test
     public void testAddGroupsFromSetGroupsConfig()
     {
+        final GroupEntity group1 = fixture.getFactory().createGroup( "open1", GroupType.GLOBAL_GROUP, false );
+        fixture.save( group1 );
+        final GroupEntity group2 = fixture.getFactory().createGroup( "open2", GroupType.GLOBAL_GROUP, false );
+        fixture.save( group2 );
+
+        final String group1Key = group1.getGroupKey().toString();
+        final String group2Key = group2.getGroupKey().toString();
+
         ExtendedMap formItems = new ExtendedMap();
 
-        formItems.put( UserServicesProcessor.ALLGROUPKEYS, "1,2,3,4,5" );
-        formItems.put( UserServicesProcessor.JOINGROUPKEY, new String[]{"2", "3", "6"} );
+        // User has group 1,2,7
+        // Group 1 is in the allgroupskey, and should be removed since not in joingroupkey
+        // Group 2 and 3 will be added
+        formItems.put( UserServicesProcessor.ALLGROUPKEYS, "1" );
+        formItems.put( UserServicesProcessor.JOINGROUPKEY, new String[]{group1Key, group2Key} );
 
         UpdateUserCommand updateUserCommand = new UpdateUserCommand( null, null );
 
@@ -126,11 +143,46 @@ public class UserServicesProcessorTest
 
         userHandlerController.addGroupsFromSetGroupsConfig( formItems, updateUserCommand, user );
 
-        List<GroupKey> expectedEntries = generateGroupKeyList( new String[]{"2", "3", "6", "7"} );
+        List<GroupKey> expectedEntries = generateGroupKeyList( new String[]{"2", "7", group1Key, group2Key} );
 
-        assertEquals( "Should have 4 groups", updateUserCommand.getMemberships().size(), 4 );
-        assertTrue( "Should contain groupKeys: 2, 3, 6, 7", updateUserCommand.getMemberships().containsAll( expectedEntries ) );
+        assertEquals( "Should have 4 groups", 4, updateUserCommand.getMemberships().size() );
+        assertTrue( updateUserCommand.getMemberships().containsAll( expectedEntries ) );
     }
+
+    @Test
+    public void testAddRestricedGroupNotAllowed()
+    {
+        final GroupEntity group1 = fixture.getFactory().createGroup( "open1", GroupType.GLOBAL_GROUP, false );
+        fixture.save( group1 );
+        final GroupEntity group2 = fixture.getFactory().createGroup( "open2", GroupType.GLOBAL_GROUP, false );
+        fixture.save( group2 );
+        final GroupEntity group3 = fixture.getFactory().createGroup( "open3", GroupType.GLOBAL_GROUP, true );
+        fixture.save( group3 );
+
+        final String group1Key = group1.getGroupKey().toString();
+        final String group2Key = group2.getGroupKey().toString();
+        final String group3Key = group3.getGroupKey().toString();
+
+        ExtendedMap formItems = new ExtendedMap();
+
+        // User has group 1,2,7
+        // Group 1 is in the allgroupskey, and should be removed since not in joingroupkey
+        // Group 1 and 2 will be added, while group 3 will not since its restricted
+        formItems.put( UserServicesProcessor.ALLGROUPKEYS, "1" );
+        formItems.put( UserServicesProcessor.JOINGROUPKEY, new String[]{group1Key, group2Key, group3Key} );
+
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand( null, null );
+
+        MyUserEntityMock user = new MyUserEntityMock();
+
+        userHandlerController.addGroupsFromSetGroupsConfig( formItems, updateUserCommand, user );
+
+        List<GroupKey> expectedEntries = generateGroupKeyList( new String[]{"2", "7", group1Key, group2Key} );
+
+        assertEquals( "Should have 4 groups", 4, updateUserCommand.getMemberships().size() );
+        assertTrue( updateUserCommand.getMemberships().containsAll( expectedEntries ) );
+    }
+
 
     @Test
     public void create_without_required_fields_on_local_user_store_throws_exception()

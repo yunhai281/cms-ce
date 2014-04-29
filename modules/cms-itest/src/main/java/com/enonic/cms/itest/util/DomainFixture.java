@@ -132,11 +132,11 @@ public class DomainFixture
         {
             groupDao.invalidateCachedKeys();
         }
-        save( factory.createGroup( GroupType.ENTERPRISE_ADMINS.getName(), GroupType.ENTERPRISE_ADMINS ) );
-        save( factory.createGroup( GroupType.ADMINS.getName(), GroupType.ADMINS ) );
-        save( factory.createGroup( GroupType.DEVELOPERS.getName(), GroupType.DEVELOPERS ) );
-        save( factory.createGroup( GroupType.EXPERT_CONTRIBUTORS.getName(), GroupType.EXPERT_CONTRIBUTORS ) );
-        save( factory.createGroup( GroupType.CONTRIBUTORS.getName(), GroupType.CONTRIBUTORS ) );
+        save( factory.createGroup( GroupType.ENTERPRISE_ADMINS.getName(), GroupType.ENTERPRISE_ADMINS, true ) );
+        save( factory.createGroup( GroupType.ADMINS.getName(), GroupType.ADMINS, true ) );
+        save( factory.createGroup( GroupType.DEVELOPERS.getName(), GroupType.DEVELOPERS, true ) );
+        save( factory.createGroup( GroupType.EXPERT_CONTRIBUTORS.getName(), GroupType.EXPERT_CONTRIBUTORS, true ) );
+        save( factory.createGroup( GroupType.CONTRIBUTORS.getName(), GroupType.CONTRIBUTORS, true ) );
 
         UserStoreEntity testuserstore = factory.createUserStore( "testuserstore" );
         testuserstore.setDefaultStore( true );
