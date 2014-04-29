@@ -26,14 +26,14 @@ public class QueryParserTest
     @Test
     public void testCharsInField()
     {
-        QueryExpr test = parseQuery( "@a.b.c/d.e.f/g-h-i/j_k_l/* = -2" );
-        assertEquals( "@a.b.c/d.e.f/g-h-i/j_k_l/* = -2.0", test.toString() );
+        QueryExpr test = parseQuery( "@a.b.c/d.e.f/g-h-i/j_k_l/* = -2.1" );
+        assertEquals( "@a.b.c/d.e.f/g-h-i/j_k_l/* = -2.1", test.toString() );
 
         test = parseQuery( "*/b/c/d/* = -2" );
-        assertEquals( "*/b/c/d/* = -2.0", test.toString() );
+        assertEquals( "*/b/c/d/* = -2", test.toString() );
 
         test = parseQuery( "* = -2" );
-        assertEquals( "* = -2.0", test.toString() );
+        assertEquals( "* = -2", test.toString() );
     }
 
     @Test
@@ -44,7 +44,7 @@ public class QueryParserTest
         LogicalOrOptimizer logicalOrOptimizer = new LogicalOrOptimizer();
         Expression optExpr = logicalOrOptimizer.optimize( test.getExpr() );
 
-        assertEquals( "or[a = 1.0, b = 2.0, c = 3.0]", optExpr.toString() );
+        assertEquals( "or[a = 1, b = 2, c = 3]", optExpr.toString() );
 
     }
 
@@ -56,7 +56,7 @@ public class QueryParserTest
         LogicalOrOptimizer logicalOrOptimizer = new LogicalOrOptimizer();
         Expression optExpr = logicalOrOptimizer.optimize( test.getExpr() );
 
-        assertEquals( "or[status = 2.0, publishfrom > 'mydate', key = 3398.0]", optExpr.toString() );
+        assertEquals( "or[status = 2, publishfrom > 'mydate', key = 3398]", optExpr.toString() );
 
     }
 
@@ -69,7 +69,7 @@ public class QueryParserTest
         LogicalOrOptimizer logicalOrOptimizer = new LogicalOrOptimizer();
         Expression optExpr = logicalOrOptimizer.optimize( test.getExpr() );
 
-        assertEquals( "(a = 1.0 AND or[b = 2.0, c = 3.0])", optExpr.toString() );
+        assertEquals( "(a = 1 AND or[b = 2, c = 3])", optExpr.toString() );
 
     }
 
@@ -96,16 +96,16 @@ public class QueryParserTest
     @Test
     public void testFields()
     {
-        assertEquals( "a = 1.0", parseQueryToString( "a = 1" ) );
-        assertEquals( "a/b = 1.0", parseQueryToString( "a/b = 1" ) );
-        assertEquals( "a.b = 1.0", parseQueryToString( "a.b = 1" ) );
+        assertEquals( "a = 1", parseQueryToString( "a = 1" ) );
+        assertEquals( "a/b = 1", parseQueryToString( "a/b = 1" ) );
+        assertEquals( "a.b = 1", parseQueryToString( "a.b = 1" ) );
     }
 
     @Test
     public void testNumberValue()
     {
-        assertEquals( "a = 4.0", parseQueryToString( "a = 4" ) );
-        assertEquals( "a = 8.0", parseQueryToString( "a = 8.0" ) );
+        assertEquals( "a = 4", parseQueryToString( "a = 4" ) );
+        assertEquals( "a = 8", parseQueryToString( "a = 8" ) );
     }
 
     @Test

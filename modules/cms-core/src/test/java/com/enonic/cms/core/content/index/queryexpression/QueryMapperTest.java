@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.content.index.queryexpression;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.codehaus.jparsec.Tokens;
@@ -27,7 +28,7 @@ public class QueryMapperTest
 
         final ValueExpr v1 = map.map( "1.88" );
         assertNotNull( v1 );
-        assertEquals( 1.88d, v1.getValue() );
+        assertEquals( new BigDecimal( "1.88" ), v1.getValue() );
     }
 
     @Test

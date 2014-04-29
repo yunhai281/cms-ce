@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.content.index.queryexpression;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.codehaus.jparsec.Tokens;
@@ -21,7 +22,7 @@ final class QueryMapper
         {
             public ValueExpr map( final String from )
             {
-                return new ValueExpr( new Double( from.trim() ) );
+                return new ValueExpr( new BigDecimal( from.trim() ) );
             }
         };
     }
