@@ -1,0 +1,10 @@
+<sessions>
+  <session>
+    <attribute name="complex">
+      <a>
+        <b/>
+      </a>
+    </attribute>
+    <attribute name="simple">value</attribute>
+  </session>
+</sessions>
