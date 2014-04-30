@@ -7,6 +7,8 @@ package com.enonic.cms.web.portal.services;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -30,6 +32,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
@@ -128,11 +134,14 @@ public abstract class ServicesProcessorBase
 
     private UserServicesService userServicesService;
 
+    private ImmutableList<String> allowedRedirectDomains;
+
     public ServicesProcessorBase( final String handlerName )
     {
         this.handlerName = handlerName;
         fileUpload = new FileUpload( new DiskFileItemFactory() );
         fileUpload.setHeaderEncoding( "UTF-8" );
+        this.allowedRedirectDomains = ImmutableList.of( "*" );
     }
 
     public final String getHandlerName()
@@ -405,7 +414,7 @@ public abstract class ServicesProcessorBase
         }
         catch ( FileUploadException fue )
         {
-            String message = "Error occured with file upload: %t";
+            String message = "Error occurred with file upload: %t";
             VerticalAdminLogger.error( message, fue );
         }
         catch ( UnsupportedEncodingException uee )
@@ -471,6 +480,25 @@ public abstract class ServicesProcessorBase
                 " is not allowed by configuration. Check the settings in site-" + siteKey + ".properties";
             VerticalUserServicesLogger.warn( message );
             String httpErrorMsg = "Access denied to http service '" + handler + "." + operation + "' on site " + siteKey;
+            response.sendError( HttpServletResponse.SC_FORBIDDEN, httpErrorMsg );
+            return null;
+        }
+
+        // check if domain in redirect URL is allowed
+        final String redirect = formItems.getString( "_redirect", null );
+        final String redirectUrl = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, redirect, null );
+        if ( !isRedirectUrlAllowed( redirectUrl ) )
+        {
+            final String domain = new URL( redirectUrl ).getHost();
+
+            final String message = String.format(
+                "Domain '%s' of redirect URL not allowed (%s), in request to HTTP service '%s.%s' on site %s. " +
+                    "Check setting 'cms.httpServices.redirect.allowedDomains' in cms.properties", domain, redirectUrl, handler, operation,
+                siteKey
+            );
+            VerticalUserServicesLogger.warn( message );
+
+            final String httpErrorMsg = String.format( "Domain of redirect URL not allowed: %s", domain );
             response.sendError( HttpServletResponse.SC_FORBIDDEN, httpErrorMsg );
             return null;
         }
@@ -567,6 +595,32 @@ public abstract class ServicesProcessorBase
         }
     }
 
+    private boolean isRedirectUrlAllowed( final String redirectUrl )
+    {
+        return !isAbsoluteUrl( redirectUrl ) || isRedirectDomainAllowed( redirectUrl );
+    }
+
+    private boolean isRedirectDomainAllowed( final String redirectUrl )
+    {
+        try
+        {
+            final URL url = new URL( redirectUrl );
+            final String domain = url.getHost().toLowerCase();
+            for ( String allowedDomain : this.allowedRedirectDomains )
+            {
+                if ( "*".equals( allowedDomain ) || domain.equals( allowedDomain ) || domain.endsWith( "." + allowedDomain ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        catch ( MalformedURLException e )
+        {
+            return false;
+        }
+    }
+
     private boolean isAbsoluteUrl( String url )
     {
         return url.matches( "^[a-z]{3,6}://.+" );
@@ -639,6 +693,25 @@ public abstract class ServicesProcessorBase
     public void setTransliterate( boolean transliterate )
     {
         this.transliterate = transliterate;
+    }
+
+    @Value("${cms.httpServices.redirect.allowedDomains}")
+    public void setAllowedRedirectDomains( final String allowedRedirectDomains )
+    {
+        final Iterable<String> domainPrefixes = Splitter.on( "," ).omitEmptyStrings().trimResults().split( allowedRedirectDomains );
+        if ( Iterables.isEmpty( domainPrefixes ) )
+        {
+            this.allowedRedirectDomains = ImmutableList.of( "*" );
+        }
+        else
+        {
+            final ImmutableList.Builder<String> domainPrefixList = ImmutableList.builder();
+            for ( String domainPrefix : domainPrefixes )
+            {
+                domainPrefixList.add( domainPrefix.toLowerCase() );
+            }
+            this.allowedRedirectDomains = domainPrefixList.build();
+        }
     }
 
     public ModelAndView handleRequest( HttpServletRequest request, HttpServletResponse response )
