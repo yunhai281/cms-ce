@@ -82,6 +82,7 @@ import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
@@ -197,11 +198,11 @@ public final class UserServicesProcessor
 
         if ( operation.equals( "logout" ) )
         {
-            processLogout( siteContext, request, response, session, formItems );
+            processLogout( siteContext, request, response, formItems );
         }
         else if ( operation.equals( "login" ) )
         {
-            processLogin( siteContext, request, response, session, formItems );
+            processLogin( siteContext, request, response, formItems );
         }
         else if ( operation.equals( "modify" ) )
         {
@@ -221,15 +222,15 @@ public final class UserServicesProcessor
         }
         else if ( operation.equals( "joingroup" ) )
         {
-            handlerJoinGroup( request, response, session, formItems );
+            handlerJoinGroup( request, response, formItems );
         }
         else if ( operation.equals( "leavegroup" ) )
         {
-            handlerLeaveGroup( request, response, session, formItems );
+            handlerLeaveGroup( request, response, formItems );
         }
         else if ( operation.equals( "setgroups" ) )
         {
-            handlerSetGroups( request, response, session, formItems );
+            handlerSetGroups( request, response, formItems );
         }
         else if ( operation.equals( "setpreferences" ) )
         {
@@ -278,8 +279,8 @@ public final class UserServicesProcessor
         redirectToPage( request, response, formItems, queryParams );
     }
 
-    protected void handlerSetGroups( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
-        throws VerticalUserServicesException, RemoteException
+    protected void handlerSetGroups( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+    throws VerticalUserServicesException, RemoteException
     {
         UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
 
@@ -312,7 +313,7 @@ public final class UserServicesProcessor
         {
             userStoreService.updateUser( updateUserCommand );
 
-            updateUserInSession( session );
+            updateUserInSession( ServletRequestAccessor.getSession() );
         }
         catch ( Exception e )
         {
@@ -324,8 +325,8 @@ public final class UserServicesProcessor
     }
 
 
-    protected void handlerJoinGroup( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
-        throws VerticalUserServicesException, RemoteException
+    protected void handlerJoinGroup( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+    throws VerticalUserServicesException, RemoteException
     {
 
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
@@ -371,7 +372,7 @@ public final class UserServicesProcessor
             try
             {
                 userStoreService.addMembershipsToGroup( addMembershipCommand );
-                updateUserInSession( session );
+                updateUserInSession( ServletRequestAccessor.getSession() );
             }
             catch ( UserStoreAccessException e )
             {
@@ -484,8 +485,8 @@ public final class UserServicesProcessor
         return groupKeys;
     }
 
-    protected void handlerLeaveGroup( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
-        throws VerticalUserServicesException, RemoteException
+    protected void handlerLeaveGroup( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+    throws VerticalUserServicesException, RemoteException
     {
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
         if ( user == null )
@@ -530,7 +531,7 @@ public final class UserServicesProcessor
             try
             {
                 userStoreService.removeMembershipsFromGroup( removeMembershipsCommand );
-                updateUserInSession( session );
+                updateUserInSession( ServletRequestAccessor.getSession() );
             }
             catch ( UserStoreAccessException e )
             {
@@ -1140,9 +1141,8 @@ public final class UserServicesProcessor
         return spec;
     }
 
-    private void processLogin( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, HttpSession session,
-                               ExtendedMap formItems )
-        throws VerticalUserServicesException, RemoteException
+    private void processLogin( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+    throws VerticalUserServicesException, RemoteException
     {
         String username = null;
 
@@ -1186,7 +1186,7 @@ public final class UserServicesProcessor
                 logLogin( siteContext, user, request.getRemoteAddr() );
             }
 
-            session.setAttribute( "vertical_uid", username );
+            ServletRequestAccessor.getSession().setAttribute( "vertical_uid", username );
             PortalSecurityHolder.setLoggedInUser( user.getKey() );
 
             boolean rememberUser = parseRememberUser( formItems );
@@ -1381,10 +1381,11 @@ public final class UserServicesProcessor
         this.logService.storeNew( command );
     }
 
-    private void processLogout( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, HttpSession session,
-                                ExtendedMap formItems )
-        throws VerticalUserServicesException, RemoteException
+    private void processLogout( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+    throws VerticalUserServicesException, RemoteException
     {
+        final HttpSession session = ServletRequestAccessor.getSession( false );
+
         if ( session != null )
         {
             // Create log entry:

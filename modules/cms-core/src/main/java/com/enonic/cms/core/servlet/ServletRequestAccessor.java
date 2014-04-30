@@ -38,7 +38,18 @@ public final class ServletRequestAccessor
      */
     public static HttpSession getSession()
     {
-        HttpServletRequest request = getRequest();
-        return request != null ? request.getSession( true ) : null;
+        return doGetSession( true );
     }
+
+    public static HttpSession getSession( final boolean create )
+    {
+        return doGetSession( create );
+    }
+
+    private static HttpSession doGetSession( final boolean create )
+    {
+        HttpServletRequest request = getRequest();
+        return request != null ? request.getSession( create ) : null;
+    }
+
 }

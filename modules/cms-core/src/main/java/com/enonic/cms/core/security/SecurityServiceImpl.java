@@ -6,6 +6,7 @@ package com.enonic.cms.core.security;
 
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -356,6 +358,8 @@ public class SecurityServiceImpl
     {
         final String uid = qualifiedUsername.getUsername();
 
+        createNewSession();
+
         if ( UserEntity.isBuiltInUser( uid ) )
         {
             UserKey userKey = authenticateBuiltInUser( uid, password, verifyPassword );
@@ -363,7 +367,6 @@ public class SecurityServiceImpl
         }
         else
         {
-
             UserStoreEntity userStore;
             if ( qualifiedUsername.hasUserStoreSet() )
             {
@@ -532,7 +535,43 @@ public class SecurityServiceImpl
         if ( null != session )
         {
             clearSession( session );
+            session.invalidate();
         }
+    }
+
+    private void createNewSession()
+    {
+        HttpServletRequest request = ServletRequestAccessor.getRequest();
+        HttpSession existingSession = request.getSession( false );
+
+        if ( null != existingSession )
+        {
+            Map<String, Object> existingAttributes = getCurrentAttributes( existingSession );
+
+            clearSession( existingSession );
+            existingSession.invalidate();
+
+            final HttpSession newSession = request.getSession( true );
+
+            for ( final String attributeName : existingAttributes.keySet() )
+            {
+                newSession.setAttribute( attributeName, existingAttributes.get( attributeName ) );
+            }
+        }
+    }
+
+    private Map<String, Object> getCurrentAttributes( final HttpSession existingSession )
+    {
+        Map<String, Object> existingAttributes = Maps.newHashMap();
+
+        final Enumeration<String> attributeNames = existingSession.getAttributeNames();
+
+        while ( attributeNames.hasMoreElements() )
+        {
+            final String attributeName = attributeNames.nextElement();
+            existingAttributes.put( attributeName, existingSession.getAttribute( attributeName ) );
+        }
+        return existingAttributes;
     }
 
     private void clearSession( HttpSession session )
