@@ -375,7 +375,7 @@
     <xsl:param name="summary"/>
 
     <xsl:for-each select="$root/menuitem">
-      <xsl:sort select="path"/>
+      <xsl:sort select="path" case-order="lower-first"/>
 
       <xsl:variable name="menuitemkey">
         <xsl:value-of select="@key"/>
