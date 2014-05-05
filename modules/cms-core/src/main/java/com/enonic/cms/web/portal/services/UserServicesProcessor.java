@@ -158,6 +158,8 @@ public final class UserServicesProcessor
 
     private int autoLoginTimeout;
 
+    private int loginDelay;
+
     public UserServicesProcessor()
     {
         super( "user" );
@@ -280,7 +282,7 @@ public final class UserServicesProcessor
     }
 
     protected void handlerSetGroups( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-    throws VerticalUserServicesException, RemoteException
+        throws VerticalUserServicesException, RemoteException
     {
         UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
 
@@ -326,7 +328,7 @@ public final class UserServicesProcessor
 
 
     protected void handlerJoinGroup( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-    throws VerticalUserServicesException, RemoteException
+        throws VerticalUserServicesException, RemoteException
     {
 
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
@@ -486,7 +488,7 @@ public final class UserServicesProcessor
     }
 
     protected void handlerLeaveGroup( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-    throws VerticalUserServicesException, RemoteException
+        throws VerticalUserServicesException, RemoteException
     {
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
         if ( user == null )
@@ -553,6 +555,8 @@ public final class UserServicesProcessor
 
     protected void handlerChangePassword( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
     {
+        delayLogin();
+
         User loggedInUser = securityService.getLoggedInPortalUser();
 
         String uid = parseUsername( formItems );
@@ -1142,9 +1146,11 @@ public final class UserServicesProcessor
     }
 
     private void processLogin( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-    throws VerticalUserServicesException, RemoteException
+        throws VerticalUserServicesException, RemoteException
     {
         String username = null;
+
+        delayLogin();
 
         try
         {
@@ -1230,6 +1236,18 @@ public final class UserServicesProcessor
         catch ( Exception e )
         {
             handleExceptions( e, request, response, formItems );
+        }
+    }
+
+    private void delayLogin()
+    {
+        try
+        {
+            Thread.sleep( this.loginDelay );
+        }
+        catch ( InterruptedException e )
+        {
+            // Do nothing
         }
     }
 
@@ -1382,7 +1400,7 @@ public final class UserServicesProcessor
     }
 
     private void processLogout( SiteContext siteContext, HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-    throws VerticalUserServicesException, RemoteException
+        throws VerticalUserServicesException, RemoteException
     {
         final HttpSession session = ServletRequestAccessor.getSession( false );
 
@@ -1658,9 +1676,16 @@ public final class UserServicesProcessor
         return inText.replaceAll( "%[^%]+%", "" );
     }
 
+
     @Value("${com.enonic.vertical.presentation.autologinTimeout}")
     public void setAutoLoginTimeout( final int autoLoginTimeout )
     {
         this.autoLoginTimeout = autoLoginTimeout;
+    }
+
+    @Value("${cms.security.login.delay}")
+    public void setLoginDelay( final int loginDelay )
+    {
+        this.loginDelay = loginDelay;
     }
 }
