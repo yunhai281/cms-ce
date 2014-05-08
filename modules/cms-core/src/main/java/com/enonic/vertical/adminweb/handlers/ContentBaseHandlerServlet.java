@@ -3196,10 +3196,6 @@ public class ContentBaseHandlerServlet
         {
             parameters.put( "title", formItems.getString( "title" ) );
         }
-        else
-        {
-            parameters.put( "title", admin.getContentTitle( versionKey ) );
-        }
         parameters.put( "fieldname", formItems.getString( "fieldname" ) );
         parameters.put( "fieldrow", formItems.getString( "fieldrow" ) );
         parameters.put( "callback", formItems.getString( "callback" ) );
