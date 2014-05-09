@@ -769,10 +769,20 @@
 
             function callback_editObject(fieldName, fieldRow, key, title, current) {
               if (!title == '') {
-                  var view = document.getElementsByName("view"+fieldName)[fieldRow];
-                  if (!view.value == '') {
-                    view.value = title;
-                }
+                  var view = document.getElementById(fieldName + "-defaultobject");
+                  if ( view != null )
+                  {
+                      view.innerHTML = title;
+
+                  } else {
+                      var view = document.getElementsByName("view"+fieldName)[fieldRow];
+                      if ( view != null )
+                      {
+                          if (!view.value == '') {
+                              view.value = title;
+                          }
+                      }
+                  }
               }
             }
 
@@ -1833,6 +1843,10 @@
                         <xsl:if test="/menus/pagetemplates/pagetemplate[@key = $selpagetemplatekey]/contentobjects/contentobject[parametername = $currentparametername]">
                           <td nowrap="nowrap" colspan="2">
                             <span style="font-style: italic">
+                              <xsl:attribute name="id">
+                                <xsl:value-of select="$currentparametername"/>
+                                <xsl:text>_portlet-defaultobject</xsl:text>
+                              </xsl:attribute>
                               <xsl:value-of
                                       select="/menus/pagetemplates/pagetemplate[@key = $selpagetemplatekey]/contentobjects/contentobject[parametername = $currentparametername]/name"/>
                             </span>
