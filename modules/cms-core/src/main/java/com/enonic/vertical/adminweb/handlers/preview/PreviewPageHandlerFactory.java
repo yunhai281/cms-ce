@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.core.portal.rendering.PageRendererFactory;
+import com.enonic.cms.core.portal.ticket.TicketGenerator;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
@@ -74,7 +75,7 @@ public class PreviewPageHandlerFactory
     {
         PreviewPageHandler previewPageHandler = new PreviewPageHandler();
         previewPageHandler.setPreviewService( previewService );
-        previewPageHandler.setTicketId( httpRequest.getSession().getId() );
+        previewPageHandler.setTicketId( TicketGenerator.getOrGenerate( httpRequest ) );
         previewPageHandler.setTransliterate( transliterate );
         previewPageHandler.setHttpRequest( httpRequest );
         previewPageHandler.setContentDao( contentDao );

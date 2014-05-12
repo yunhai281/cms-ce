@@ -33,6 +33,7 @@ import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalRequestService;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.ticket.TicketGenerator;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -212,7 +213,7 @@ public class InternalClientRenderService
         portalRequest.setOriginalSitePath( sitePath );
         portalRequest.setSitePath( sitePath );
         portalRequest.setRequester( loggedInPortalUser.getKey() );
-        portalRequest.setTicketId( httpRequest.getSession().getId() );
+        portalRequest.setTicketId( TicketGenerator.getOrGenerate( httpRequest ) );
         portalRequest.setRequestTime( new DateTime() );
         portalRequest.setOriginalUrl( httpRequest.getRequestURL().toString() );
         portalRequest.setVerticalSession( getAndEnsureVerticalSessionOnHttpSession( httpRequest.getSession() ) );

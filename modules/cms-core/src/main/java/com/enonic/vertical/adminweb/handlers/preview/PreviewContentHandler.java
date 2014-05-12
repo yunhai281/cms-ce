@@ -34,6 +34,7 @@ import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.portal.rendering.PageRendererFactory;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
+import com.enonic.cms.core.portal.ticket.TicketGenerator;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
@@ -77,8 +78,6 @@ public class PreviewContentHandler
     private ExtendedMap formItems;
 
     private UserEntity previewer;
-
-    private String sessionId;
 
     private SiteEntity site;
 
@@ -158,7 +157,7 @@ public class PreviewContentHandler
         pageRendererContext.setRenderer( previewer );
         pageRendererContext.setRequestTime( new DateTime() );
         pageRendererContext.setRunAsUser( runAsUser );
-        pageRendererContext.setTicketId( sessionId );
+        pageRendererContext.setTicketId( TicketGenerator.getOrGenerate( httpRequest ) );
         pageRendererContext.setSite( site );
         pageRendererContext.setSitePath( sitePath );
 
@@ -351,11 +350,6 @@ public class PreviewContentHandler
     public void setPreviewer( UserEntity previewer )
     {
         this.previewer = previewer;
-    }
-
-    public void setSessionId( String sessionId )
-    {
-        this.sessionId = sessionId;
     }
 
     public void setSite( SiteEntity site )

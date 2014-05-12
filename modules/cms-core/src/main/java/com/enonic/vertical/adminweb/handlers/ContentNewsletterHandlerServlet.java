@@ -60,6 +60,7 @@ import com.enonic.cms.core.portal.rendering.PageRenderer;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
+import com.enonic.cms.core.portal.ticket.TicketGenerator;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.security.user.User;
@@ -759,7 +760,7 @@ public class ContentNewsletterHandlerServlet
         pageRendererContext.setRenderer( renderer );
         pageRendererContext.setRequestTime( new DateTime() );
         pageRendererContext.setRunAsUser( runAsUser );
-        pageRendererContext.setTicketId( request.getSession().getId() );
+        pageRendererContext.setTicketId( TicketGenerator.getOrGenerate( request ) );
         pageRendererContext.setSite( site );
         pageRendererContext.setSitePath( sitePath );
 

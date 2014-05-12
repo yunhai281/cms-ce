@@ -280,9 +280,8 @@ public class PortalFunctions
         if ( !URLUtils.verifyValidURL( siteUrl ) )
         {
             throw new PortalFunctionException(
-                "Not able to create link to site " + siteEntity.getKey().toInt() + ": No valid cms.site.url defined in site" +
-                    siteEntity.getKey().toInt() + ".properties: " + siteUrl
-            );
+                "Not able to create link to site " + siteEntity.getKey().toInt() + ": No valid cms.site.url defined in site-" +
+                    siteEntity.getKey().toInt() + ".properties: " + siteUrl );
         }
 
         SitePath pageSitePath = new SitePath( siteEntity.getKey(), new Path( path ) );

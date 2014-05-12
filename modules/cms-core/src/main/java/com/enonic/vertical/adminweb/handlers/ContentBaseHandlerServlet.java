@@ -2624,7 +2624,6 @@ public class ContentBaseHandlerServlet
             previewContentHandler.setPageTemplate( pageTemplate );
             previewContentHandler.setFormItems( formItems );
             previewContentHandler.setPreviewer( previewer );
-            previewContentHandler.setSessionId( session.getId() );
             previewContentHandler.setHttpRequest( request );
             previewContentHandler.setSession( session );
             previewContentHandler.setContentDao( contentDao );
