@@ -1,0 +1,17 @@
+.panel_wrapper {
+    border-top: 1px solid #b8b8b8;
+}
+
+.panel_wrapper div.current {
+    height: auto;
+}
+
+textarea {
+    width: 100%;
+    font-family: 'Courier New',Courier,mono;
+    font-size: 12px;
+}
+
+.wordWrapCode {
+    margin-left: 0;
+}
