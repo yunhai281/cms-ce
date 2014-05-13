@@ -22,7 +22,6 @@ var PasteWordDialog = {
 		doc.close();
 
 		doc.designMode = 'on';
-		this.resize();
 
 		window.setTimeout(function() {
 			ifr.contentWindow.focus();
@@ -34,17 +33,6 @@ var PasteWordDialog = {
 
 		tinyMCEPopup.editor.execCommand('mceInsertClipboardContent', false, {content : h, wordContent : true});
 		tinyMCEPopup.close();
-	},
-
-	resize : function() {
-		var vp = tinyMCEPopup.dom.getViewPort(window), el;
-
-		el = document.getElementById('iframe');
-
-		if (el) {
-			el.style.width  = (vp.w - 20) + 'px';
-			el.style.height = (vp.h - 90) + 'px';
-		}
 	}
 };
 

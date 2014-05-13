@@ -1211,8 +1211,8 @@
 
 			ed.windowManager.open({
 				url : this.url + '/anchor.htm',
-				width : 320 + parseInt(ed.getLang('advanced.anchor_delta_width', 0)),
-				height : 90 + parseInt(ed.getLang('advanced.anchor_delta_height', 0)),
+				width : 350 + parseInt(ed.getLang('advanced.anchor_delta_width', 0)),
+				height : 120 + parseInt(ed.getLang('advanced.anchor_delta_height', 0)),
 				inline : true
 			}, {
 				theme_url : this.url
@@ -1224,8 +1224,8 @@
 
 			ed.windowManager.open({
 				url : this.url + '/charmap.htm',
-				width : 550 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
-				height : 265 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
+				width : 580 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
+				height : 300 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
 				inline : true
 			}, {
 				theme_url : this.url
