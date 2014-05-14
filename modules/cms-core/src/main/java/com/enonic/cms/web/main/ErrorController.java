@@ -21,7 +21,7 @@ public final class ErrorController
     @Autowired
     protected ErrorPageRenderer errorPageRenderer;
 
-    @RequestMapping(value = "/error", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(value = "/error", method = {RequestMethod.GET,RequestMethod.HEAD}, produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView error( final HttpServletRequest req, final HttpServletResponse res )
         throws IOException
     {
