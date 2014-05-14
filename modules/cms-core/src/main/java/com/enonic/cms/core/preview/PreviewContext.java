@@ -4,14 +4,14 @@
  */
 package com.enonic.cms.core.preview;
 
+import java.io.Serializable;
+
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
-/**
- * Sep 29, 2010
- */
 public class PreviewContext
+    implements Serializable
 {
     public static final PreviewContext NO_PREVIEW = new PreviewContext();
 

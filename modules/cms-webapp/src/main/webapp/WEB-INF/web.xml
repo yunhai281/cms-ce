@@ -7,7 +7,7 @@
   <display-name>Enonic CMS</display-name>
   <description>Enonic Content Management System</description>
 
-  <!--<distributable/>-->
+  <distributable/>
 
   <context-param>
     <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>

@@ -26,6 +26,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public abstract class Wizard
+    implements Serializable
 {
     /**
      * XSL used for creating the wizard xsl
@@ -332,6 +334,7 @@ public abstract class Wizard
     }
 
     protected final static class WizardState
+        implements Serializable
     {
         private String redirectURL;
 

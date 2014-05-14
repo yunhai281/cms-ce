@@ -5,18 +5,19 @@
 
 package com.enonic.cms.web.portal.instanttrace;
 
-
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 
 public class InstantTraceSessionObject
+    implements Serializable
 {
     private final static int DEFAULT_MAX_TRACES = 50;
 
     private int maxTraces = DEFAULT_MAX_TRACES;
 
-    private LinkedHashMap<InstantTraceId, PortalRequestTrace> traceById = new LinkedHashMap<InstantTraceId, PortalRequestTrace>();
+    private transient LinkedHashMap<InstantTraceId, PortalRequestTrace> traceById = new LinkedHashMap<InstantTraceId, PortalRequestTrace>();
 
     private InstantTraceId oldest;
 

@@ -6,10 +6,13 @@
 package com.enonic.cms.web.portal.instanttrace;
 
 
+import java.io.Serializable;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class InstantTraceId
+    implements Serializable
 {
     private Long traceCompletedNumber;
 
