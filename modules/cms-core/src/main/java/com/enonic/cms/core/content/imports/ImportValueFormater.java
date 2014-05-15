@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.imports.sourcevalueholders.AbstractSourceValue;
@@ -128,11 +130,19 @@ public class ImportValueFormater
             {
                 pattern = format;
             }
-            return new SimpleDateFormat( pattern, Locale.ENGLISH ).parse( strValue );
+            final DateTimeFormatter formatter = DateTimeFormat.forPattern( pattern );
+            return formatter.parseDateTime( strValue ).toDate();
         }
-        catch ( ParseException ex )
+        catch ( IllegalArgumentException ex )
         {
-            throw new ImportException( "Failed to parse date from value '" + strValue + "', using pattern: " + pattern, ex );
+            try
+            {
+                return new SimpleDateFormat( pattern, Locale.ENGLISH ).parse( strValue );
+            }
+            catch ( ParseException e )
+            {
+                throw new ImportException( "Failed to parse date from value '" + strValue + "', using pattern: " + pattern, ex );
+            }
         }
     }
 
