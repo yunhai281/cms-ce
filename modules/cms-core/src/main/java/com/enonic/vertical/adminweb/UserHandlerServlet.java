@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.AbstractPagedXmlCreator;
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
@@ -84,14 +88,11 @@ import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
-import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.core.xslt.admin.AdminXsltProcessor;
@@ -108,6 +109,7 @@ public class UserHandlerServlet
     public static final int COOKIE_TIMEOUT = 60 * 60 * 24 * 365 * 50;
 
     private class UserPhotoHolder
+        implements Serializable
     {
         private transient byte[] photo;
 
@@ -625,7 +627,8 @@ public class UserHandlerServlet
                     session.setAttribute( "to_mail", XMLTool.getElementText( newDoc, "/user/block/email" ) );
                     session.setAttribute( "mail_body",
                                           "Username: " + XMLTool.getElementText( newDoc, "/user/block/uid" ) + (char) 13 + "Password: " +
-                                              XMLTool.getElementText( newDoc, "/user/block/password" ) );
+                                              XMLTool.getElementText( newDoc, "/user/block/password" )
+                    );
 
                     // Check whether email address already exists
                     String email = XMLTool.getElementText( newDoc, "/user/block/email" );

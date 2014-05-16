@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ public class ErrorPageServlet
     private String adminEmail;
 
     public static interface Error
+        extends Serializable
     {
         Document toDoc();
     }
