@@ -37,6 +37,24 @@ public class QueryFunctionsTest
         assertEquals( "The milliseconds field should be 0", 0, today.getMillisOfSecond() );
     }
 
+    public void testTodayOffset()
+    {
+        ReadableDateTime before = QueryFunctions.todayOffset( -1.0 );
+        ReadableDateTime today = QueryFunctions.today();
+        ReadableDateTime after = QueryFunctions.todayOffset( 1.0 );
+
+        assertTrue( "Comparing before with now gave: ", before.isBefore( today ) );
+        assertTrue( "Comparing after with now gave: ", after.isAfter( today ) );
+        assertEquals( "The hour field should be 0", 0, before.getHourOfDay() );
+        assertEquals( "The hour field should be 0", 0, after.getHourOfDay() );
+        assertEquals( "The minute field should be 0", 0, before.getMinuteOfHour() );
+        assertEquals( "The minute field should be 0", 0, after.getMinuteOfHour() );
+        assertEquals( "The second field should be 0", 0, before.getSecondOfMinute() );
+        assertEquals( "The second field should be 0", 0, after.getSecondOfMinute() );
+        assertEquals( "The milliseconds field should be 0", 0, before.getMillisOfSecond() );
+        assertEquals( "The milliseconds field should be 0", 0, after.getMillisOfSecond() );
+    }
+
     public void testCompleteDateTime()
     {
         ReadableDateTime xmasEve = QueryFunctions.date( "2008-12-24 16:30:15,454" );
