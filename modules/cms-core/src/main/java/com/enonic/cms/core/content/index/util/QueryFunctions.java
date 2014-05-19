@@ -6,6 +6,7 @@ package com.enonic.cms.core.content.index.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
@@ -175,7 +176,7 @@ public final class QueryFunctions
         return new DateMidnight();
     }
 
-    public static DateMidnight todayOffset( Double offset )
+    public static DateMidnight todayOffset( BigDecimal offset )
     {
         // We use DateMidnight to later recognise that user have not specified time
         int offsetInDays = offset.intValue();
@@ -187,6 +188,11 @@ public final class QueryFunctions
         {
             return new DateMidnight().minusDays( offsetInDays * ( -1 ) );
         }
+    }
+
+    public static DateMidnight todayOffset( Double offset )
+    {
+        return todayOffset( new BigDecimal( offset ) );
     }
 
     /**
