@@ -542,6 +542,12 @@ public class SecurityServiceImpl
     private void createNewSession()
     {
         HttpServletRequest request = ServletRequestAccessor.getRequest();
+
+        if ( request == null )
+        {
+            return;
+        }
+
         HttpSession existingSession = request.getSession( false );
 
         if ( null != existingSession )
