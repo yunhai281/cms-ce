@@ -44,7 +44,7 @@ public class SiteBasePathResolver
 
     private static boolean isInDebugMode()
     {
-        return RenderTrace.isTraceOn();
+        return RenderTrace.isExecutingInDebugMode();
     }
 
     private static boolean isInPreviewMode( HttpServletRequest httpRequest )
