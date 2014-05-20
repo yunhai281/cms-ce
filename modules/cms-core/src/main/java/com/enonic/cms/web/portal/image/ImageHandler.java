@@ -177,7 +177,7 @@ public final class ImageHandler
             params.put( key, request.getParameter( key ) );
         }
 
-        final boolean encodeParams = !RenderTrace.isTraceOn();
+        final boolean encodeParams = !RenderTrace.isExecutingInDebugMode();
         final ImageRequest imageRequest = requestParser.parse( request.getPathInfo(), params, encodeParams );
 
         imageRequest.setRequester( securityService.getLoggedInPortalUser() );
