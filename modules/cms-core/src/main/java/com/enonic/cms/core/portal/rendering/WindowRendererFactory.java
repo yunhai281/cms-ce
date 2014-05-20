@@ -15,7 +15,6 @@ import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SitePropertiesService;
@@ -68,7 +67,6 @@ public class WindowRendererFactory
         windowRenderer.setSitePropertiesService( sitePropertiesService );
         windowRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         windowRenderer.setLiveTraceService( livePortalTraceService );
-        windowRenderer.setShowErrorDetails( RenderTrace.isExecutingInDebugMode() );
 
         return windowRenderer;
     }

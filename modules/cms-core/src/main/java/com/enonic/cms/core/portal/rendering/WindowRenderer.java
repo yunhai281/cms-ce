@@ -95,8 +95,6 @@ public class WindowRenderer
 
     private LivePortalTraceService liveTraceService;
 
-    private boolean showErrorDetails;
-
     private static GenericConcurrencyLock<WindowCacheKey> concurrencyLock = GenericConcurrencyLock.create();
 
     /**
@@ -351,7 +349,7 @@ public class WindowRenderer
                 "Error occured rendering window \"" + window.getPortlet().getName() + "\" (key " + window.getPortlet().getKey() +
                     ") while handling request to site path: " + context.getSitePath().asString();
             PortletErrorMessageMarkupCreator portletErrorMessageMarkupCreator = new PortletErrorMessageMarkupCreator();
-            String errorMarkup = portletErrorMessageMarkupCreator.createMarkup( message, e, this.showErrorDetails );
+            String errorMarkup = portletErrorMessageMarkupCreator.createMarkup( message, e );
             portletResult = new ErrorRenderPortletResult();
             portletResult.setHttpContentType( "text/html" );
             portletResult.setContent( errorMarkup );
@@ -655,10 +653,5 @@ public class WindowRenderer
     public void setLiveTraceService( LivePortalTraceService liveTraceService )
     {
         this.liveTraceService = liveTraceService;
-    }
-
-    public void setShowErrorDetails( final boolean showErrorDetails )
-    {
-        this.showErrorDetails = showErrorDetails;
     }
 }

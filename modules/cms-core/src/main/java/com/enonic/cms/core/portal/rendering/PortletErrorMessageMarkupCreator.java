@@ -13,10 +13,16 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.enonic.cms.framework.util.HtmlEncoder;
 
 import com.enonic.cms.core.portal.PortletXsltViewTransformationException;
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 
 final class PortletErrorMessageMarkupCreator
 {
-    public String createMarkup( String message, Exception exception, final boolean showDetails )
+    public String createMarkup( String message, Exception exception )
+    {
+        return createMarkup( message, exception, RenderTrace.isExecutingInDebugMode() );
+    }
+
+    private String createMarkup( String message, Exception exception, final boolean showDetails )
     {
         final String details = getDetailsBase64( exception );
 
