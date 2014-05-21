@@ -703,6 +703,10 @@ public abstract class InternalClientImpl
     {
         try
         {
+            if ( params.name == null )
+            {
+                throw new IllegalArgumentException( "name must be specified" );
+            }
             if ( params.group == null )
             {
                 throw new IllegalArgumentException( "group must be specified" );
