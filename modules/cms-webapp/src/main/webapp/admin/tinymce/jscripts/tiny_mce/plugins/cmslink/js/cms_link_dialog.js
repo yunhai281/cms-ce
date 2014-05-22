@@ -172,6 +172,20 @@ var CMSLinkDialog = {
 
         if (selectedHyperlinkElement == null) {
             ed.getDoc().execCommand("unlink", false, null);
+
+            if (tinymce.isWebKit) {
+                ed.addCommand('CreateLink', function(u, v, o) {
+                    var n = ed.selection.getNode(), dom = ed.dom, a;
+
+                    if (n && (/^(left|right)$/i.test(dom.getStyle(n, 'float', 1)) || /^(left|right)$/i.test(dom.getAttrib(n, 'align')))) {
+                        a = dom.create('a', {href : v}, n.cloneNode());
+                        n.parentNode.replaceChild(a, n);
+                        ed.selection.select(a);
+                    } else
+                        ed.getDoc().execCommand("CreateLink", false, v);
+                });
+
+            }
             tinyMCEPopup.execCommand("CreateLink", false, "#mce_temp_url#", {skip_undo: 1});
 
             var elementArray = tinymce.grep(ed.dom.select("a"), function (n) {
@@ -196,7 +210,7 @@ var CMSLinkDialog = {
         }
 
         // Don't move caret if selection was image
-        if (selectedHyperlinkElement.childNodes.length != 1 || selectedHyperlinkElement.firstChild.nodeName != 'IMG') {
+        if (selectedHyperlinkElement && (selectedHyperlinkElement.childNodes.length != 1 || selectedHyperlinkElement.firstChild.nodeName != 'IMG')) {
             ed.focus();
             ed.selection.select(selectedHyperlinkElement);
             ed.selection.collapse(0);
