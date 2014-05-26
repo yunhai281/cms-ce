@@ -114,16 +114,15 @@ public class ForceResolverValueServiceImpl
 
     protected String getCookiePath( HttpServletRequest request )
     {
-        final String siteDeploymentPath = DeploymentPathResolver.getSiteDeploymentPath( request );
-
         if ( RenderTrace.isExecutingInDebugMode() )
         {
+            final String siteDeploymentPath = DeploymentPathResolver.getRelativeSiteDeploymentPath( request );
             final String adminDeploymentPath = DeploymentPathResolver.getAdminDeploymentPath( request );
             return adminDeploymentPath + siteDeploymentPath;
         }
         else
         {
-            return siteDeploymentPath;
+            return DeploymentPathResolver.getSiteDeploymentPath( request );
         }
     }
 }

@@ -47,4 +47,12 @@ public class DeploymentPathResolver
 
         return siteDeploymentPath;
     }
+
+    public static String getRelativeSiteDeploymentPath( HttpServletRequest request )
+    {
+        final String sitePathPrefix = "/site";
+        final SiteKeyResolver siteKeyResolver = new SiteKeyResolver();
+        final String siteDeploymentPath = sitePathPrefix + "/" + siteKeyResolver.resolveSiteKey( request, sitePathPrefix );
+        return siteDeploymentPath;
+    }
 }
