@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.itest.client;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -48,8 +47,8 @@ public class InternalClientImpl_ImportContentCsvTest
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.02 03:04:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.11.22 23:24:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );
@@ -160,14 +159,14 @@ public class InternalClientImpl_ImportContentCsvTest
     {
         final long count = 10L;
         setupImport( getConfigForStringBasedCSVImportWithPublishFromAndToFromImportData() );
-        doImport( getStringBasedCSVImportDataWithPublishFromAndToFromImportData( count, "2001.01.01 01:01:01", "2020.20.20 20:20:20" ) );
+        doImport( getStringBasedCSVImportDataWithPublishFromAndToFromImportData( count, "2001.01.01 01:01:01", "2020.02.20 20:20:20" ) );
 
         final List<ContentKey> contentKeys =
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.01 01:01:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.20.20 20:20:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.01 01:01:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.02.20 20:20:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );
@@ -242,8 +241,8 @@ public class InternalClientImpl_ImportContentCsvTest
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.02 03:04:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.11.22 23:24:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );
@@ -283,8 +282,8 @@ public class InternalClientImpl_ImportContentCsvTest
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.02 03:04:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.11.22 23:24:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );
@@ -323,8 +322,8 @@ public class InternalClientImpl_ImportContentCsvTest
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.02 03:04:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.11.22 23:24:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );
@@ -356,8 +355,8 @@ public class InternalClientImpl_ImportContentCsvTest
             contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
-        assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:00" ), content.getAvailableTo() );
+        assertEquals( FORMATTER.parseDateTime( "2001.01.02 03:04:00" ).toDate(), content.getAvailableFrom() );
+        assertEquals( FORMATTER.parseDateTime( "2020.11.22 23:24:00" ).toDate(), content.getAvailableTo() );
         assertEquals( ContentStatus.APPROVED.getKey(), content.getMainVersion().getStatus().getKey() );
         assertEquals( ContentVersionEntity.STATE_PUBLISHED, content.getMainVersion().getState( new Date() ) );
         assertEquals( "testuser", content.getOwner().getName() );

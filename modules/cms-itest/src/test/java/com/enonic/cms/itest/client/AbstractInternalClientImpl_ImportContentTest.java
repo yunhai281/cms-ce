@@ -5,7 +5,6 @@
 package com.enonic.cms.itest.client;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,6 +12,8 @@ import java.util.Date;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +49,8 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
     public static final String AEC_ALL = "\u0082\u0083\u0084\u0085\u0086\u0087\u0089\u008a\u008b\u008c\u0091\u0092\u0093\u0094" +
         "\u0095\u0096\u0097\u0098\u0099\u009a\u009b\u009c\u009f";
+
+    protected static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern( "yyyy.MM.dd HH:mm:ss" );
 
     @Autowired
     protected HibernateTemplate hibernateTemplate;
@@ -184,8 +187,8 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
     protected void doImport( final String data, final String userName, final String importName )
         throws Exception
     {
-        final Date publishFrom = new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:05" );
-        final Date publishTo = new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2020.21.22 23:24:25" );
+        final Date publishFrom = FORMATTER.parseDateTime( "2001.01.02 03:04:05" ).toDate();
+        final Date publishTo = FORMATTER.parseDateTime( "2020.11.22 23:24:25" ).toDate();
 
         doImport( data, userName, importName, publishFrom, publishTo );
     }
