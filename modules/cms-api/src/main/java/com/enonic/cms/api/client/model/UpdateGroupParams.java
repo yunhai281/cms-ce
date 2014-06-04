@@ -21,18 +21,18 @@ public class UpdateGroupParams
     public String group;
 
     /**
-     * Specify the new name of the group.
+     * The name of the group.
      */
     public String name;
 
     /**
-     * Specify the new description of the group.
+     * A description of the group.
      */
     public String description;
 
     /**
-     * Specify if the groups is to restricted or not. Default is true. A restricted group is a group that cannot be joined or left via user
-     * services.
+     * Specify if the groups has restricted enrollment or not. Default is true. Only User Store Administrators can add members to restricted
+     * groups, but groups that are not restricted can be freely joined by anyone via user services.
      */
     public boolean restricted = true;
 }
