@@ -1468,7 +1468,8 @@ public final class UserServicesProcessor
             return;
         }
 
-        PortalInstanceKey instanceKey = portalInstanceKeyResolver.resolvePortalInstanceKey( formItems.getString( "_instanceKey", null ) );
+        PortalInstanceKey instanceKey =
+            portalInstanceKeyResolver.resolvePortalInstanceKey( formItems.getString( "_instanceKey", null ), siteKey );
         instanceKey.setSite( siteKey );
         UserEntity user = securityService.getUser( olduser.getKey() );
 
@@ -1547,7 +1548,8 @@ public final class UserServicesProcessor
             return;
         }
 
-        PortalInstanceKey instanceKey = portalInstanceKeyResolver.resolvePortalInstanceKey( formItems.getString( "_instanceKey", null ) );
+        PortalInstanceKey instanceKey =
+            portalInstanceKeyResolver.resolvePortalInstanceKey( formItems.getString( "_instanceKey", null ), siteKey );
         instanceKey.setSite( siteKey );
         UserEntity user = securityService.getUser( olduser.getKey() );
 

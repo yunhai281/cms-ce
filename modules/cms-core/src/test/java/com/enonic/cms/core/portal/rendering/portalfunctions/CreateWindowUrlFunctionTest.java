@@ -59,7 +59,7 @@ public class CreateWindowUrlFunctionTest
 
         PortalFunctionsContext context = new PortalFunctionsContext();
         context.setSite( site0 );
-        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new WindowKey( menuItemKey123, portletKey1 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new WindowKey( menuItemKey123, portletKey1 ), siteKey0 ) );
         context.setOriginalSitePath( new SitePath( siteKey0, "desk/_window/oversikt nokkeltall - ajax" ) );
 
         CreateWindowUrlFunction function = new CreateWindowUrlFunction( menuItemDao, portletDao, context );

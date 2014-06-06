@@ -17,7 +17,7 @@ import static com.enonic.cms.core.preference.PreferenceScopeType.WINDOW;
 public class PortalInstanceKeyResolver
 {
 
-    public PortalInstanceKey resolvePortalInstanceKey( String instanceKey )
+    public PortalInstanceKey resolvePortalInstanceKey( String instanceKey, SiteKey contextSiteKey )
     {
         if ( ( instanceKey == null ) || ( instanceKey.equals( "" ) ) )
         {
@@ -34,7 +34,7 @@ public class PortalInstanceKeyResolver
             }
             MenuItemKey menuItemKey = new MenuItemKey( tokenizer.nextToken() );
             PortletKey portletKey = new PortletKey( tokenizer.nextToken() );
-            return PortalInstanceKey.createWindow( menuItemKey, portletKey );
+            return PortalInstanceKey.createWindow( menuItemKey, portletKey, contextSiteKey );
         }
         else if ( context.equals( PAGE.getName() ) )
         {
@@ -43,7 +43,7 @@ public class PortalInstanceKeyResolver
                 throw new IllegalArgumentException( "PAGE instance key has wrong number of keys: " + tokenizer.countTokens() );
             }
             MenuItemKey menuItemKey = new MenuItemKey( tokenizer.nextToken() );
-            return PortalInstanceKey.createPage( menuItemKey );
+            return PortalInstanceKey.createPage( menuItemKey, contextSiteKey );
         }
         else if ( context.equals( SITE.getName() ) )
         {

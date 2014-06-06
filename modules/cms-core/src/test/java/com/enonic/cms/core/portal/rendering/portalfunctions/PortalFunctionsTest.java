@@ -69,6 +69,8 @@ public class PortalFunctionsTest
 
     private MockHttpServletRequest request;
 
+    private SiteKey contextSiteKey = new SiteKey( 717 );
+
     private SiteKey siteKey1 = new SiteKey( 1 );
 
     private SiteEntity site1;
@@ -139,7 +141,7 @@ public class PortalFunctionsTest
     @Test
     public void testGetInstanceKeyWhenPage()
     {
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createPage( new MenuItemKey( 178 ) );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createPage( new MenuItemKey( 178 ), contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         assertEquals( "PAGE:178", portalFunctions.getInstanceKey() );
@@ -148,7 +150,8 @@ public class PortalFunctionsTest
     @Test
     public void testGetInstanceKeyWhenWindow()
     {
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( new MenuItemKey( 178 ), new PortletKey( 93 ) );
+        PortalInstanceKey portalInstanceKey =
+            PortalInstanceKey.createWindow( new MenuItemKey( 178 ), new PortletKey( 93 ), contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         assertEquals( "WINDOW:178:93", portalFunctions.getInstanceKey() );
@@ -558,7 +561,7 @@ public class PortalFunctionsTest
         SitePath originalSitePath = new SitePath( siteKey1, "/Frontpage" );
         originalSitePath.addParam( "dummy", "shall be ignored" );
         context.setOriginalSitePath( originalSitePath );
-        context.setPortalInstanceKey( PortalInstanceKey.createPage( new MenuItemKey( 123 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createPage( new MenuItemKey( 123 ), contextSiteKey ) );
 
         String url = portalFunctions.createServicesUrl( "user", "login", null, null );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=PAGE%3A123&_ticket=##ticket##", url );
@@ -571,7 +574,7 @@ public class PortalFunctionsTest
         SitePath originalSitePath = new SitePath( siteKey1, "/Frontpage" );
         originalSitePath.addParam( "dummy", "shall be ignored" );
         context.setOriginalSitePath( originalSitePath );
-        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ), contextSiteKey ) );
 
         String url = portalFunctions.createServicesUrl( "user", "login", null, null );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_ticket=##ticket##", url );
@@ -584,7 +587,7 @@ public class PortalFunctionsTest
         SitePath originalSitePath = new SitePath( siteKey1, "/Frontpage" );
         originalSitePath.addParam( "dummy", "shall be ignored" );
         context.setOriginalSitePath( originalSitePath );
-        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ), contextSiteKey ) );
 
         String url = portalFunctions.createServicesUrl( "user", "login", null, new String[]{"_redirect", "www.vg.no"} );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_redirect=www.vg.no&_ticket=##ticket##",
@@ -598,7 +601,7 @@ public class PortalFunctionsTest
         SitePath originalSitePath = new SitePath( siteKey1, "/Frontpage" );
         originalSitePath.addParam( "dummy", "shall be ignored" );
         context.setOriginalSitePath( originalSitePath );
-        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ), contextSiteKey ) );
 
         String url = portalFunctions.createServicesUrl( "user", "login", "www.vg.no", null );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_redirect=www.vg.no&_ticket=##ticket##",
@@ -612,7 +615,7 @@ public class PortalFunctionsTest
         SitePath originalSitePath = new SitePath( siteKey1, "/Frontpage" );
         originalSitePath.addParam( "dummy", "shall be ignored" );
         context.setOriginalSitePath( originalSitePath );
-        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
+        context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ), contextSiteKey ) );
 
         String url = portalFunctions.createServicesUrl( "user", "login", null, new String[]{"_redirect", "www.vg.no"} );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_redirect=www.vg.no&_ticket=##ticket##",
@@ -716,7 +719,7 @@ public class PortalFunctionsTest
     public void getPageKey()
     {
         int key = 3;
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createPage( new MenuItemKey( key ) );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createPage( new MenuItemKey( key ), contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         assertEquals( "" + key, portalFunctions.getPageKey() );
@@ -764,7 +767,7 @@ public class PortalFunctionsTest
         // set current menu item and portlet in context
         MenuItemKey menuItemKeyWindow = new MenuItemKey( 101 );
         PortletKey portletKey = new PortletKey( 90 );
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey, contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
@@ -798,7 +801,7 @@ public class PortalFunctionsTest
         // set current menu item and portlet in context
         MenuItemKey menuItemKeyWindow = new MenuItemKey( 101 );
         PortletKey portletKey = new PortletKey( 90 );
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey, contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         String windowUrl = portalFunctions.createWindowUrl( new WindowKey( menuItemKeyWindow, portletKey ), new String[]{} );
@@ -831,7 +834,7 @@ public class PortalFunctionsTest
 
         // set current menu item and portlet in context
         PortletKey portletKey = new PortletKey( 90 );
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( inContextOfMenuItem.getKey(), portletKey );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( inContextOfMenuItem.getKey(), portletKey, contextSiteKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
         String windowUrl = portalFunctions.createWindowUrl( new WindowKey( otherMenuItem.getKey(), portletKey ), new String[]{} );

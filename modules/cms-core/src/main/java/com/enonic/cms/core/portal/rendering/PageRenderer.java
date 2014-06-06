@@ -268,8 +268,7 @@ public class PageRenderer
         {
             viewTransformationResult.setContent(
                 TraceMarkerHelper.writePageMarker( RenderTrace.getCurrentRenderTraceInfo(), viewTransformationResult.getContent(),
-                                                   viewTransformationResult.getOutputMethod() )
-            );
+                                                   viewTransformationResult.getOutputMethod() ) );
         }
 
         final RenderedPageResult renderedPageResult = new RenderedPageResult();
@@ -410,7 +409,7 @@ public class PageRenderer
         }
         else
         {
-            portalInstanceKey = PortalInstanceKey.createPage( context.getMenuItem().getKey() );
+            portalInstanceKey = PortalInstanceKey.createPage( context.getMenuItem().getKey(), context.getSite().getKey() );
         }
         return portalInstanceKey;
     }

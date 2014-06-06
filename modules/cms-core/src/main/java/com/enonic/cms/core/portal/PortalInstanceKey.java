@@ -28,22 +28,24 @@ public class PortalInstanceKey
         return key;
     }
 
-    public static PortalInstanceKey createPage( MenuItemKey menuItemKey )
+    public static PortalInstanceKey createPage( MenuItemKey menuItemKey, SiteKey siteKey )
     {
         PortalInstanceKey key = new PortalInstanceKey();
         key.setMenuItem( menuItemKey );
+        key.setSite( siteKey );
         return key;
     }
 
-    public static PortalInstanceKey createWindow( WindowKey windowKey )
+    public static PortalInstanceKey createWindow( WindowKey windowKey, SiteKey siteKey )
     {
-        return createWindow( windowKey.getMenuItemKey(), windowKey.getPortletKey() );
+        return createWindow( windowKey.getMenuItemKey(), windowKey.getPortletKey(), siteKey );
     }
 
-    public static PortalInstanceKey createWindow( MenuItemKey menuItemKey, PortletKey portletKey )
+    public static PortalInstanceKey createWindow( MenuItemKey menuItemKey, PortletKey portletKey, SiteKey siteKey )
     {
         PortalInstanceKey key = new PortalInstanceKey();
         key.setWindow( menuItemKey, portletKey );
+        key.setSite( siteKey );
         return key;
     }
 

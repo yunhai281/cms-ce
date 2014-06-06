@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.enonic.cms.core.portal.PortalInstanceKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.portlet.PortletKey;
@@ -193,7 +194,8 @@ public class ExpressionFunctionsTest
         ExpressionContext context = new ExpressionContext();
         final int menuKey = 123;
         final int portletKey = 246;
-        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( new MenuItemKey( menuKey ), new PortletKey( portletKey ) );
+        PortalInstanceKey portalInstanceKey =
+            PortalInstanceKey.createWindow( new MenuItemKey( menuKey ), new PortletKey( portletKey ), new SiteKey( 0 ) );
         context.setPortalInstanceKey( portalInstanceKey );
         eFuncs.setContext( context );
         assertEquals( "123:246", eFuncs.getWindowKey() );

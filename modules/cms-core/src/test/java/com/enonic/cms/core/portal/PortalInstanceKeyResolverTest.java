@@ -17,20 +17,23 @@ public class PortalInstanceKeyResolverTest
 {
     private PortalInstanceKeyResolver resolver = new PortalInstanceKeyResolver();
 
+    private SiteKey contextSiteKey = new SiteKey( 11 );
+
     @Test
     public void testPortalInstanceKeyResolver()
     {
-        PortalInstanceKey key1 = resolver.resolvePortalInstanceKey( "WINDOW:43:191" );
-        PortalInstanceKey key2 = resolver.resolvePortalInstanceKey( "PAGE:812" );
-        PortalInstanceKey key4 = resolver.resolvePortalInstanceKey( "SITE:11" );
+
+        PortalInstanceKey key1 = resolver.resolvePortalInstanceKey( "WINDOW:43:191", contextSiteKey );
+        PortalInstanceKey key2 = resolver.resolvePortalInstanceKey( "PAGE:812", contextSiteKey );
+        PortalInstanceKey key4 = resolver.resolvePortalInstanceKey( "SITE:11", contextSiteKey );
 
         assertEquals( new MenuItemKey( 43 ), key1.getMenuItemKey() );
         assertEquals( new PortletKey( 191 ), key1.getPortletKey() );
-        assertNull( key1.getSiteKey() );
+        assertNotNull( key1.getSiteKey() );
 
         assertEquals( new MenuItemKey( 812 ), key2.getMenuItemKey() );
         assertNull( key2.getPortletKey() );
-        assertNull( key2.getSiteKey() );
+        assertNotNull( key2.getSiteKey() );
 
         assertNull( key4.getMenuItemKey() );
         assertNull( key4.getPortletKey() );
@@ -42,7 +45,7 @@ public class PortalInstanceKeyResolverTest
     {
         try
         {
-            resolver.resolvePortalInstanceKey( null );
+            resolver.resolvePortalInstanceKey( null, contextSiteKey );
             fail( "null, is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -52,7 +55,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "" );
+            resolver.resolvePortalInstanceKey( "", contextSiteKey );
             fail( "'', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -62,7 +65,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "WINDOWS:81:81" );
+            resolver.resolvePortalInstanceKey( "WINDOWS:81:81", contextSiteKey );
             fail( "'WINDOWS:81:81', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -72,7 +75,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "WINDO:81:81" );
+            resolver.resolvePortalInstanceKey( "WINDO:81:81", contextSiteKey );
             fail( "'WINDO:81:81', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -82,7 +85,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "WINDOW:81:81:81" );
+            resolver.resolvePortalInstanceKey( "WINDOW:81:81:81", contextSiteKey );
             fail( "'WINDOW:81:81:81', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -92,7 +95,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "PAGE:1:1" );
+            resolver.resolvePortalInstanceKey( "PAGE:1:1", contextSiteKey );
             fail( "'PAGE:1:1', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -102,7 +105,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "SITE:0:1:2:3:4" );
+            resolver.resolvePortalInstanceKey( "SITE:0:1:2:3:4", contextSiteKey );
             fail( "'SITE:0:1:2:3:4', is not a valid instance key." );
         }
         catch ( IllegalArgumentException e )
@@ -112,7 +115,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "SITE:a" );
+            resolver.resolvePortalInstanceKey( "SITE:a", contextSiteKey );
             fail( "'SITE:a' is not a valid instance key." );
         }
         catch ( InvalidKeyException e )
@@ -122,7 +125,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "WINDOW:-2:14" );
+            resolver.resolvePortalInstanceKey( "WINDOW:-2:14", contextSiteKey );
             fail( "'WINDOW:-2:14' is not a valid instance key." );
         }
         catch ( InvalidKeyException e )
@@ -132,7 +135,7 @@ public class PortalInstanceKeyResolverTest
 
         try
         {
-            resolver.resolvePortalInstanceKey( "WINDOW:PAGE:1" );
+            resolver.resolvePortalInstanceKey( "WINDOW:PAGE:1", contextSiteKey );
             fail( "'WINDOW:PAGE' is not a valid instance key." );
         }
         catch ( InvalidKeyException e )

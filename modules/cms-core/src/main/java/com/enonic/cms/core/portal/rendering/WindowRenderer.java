@@ -122,8 +122,7 @@ public class WindowRenderer
             {
                 throw new IllegalStateException(
                     "Context is indicating that a render direct is expected, but render window inline was called. " +
-                        "(WindowKey = " + ( windowKey != null ? windowKey.asString() : "null" ) + ")"
-                );
+                        "(WindowKey = " + ( windowKey != null ? windowKey.asString() : "null" ) + ")" );
             }
 
             final Window window = context.getRegionsInPage().getWindowByKey( windowKey );
@@ -521,7 +520,7 @@ public class WindowRenderer
         }
         else
         {
-            portalInstanceKey = PortalInstanceKey.createWindow( window.getKey() );
+            portalInstanceKey = PortalInstanceKey.createWindow( window.getKey(), context.getSite().getKey() );
         }
 
         return portalInstanceKey;
