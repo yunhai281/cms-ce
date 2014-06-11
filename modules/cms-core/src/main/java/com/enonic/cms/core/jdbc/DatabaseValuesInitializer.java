@@ -83,6 +83,7 @@ public final class DatabaseValuesInitializer
         insertLanguage( conn, 3, "da", "Danish" );
         insertLanguage( conn, 4, "fi", "Finnish" );
         insertLanguage( conn, 5, "hu", "Hungarian" );
+        insertLanguage( conn, 6, "es", "Spanish");
     }
 
     private void insertContentHandlers( Connection conn )
