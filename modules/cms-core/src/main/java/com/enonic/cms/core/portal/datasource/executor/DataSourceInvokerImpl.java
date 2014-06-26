@@ -43,7 +43,7 @@ public final class DataSourceInvokerImpl
         }
         catch ( final Exception e )
         {
-            throw new DataSourceException( "Error invoking data source {0} on: {1} ", req.getName(), req.getPortalInstanceKey() ).withCause( e );
+            throw new DataSourceException( "Error invoking data source {0} on: {1} ", req.getName(), (req.getPortalInstanceKey() == null) ? "NULL" : req.getPortalInstanceKey() ).withCause( e );
         }
     }
 
