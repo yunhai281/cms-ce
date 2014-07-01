@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.security;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +69,18 @@ public class AutoLoginService
     {
 
         String cookieName = "guid-" + siteKey.toInt();
-        Cookie cookie = CookieUtil.getCookie( request, cookieName );
+        ArrayList<Cookie> guidCookies = CookieUtil.getCookies( request, cookieName );
+
+        Cookie cookie = null;
+        for ( Cookie c : guidCookies )
+        {
+            if ( c.getValue() != null && !c.getValue().equals( "" ) )
+            {
+                cookie = c;
+                break;
+            }
+        }
+
         if ( cookie == null || cookie.getValue() == null )
         {
             return null;
