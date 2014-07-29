@@ -30,16 +30,16 @@ public final class DatabaseValuesInitializer
      * Do not pull these or the utility-methods up into the base-handler, since the implementation of these could vary based on the model-version
      */
     private static final String INSERT_USER_SQL =
-        "INSERT INTO tUser ( usr_hkey, usr_sUID, usr_sFullName, usr_dteTimestamp, usr_bIsDeleted, usr_ut_lkey, usr_sSyncValue2 ) VALUES (?, ?, ?, @currentTimestamp@, ?, ?, ? )";
+        "INSERT INTO tUser ( usr_hkey, usr_sUID, usr_sFullName, usr_dteTimestamp, usr_bIsDeleted, usr_ut_lKey, usr_sSyncValue2 ) VALUES (?, ?, ?, @currentTimestamp@, ?, ?, ? )";
 
     private static final String INSERT_GROUP_SQL =
         "INSERT INTO tGroup (grp_hKey, grp_sName, grp_bIsDeleted, grp_bRestricted, grp_sSyncValue, grp_lType, grp_usr_hKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String INSERT_LANGUAGES_SQL =
-        "INSERT INTO tLanguage (lan_lkey, lan_scode, lan_sdescription, lan_dtetimestamp) values (?, ?, ?, @currentTimestamp@)";
+        "INSERT INTO tLanguage (lan_lKey, lan_sCode, lan_sDescription, lan_dteTimestamp) values (?, ?, ?, @currentTimestamp@)";
 
     private static final String INSERT_CONTENTHANDLER_SQL =
-        "Insert into tContentHandler " + "(han_lkey, han_sname, han_sclass, han_sdescription, han_xmlconfig, han_dtetimestamp) " +
+        "Insert into tContentHandler " + "(han_lKey, han_sName, han_sClass, han_sDescription, han_xmlConfig, han_dteTimestamp) " +
             "values (?, ?, ?, ?, ?, @currentTimestamp@)";
 
     public void initializeDatabaseValues( Connection conn )
