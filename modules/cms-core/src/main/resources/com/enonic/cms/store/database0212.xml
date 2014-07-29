@@ -594,7 +594,7 @@
     <foreign-key foreignTable="tMenu" name="mei_men_lKey" required="true" type="INTEGER">
       <reference foreign="men_lKey" local="mei_men_lKey"/>
     </foreign-key>
-    <column name="mei_mid_lkey" required="true" type="INTEGER"/>
+    <column name="mei_mid_lKey" required="true" type="INTEGER"/>
     <foreign-key foreignTable="tMenuItem" name="mei_lParent" type="INTEGER">
       <reference foreign="mei_lKey" local="mei_lParent"/>
     </foreign-key>
@@ -849,7 +849,7 @@
     </index>
   </table>
   <table name="tSecConTypeFilter2">
-    <column name="sctf_lkey" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="sctf_lKey" primaryKey="true" required="true" type="INTEGER"/>
     <foreign-key foreignTable="tContentType" delete="true" name="sctf_cty_lKey" required="true" type="INTEGER">
       <reference foreign="cty_lKey" local="sctf_cty_lKey"/>
     </foreign-key>
@@ -864,7 +864,7 @@
     </foreignkey>
   </table>
   <table name="tSectionContent2">
-    <column name="sco_lkey" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="sco_lKey" primaryKey="true" required="true" type="INTEGER"/>
     <foreign-key foreignTable="tContent" delete="true" name="sco_con_lKey" required="true" type="INTEGER" xpath="@contentkey">
       <reference foreign="con_lKey" local="sco_con_lKey"/>
     </foreign-key>
@@ -894,10 +894,10 @@
       <column name="sco_dteTimestamp"/>
     </index>
     <index name="idx_sco2_5">
-      <column name="sco_con_lkey"/>
+      <column name="sco_con_lKey"/>
     </index>
     <index name="idx_sco2_6">
-      <column name="sco_mei_lkey"/>
+      <column name="sco_mei_lKey"/>
     </index>
     <index name="idx_sco2_7">
       <column name="sco_bApproved"/>
