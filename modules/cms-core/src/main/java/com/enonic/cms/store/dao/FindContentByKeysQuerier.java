@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
@@ -76,6 +74,7 @@ class FindContentByKeysQuerier
             {
                 sql.append( value.toString() );
             }
+
         }.toString() );
 
         final Query compiled = hibernateSession.createQuery( hqlQuery.toString() );
@@ -92,12 +91,25 @@ class FindContentByKeysQuerier
             return true;
         }
 
-        final Number number = (Number) hibernateSession.createCriteria( SectionContentEntity.class ).
-            add( Restrictions.in( "content.key", contentKeys ) ).
-            setProjection( Projections.rowCount() ).
-            uniqueResult();
+        final SelectBuilder hqlQuery = new SelectBuilder( 0 );
+        hqlQuery.addSelect( "count(*)" );
+        hqlQuery.addFromTable( SectionContentEntity.class.getName(), "sc", SelectBuilder.NO_JOIN, null );
+        hqlQuery.addFilter( "AND", ( new InClauseBuilder<ContentKey>( "sc.content.key", contentKeys )
+        {
+            @Override
+            public void appendValue( StringBuffer sql, ContentKey value )
+            {
+                sql.append( value.toString() );
+            }
 
-        return number.intValue() <= ( EAGER_FETCH_NUMBER_OF_SECTIONS_THRESHOLD * contentKeys.size() );
+        }.toString() ) );
+
+        final Query compiled = hibernateSession.createQuery( hqlQuery.toString() );
+        compiled.setCacheable( false );
+        compiled.setReadOnly( true );
+
+        int count = ( (Number) compiled.uniqueResult() ).intValue();
+
+        return count <= ( EAGER_FETCH_NUMBER_OF_SECTIONS_THRESHOLD * contentKeys.size() );
     }
-
 }
