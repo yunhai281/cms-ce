@@ -4,27 +4,6 @@
  */
 package com.enonic.vertical.adminweb.wizard;
 
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
-
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
-import com.enonic.vertical.adminweb.AdminStore;
-import com.enonic.vertical.adminweb.VerticalAdminException;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.google.common.collect.Maps;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -32,6 +11,30 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.google.common.collect.Maps;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
+import com.enonic.vertical.adminweb.AdminStore;
+import com.enonic.vertical.adminweb.VerticalAdminException;
+import com.enonic.vertical.engine.VerticalEngineException;
+
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
 
 public abstract class Wizard
     implements Serializable
@@ -79,7 +82,7 @@ public abstract class Wizard
                 if ( testConditions[i] == null || testConditions[i].length() == 0 )
                 {
                     String message = "Missing test condition attribute.";
-                    WizardLogger.errorWizard(message, null );
+                    WizardLogger.errorWizard( message, null );
                 }
                 String stepName = conditionElems[i].getAttribute( "goto" );
 
@@ -92,7 +95,7 @@ public abstract class Wizard
                 else
                 {
                     String message = "Unknown step name in next step condition: {0}";
-                    WizardLogger.errorWizard(message, stepName );
+                    WizardLogger.errorWizard( message, stepName );
                 }
             }
 
@@ -109,13 +112,13 @@ public abstract class Wizard
                 else
                 {
                     String message = "Unknown step name in default next step condition: {0}";
-                    WizardLogger.errorWizard(message, stepName );
+                    WizardLogger.errorWizard( message, stepName );
                 }
             }
             else
             {
                 String message = "Missing default next step condition.";
-                WizardLogger.errorWizard(message, null );
+                WizardLogger.errorWizard( message, null );
             }
         }
     }
@@ -139,30 +142,20 @@ public abstract class Wizard
             this.type = type;
         }
 
-        /**
-         * @return
-         */
         public int getId()
         {
             return id;
         }
 
-        /**
-         * @return
-         */
         public String getName()
         {
             return name;
         }
 
-        /**
-         * @return
-         */
         public int getType()
         {
             return type;
         }
-
     }
 
     protected final static class NormalStep
@@ -193,7 +186,7 @@ public abstract class Wizard
             if ( dataconfigElem == null )
             {
                 String message = "Step \"{0}\" does not have a data configuration.";
-                WizardLogger.errorWizard(message, name );
+                WizardLogger.errorWizard( message, name );
             }
             this.dataconfigDoc = XMLTool.createDocument();
             this.dataconfigDoc.appendChild( this.dataconfigDoc.importNode( dataconfigElem, true ) );
@@ -217,7 +210,7 @@ public abstract class Wizard
                 if ( this.styleSheetSrc == null )
                 {
                     String message = "Missing XSL source definition for stylesheet in finish step \"{0}\".";
-                    WizardLogger.errorWizard(message, name );
+                    WizardLogger.errorWizard( message, name );
                 }
             }
         }
@@ -264,49 +257,31 @@ public abstract class Wizard
             rootElem.setAttribute( "buttonpressed", this.buttonPressed );
         }
 
-        /**
-         * @return
-         */
         public StepState getNextStepState()
         {
             return nextStepState;
         }
 
-        /**
-         * @return
-         */
         public StepState getPreviousStepState()
         {
             return previousStepState;
         }
 
-        /**
-         * @return
-         */
         public Document getStateDoc()
         {
             return stateDoc;
         }
 
-        /**
-         * @return
-         */
         public NormalStep getStep()
         {
             return step;
         }
 
-        /**
-         * @return
-         */
         public String getButtonPressed()
         {
             return buttonPressed;
         }
 
-        /**
-         * @param string
-         */
         public void setButtonPressed( String string )
         {
             buttonPressed = string;
@@ -409,8 +384,6 @@ public abstract class Wizard
 
         /**
          * Returns an xml document representation of the wizard state.
-         *
-         * @return
          */
         public Document toDocument()
         {
@@ -499,17 +472,11 @@ public abstract class Wizard
             return errorCodes.containsKey( errorCode );
         }
 
-        /**
-         * @return
-         */
         public Step getCurrentStep()
         {
             return currentStep;
         }
 
-        /**
-         * @return
-         */
         public StepState getCurrentStepState()
         {
             return currentStepState;
@@ -520,25 +487,16 @@ public abstract class Wizard
             return stepStateMap.get( stepName );
         }
 
-        /**
-         * @return
-         */
         public String getRedirectURL()
         {
             return redirectURL;
         }
 
-        /**
-         * @param string
-         */
         public void setRedirectURL( String string )
         {
             redirectURL = string;
         }
 
-        /**
-         * @return
-         */
         public StepState getFirstStepState()
         {
             return firstStepState;
@@ -558,8 +516,8 @@ public abstract class Wizard
 
     private NormalStep firstStep;
 
-    private static Wizard createWizard( AdminService admin, ApplicationContext applicationContext, AdminHandlerBaseServlet servlet, HttpSession session,
-                                        String wizardConfigFilename )
+    private static Wizard createWizard( AdminService admin, ApplicationContext applicationContext, AdminHandlerBaseServlet servlet,
+                                        HttpSession session, String wizardConfigFilename )
         throws WizardException
     {
         Document wizardconfigDoc = AdminStore.getXml( session, wizardConfigFilename ).getAsDOMDocument();
@@ -576,15 +534,15 @@ public abstract class Wizard
         catch ( ClassNotFoundException cnfe )
         {
             String message = "Wizard class not found: %t";
-            WizardLogger.errorWizard(message, cnfe );
+            WizardLogger.errorWizard( message, cnfe );
         }
         catch ( ClassCastException cce )
         {
             String message = "Wizard class does not extend Wizard: %t";
-            WizardLogger.errorWizard(message, cce );
+            WizardLogger.errorWizard( message, cce );
         }
 
-        wizard = (Wizard)applicationContext.getBean( className, wizardClass );
+        wizard = (Wizard) applicationContext.getBean( className, wizardClass );
 
         wizard.wizardConfigFilename = wizardConfigFilename;
         wizard.servlet = servlet;
@@ -595,8 +553,8 @@ public abstract class Wizard
         return wizard;
     }
 
-    public static Wizard getInstance( AdminService admin, ApplicationContext applicationContext, AdminHandlerBaseServlet servlet, HttpSession session, ExtendedMap formItems,
-                                      String wizardConfigFilename )
+    public static Wizard getInstance( AdminService admin, ApplicationContext applicationContext, AdminHandlerBaseServlet servlet,
+                                      HttpSession session, ExtendedMap formItems, String wizardConfigFilename )
         throws WizardException
     {
         String buttonName = formItems.getString( "__wizard_button", null );
@@ -629,7 +587,7 @@ public abstract class Wizard
         if ( stepsElem == null )
         {
             String message = "No steps defined.";
-            WizardLogger.errorWizard(message, null );
+            WizardLogger.errorWizard( message, null );
         }
 
         Element[] stepElems = XMLTool.getElements( stepsElem );
@@ -638,7 +596,7 @@ public abstract class Wizard
         if ( stepElems.length == 0 )
         {
             String message = "No steps defined.";
-            WizardLogger.errorWizard(message, null );
+            WizardLogger.errorWizard( message, null );
         }
 
         // create steps
@@ -660,13 +618,13 @@ public abstract class Wizard
                 if ( i == 0 )
                 {
                     String message = "First step cannot be a finish step";
-                    WizardLogger.errorWizard(message, null );
+                    WizardLogger.errorWizard( message, null );
                 }
             }
             else
             {
                 String message = "Unknown step type: {0}";
-                WizardLogger.errorWizard(message, type );
+                WizardLogger.errorWizard( message, type );
             }
 
             // save step for later
@@ -678,7 +636,7 @@ public abstract class Wizard
             if ( buttonsElem == null && "normal".equals( type ) )
             {
                 String message = "Normal steps must include buttons.";
-                WizardLogger.errorWizard(message, null );
+                WizardLogger.errorWizard( message, null );
             }
             else if ( "normal".equals( type ) )
             {
@@ -711,7 +669,7 @@ public abstract class Wizard
                         if ( normalStep.previousButtonName != null )
                         {
                             String message = "Only one previous button allowed";
-                            WizardLogger.errorWizard(message, null );
+                            WizardLogger.errorWizard( message, null );
                         }
                         normalStep.previousButtonName = name;
                     }
@@ -724,12 +682,12 @@ public abstract class Wizard
                         if ( normalStep.cancelButtonName != null )
                         {
                             String message = "Only one cancel button allowed for each step.";
-                            WizardLogger.errorWizard(message, null );
+                            WizardLogger.errorWizard( message, null );
                         }
                         else if ( normalStep.closeButtonName != null )
                         {
                             String message = "Only one cancel or close button allowed for each step.";
-                            WizardLogger.errorWizard(message, null );
+                            WizardLogger.errorWizard( message, null );
                         }
                         normalStep.cancelButtonName = name;
                     }
@@ -738,12 +696,12 @@ public abstract class Wizard
                         if ( normalStep.closeButtonName != null )
                         {
                             String message = "Only one close button allowed for each step.";
-                            WizardLogger.errorWizard(message, null );
+                            WizardLogger.errorWizard( message, null );
                         }
                         else if ( normalStep.cancelButtonName != null )
                         {
                             String message = "Only one cancel or close button allowed for each step.";
-                            WizardLogger.errorWizard(message, null );
+                            WizardLogger.errorWizard( message, null );
                         }
                         normalStep.closeButtonName = name;
                     }
@@ -765,7 +723,7 @@ public abstract class Wizard
                 if ( normalStep.nextButtons.size() == 0 )
                 {
                     String message = "Each step must contain at least one next button.";
-                    WizardLogger.errorWizard(message, null );
+                    WizardLogger.errorWizard( message, null );
                 }
                 if ( normalStep.cancelButtonName == null && normalStep.closeButtonName == null )
                 {
@@ -775,7 +733,7 @@ public abstract class Wizard
             else
             {
                 String message = "Each step must contain at least one next button.";
-                WizardLogger.errorWizard(message, null );
+                WizardLogger.errorWizard( message, null );
             }
         }
 
@@ -850,7 +808,7 @@ public abstract class Wizard
             else
             {
                 String message = "Unknown next button pressed: {0}";
-                WizardLogger.errorWizard(message, nextButtonName );
+                WizardLogger.errorWizard( message, nextButtonName );
             }
         }
         else
@@ -916,7 +874,7 @@ public abstract class Wizard
                 if ( referer == null )
                 {
                     String message = "No support for referer, please add redirect parameter.";
-                    WizardLogger.errorWizard(message, null );
+                    WizardLogger.errorWizard( message, null );
                 }
                 wizardState.redirectURL = referer;
             }
@@ -951,7 +909,7 @@ public abstract class Wizard
                 catch ( IOException ioe )
                 {
                     String message = "Failed to redirect client: %t";
-                    WizardLogger.errorWizard(message, ioe );
+                    WizardLogger.errorWizard( message, ioe );
                 }
             }
             else
@@ -985,8 +943,6 @@ public abstract class Wizard
 
     /**
      * Event fired when close button is clicked.
-     *
-     * @param wizardState
      */
     protected void closeClicked( WizardState wizardState )
     {
@@ -1016,7 +972,7 @@ public abstract class Wizard
             catch ( IOException ioe )
             {
                 String message = "Failed to redirect client: %t";
-                WizardLogger.errorWizard(message, ioe );
+                WizardLogger.errorWizard( message, ioe );
             }
         }
 
@@ -1065,16 +1021,13 @@ public abstract class Wizard
                 transformParams.putAll( parameters );
                 String languageCode = (String) session.getAttribute( "languageCode" );
 
-                new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
-                        .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ))
-                        .input( xmlSource )
-                        .params( transformParams )
-                        .process(response.getWriter());
+                new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() ).stylesheet( xslSource, AdminStore.getURIResolver(
+                    languageCode ) ).input( xmlSource ).params( transformParams ).process( response.getWriter() );
             }
             catch ( IOException ioe )
             {
                 String message = "Failed to get response writer: %t";
-                WizardLogger.errorWizard(message, ioe );
+                WizardLogger.errorWizard( message, ioe );
             }
         }
     }
@@ -1093,11 +1046,10 @@ public abstract class Wizard
 
             String languageCode = (String) session.getAttribute( "languageCode" );
 
-            dataDoc = new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
-                    .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ) )
-                    .params( formItems )
-                    .input( xmlSource )
-                    .processDom();
+            dataDoc = new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() ).stylesheet( xslSource,
+                                                                                                         AdminStore.getURIResolver(
+                                                                                                             languageCode ) ).params(
+                formItems ).input( xmlSource ).processDom();
         }
         else
         {
@@ -1122,12 +1074,8 @@ public abstract class Wizard
         String languageCode = (String) session.getAttribute( "languageCode" );
         StringWriter sw = new StringWriter( 4 * 1024 );
 
-        new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
-                .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ))
-                .input( xmlSource )
-                .params( xslParams )
-                .process(sw);
-
+        new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() ).stylesheet( xslSource, AdminStore.getURIResolver(
+            languageCode ) ).input( xmlSource ).params( xslParams ).process( sw );
 
         source = new StreamSource( new StringReader( sw.toString() ) );
         source.setSystemId( xslSource.getSystemId() );
