@@ -1173,7 +1173,7 @@ public class MenuHandlerServlet
     {
 
         int menuItemKeyInt = formItems.getInt( "key" );
-        MenuItemEntity menuItemToMove = menuItemDao.findByKey( menuItemKeyInt );
+        MenuItemEntity menuItemToMove = menuItemDao.findByKey( new MenuItemKey( menuItemKeyInt ) );
         String str_oldParentKey = "-1";
         if ( menuItemToMove.getParent() != null )
         {
@@ -1242,7 +1242,7 @@ public class MenuHandlerServlet
         User user = securityService.getLoggedInAdminConsoleUser();
         MenuItemKey menuItemKey = new MenuItemKey( request.getParameter( "key" ) );
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey.toInt() );
+        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
 
         MenuItemKey parentMenuItemKey = menuItem.getParent() != null ? menuItem.getParent().getKey() : null;
         SiteKey siteKey = menuItem.getSite().getKey();
@@ -1524,7 +1524,7 @@ public class MenuHandlerServlet
         {
             final Element[] menuItemElements = XMLTool.getElements( menuDoc, "/model/menuitems-to-list/menuitem" );
 
-            MenuItemEntity moveMenuItem = menuItemDao.findByKey( moveMenuItemKey );
+            MenuItemEntity moveMenuItem = menuItemDao.findByKey( new MenuItemKey( moveMenuItemKey ) );
 
             int fromParentKey = moveMenuItem.getParent() != null ? moveMenuItem.getParent().getKey().toInt() : -1;
             int toParentKey = formItems.getInt( "move_to_parent", -1 );

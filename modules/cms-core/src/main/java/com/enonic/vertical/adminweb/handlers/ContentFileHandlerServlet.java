@@ -34,6 +34,8 @@ public class ContentFileHandlerServlet
     public static class ImportFilesWizard
         extends ImportZipWizard
     {
+        private static final long serialVersionUID = 2300023L;
+
         /**
          * @see com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet.ImportZipWizard#cropName(java.lang.String)
          */
