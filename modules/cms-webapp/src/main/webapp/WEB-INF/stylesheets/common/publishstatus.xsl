@@ -24,6 +24,10 @@
           </xsl:attribute>
           <xsl:attribute name="title">
             <xsl:text>%txtContentState0NotSaved%</xsl:text>
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
           </xsl:attribute>
           <xsl:if test="$id">
             <xsl:attribute name="id">
@@ -61,6 +65,10 @@
           </xsl:attribute>
           <xsl:attribute name="title">
             <xsl:text>%txtContentState0%</xsl:text>
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
           </xsl:attribute>
           <xsl:if test="$id">
             <xsl:attribute name="id">
@@ -100,7 +108,12 @@
       <xsl:when test="$state = 1">
         <img src="images/icon_state_snapshot.gif" width="16" height="16" border="0" class="publish-status-icon">
           <xsl:attribute name="alt">%txtContentState1%</xsl:attribute>
-          <xsl:attribute name="title">%txtContentState1%</xsl:attribute>
+          <xsl:attribute name="title">%txtContentState1%
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
+          </xsl:attribute>
           <xsl:if test="$id">
             <xsl:attribute name="id">
               <xsl:value-of select="$id"/>
@@ -120,6 +133,10 @@
           </xsl:attribute>
           <xsl:attribute name="title">
             <xsl:text>%txtContentState2%</xsl:text>
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
           </xsl:attribute>
           <xsl:if test="$id">
             <xsl:attribute name="id">
@@ -145,6 +162,10 @@
           </xsl:attribute>
           <xsl:attribute name="title">
             <xsl:text>%txtContentState3%</xsl:text>
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
           </xsl:attribute>
           <xsl:if test="$id">
             <xsl:attribute name="id">
@@ -248,6 +269,10 @@
 
           <xsl:attribute name="title">
             <xsl:value-of select="$status-text"/>
+            <xsl:call-template name="publish-info">
+              <xsl:with-param name="publishto" select="$publishto"/>
+              <xsl:with-param name="publishfrom" select="$publishfrom"/>
+            </xsl:call-template>
           </xsl:attribute>
 
           <xsl:if test="$id">
@@ -315,6 +340,27 @@
         </xsl:if>
       </xsl:when>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="publish-info">
+    <xsl:param name="publishfrom" select="''"/>
+    <xsl:param name="publishto" select="''"/>
+
+    <xsl:if test="$publishfrom != ''">
+      <xsl:text> (</xsl:text>
+      <xsl:call-template name="formatdatetime">
+        <xsl:with-param name="date" select="$publishfrom"/>
+      </xsl:call-template>
+      <xsl:text> - </xsl:text>
+
+      <xsl:if test="$publishto != ''">
+        <xsl:call-template name="formatdatetime">
+          <xsl:with-param name="date" select="$publishto"/>
+        </xsl:call-template>
+      </xsl:if>
+
+      <xsl:text>)</xsl:text>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>

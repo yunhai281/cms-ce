@@ -486,6 +486,8 @@
                         <xsl:with-param name="key" select="@key"/>
                         <xsl:with-param name="state" select="@state"/>
                         <xsl:with-param name="has-draft" select="@has-draft"/>
+                        <xsl:with-param name="publishto" select="@publishto"/>
+                        <xsl:with-param name="publishfrom" select="@publishfrom"/>
                       </xsl:call-template>
                     </td>
 
