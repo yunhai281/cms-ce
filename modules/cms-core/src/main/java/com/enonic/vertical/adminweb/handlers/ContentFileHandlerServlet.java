@@ -19,6 +19,7 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentFileXMLBuilder;
+import com.enonic.vertical.adminweb.wizard.ImportZipWizard;
 import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.engine.VerticalEngineException;
 
@@ -30,35 +31,6 @@ public class ContentFileHandlerServlet
     extends ContentBaseHandlerServlet
 {
     private static final String WIZARD_IMPORT_FILES = "wizardconfig_import_files.xml";
-
-    public static class ImportFilesWizard
-        extends ImportZipWizard
-    {
-        private static final long serialVersionUID = 2300023L;
-
-        /**
-         * @see com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet.ImportZipWizard#cropName(java.lang.String)
-         */
-        protected String cropName( String name )
-        {
-            return name;
-        }
-
-        /**
-         * @see com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet.ImportZipWizard#isFiltered(java.lang.String)
-         */
-        protected boolean isFiltered( String name )
-        {
-            return false;
-        }
-
-        protected BinaryData[] getBinaries( ContentBaseHandlerServlet cbhServlet, AdminService admin, ExtendedMap formItems, File file )
-            throws VerticalAdminException
-        {
-            formItems.put( "newfile", new DummyFileItem( file ) );
-            return cbhServlet.contentXMLBuilder.getBinaries( formItems );
-        }
-    }
 
     public ContentFileHandlerServlet()
     {

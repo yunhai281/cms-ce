@@ -4,7 +4,6 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentEnhancedImageXML
 import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 
@@ -30,50 +28,6 @@ public class ContentEnhancedImageHandlerServlet
     extends ContentBaseHandlerServlet
 {
     private static final String WIZARD_IMPORT_IMAGES = "wizardconfig_import_images.xml";
-
-    public static class ImportImagesWizard
-        extends ImportZipWizard
-    {
-        private static final long serialVersionUID = 3400034L;
-
-        /**
-         * @see com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet.ImportZipWizard#cropName(java.lang.String)
-         */
-        protected String cropName( String name )
-        {
-            int dotIdx = name.lastIndexOf( '.' );
-            if ( dotIdx > 0 )
-            {
-                return name.substring( 0, dotIdx );
-            }
-            else
-            {
-                return name;
-            }
-        }
-
-        /**
-         * @see com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet.ImportZipWizard#isFiltered(java.lang.String)
-         */
-        protected boolean isFiltered( String name )
-        {
-            int dotIdx = name.lastIndexOf( '.' );
-            if ( dotIdx > 0 )
-            {
-                String extension = name.substring( dotIdx + 1 );
-                return "jpg".equalsIgnoreCase( extension ) == false && "jpeg".equalsIgnoreCase( extension ) == false &&
-                    "png".equalsIgnoreCase( extension ) == false && "gif".equalsIgnoreCase( extension ) == false;
-            }
-            return true;
-        }
-
-        protected BinaryData[] getBinaries( ContentBaseHandlerServlet cbhServlet, AdminService admin, ExtendedMap formItems, File file )
-            throws VerticalAdminException
-        {
-            formItems.put( "origimagefilename", new DummyFileItem( file ) );
-            return cbhServlet.contentXMLBuilder.getBinaries( formItems );
-        }
-    }
 
     public ContentEnhancedImageHandlerServlet()
     {

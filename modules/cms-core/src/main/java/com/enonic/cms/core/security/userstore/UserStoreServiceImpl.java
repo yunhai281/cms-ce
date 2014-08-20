@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -110,6 +112,14 @@ public class UserStoreServiceImpl
 
     @Autowired
     private AuthenticatorExtensions authenticationInterceptors;
+
+    public static UserStoreService INSTANCE;
+
+    @PostConstruct
+    public void initializeStaticReference()
+    {
+        INSTANCE = this;
+    }
 
     private static final String VALID_EMAIL_PATTERN =
         "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";

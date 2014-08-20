@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <wizardconfig
-	class="com.enonic.vertical.adminweb.SectionHandlerServlet$PublishWizard">
+	class="com.enonic.vertical.adminweb.wizard.PublishWizard">
 
 	<displayconfig>
 		<includes>

@@ -30,6 +30,7 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
 import com.enonic.vertical.adminweb.AdminStore;
 import com.enonic.vertical.adminweb.VerticalAdminException;
+import com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.security.user.User;
@@ -59,6 +60,7 @@ public abstract class Wizard
     public final static int BUTTON_CLOSE = 5;
 
     private final static class NextButton
+        implements Serializable
     {
         private String name;
 
@@ -124,6 +126,7 @@ public abstract class Wizard
     }
 
     protected abstract static class Step
+        implements Serializable
     {
         public static final int NORMAL = 0;
 
@@ -217,6 +220,7 @@ public abstract class Wizard
     }
 
     protected final static class StepState
+        implements Serializable
     {
         private NormalStep step;
 
@@ -512,7 +516,7 @@ public abstract class Wizard
 
     private Document wizardconfigDoc;
 
-    protected AdminHandlerBaseServlet servlet;
+    protected transient AdminHandlerBaseServlet servlet;
 
     private NormalStep firstStep;
 
@@ -525,7 +529,7 @@ public abstract class Wizard
         String className = rootElem.getAttribute( "class" );
 
         // create new wizard
-        Wizard wizard = null;
+        Wizard wizard;
         Class wizardClass = null;
         try
         {
@@ -558,6 +562,12 @@ public abstract class Wizard
         throws WizardException
     {
         String buttonName = formItems.getString( "__wizard_button", null );
+
+        //
+        // Her genereres Wizarden og legges på sesjonen.
+        // Hvis den er en inner class av en Servlet, blir hele servletten lagret.  :(
+        //
+
         if ( buttonName == null )
         {
             Wizard wizard = createWizard( admin, applicationContext, servlet, session, wizardConfigFilename );

@@ -254,10 +254,10 @@
   <bean id="adminAttachmentController" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
   <bean id="loginCheckInterceptor" class="com.enonic.cms.server.service.admin.mvc.LoginCheckInterceptor"/>
 
-  <bean class="com.enonic.vertical.adminweb.SectionHandlerServlet$PublishWizard" scope="prototype"/>
-  <bean class="com.enonic.vertical.adminweb.UserStoreHandlerServlet$CreateUpdateUserStoreWizard" scope="prototype"/>
-  <bean class="com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet$ImportImagesWizard" scope="prototype"/>
-  <bean class="com.enonic.vertical.adminweb.handlers.ContentFileHandlerServlet$ImportFilesWizard" scope="prototype"/>
+  <bean class="com.enonic.vertical.adminweb.wizard.PublishWizard" scope="prototype"/>
+  <bean class="com.enonic.vertical.adminweb.wizard.CreateUpdateUserStoreWizard" scope="prototype"/>
+  <bean class="com.enonic.vertical.adminweb.wizard.ImportImagesWizard" scope="prototype"/>
+  <bean class="com.enonic.vertical.adminweb.wizard.ImportFilesWizard" scope="prototype"/>
   <bean class="com.enonic.vertical.adminweb.SchedulerServlet$CreateUpdateWorkEntryWizard" scope="prototype"/>
 
 </beans>

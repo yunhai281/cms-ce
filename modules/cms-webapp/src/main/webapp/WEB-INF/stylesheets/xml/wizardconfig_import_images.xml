@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizardconfig class="com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet$ImportImagesWizard">
+<wizardconfig class="com.enonic.vertical.adminweb.wizard.ImportImagesWizard">
 
   <displayconfig>
     <includes>
