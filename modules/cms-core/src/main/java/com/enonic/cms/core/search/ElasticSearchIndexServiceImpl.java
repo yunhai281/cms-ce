@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.elasticsearch.ElasticSearchException;
+import org.elasticsearch.ElasticSearchTimeoutException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
@@ -47,6 +48,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
+import org.elasticsearch.action.support.replication.ReplicationType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
@@ -77,6 +79,7 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {
+
     private static final SearchType DEFAULT_SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
     private static final int MAX_NUM_SEGMENTS = 1;
@@ -86,6 +89,14 @@ public class ElasticSearchIndexServiceImpl
     public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 60 );
 
     public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 60 );
+
+    public static final String ROUND_ROBIN_SEARCH_PREFERENCE = "_round-robin";
+
+    public String searchPreference = "_local";
+
+    public String searchTimeout = "5s";
+
+    public ReplicationType indexReplicationType = ReplicationType.DEFAULT;
 
     private int statusTimeout;
 
@@ -224,7 +235,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void createIndex( String indexName )
+    public void createIndex( final String indexName )
     {
         LOG.debug( "creating index: " + indexName );
 
@@ -244,7 +255,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void putMapping( String indexName, String indexType, String mapping )
+    public void putMapping( final String indexName, final String indexType, final String mapping )
     {
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType ).source( mapping );
 
@@ -261,7 +272,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void deleteMapping( String indexName, IndexType indexType )
+    public void deleteMapping( final String indexName, final IndexType indexType )
     {
         DeleteMappingRequest deleteMappingRequest = new DeleteMappingRequest( indexName ).type( indexType.toString() );
 
@@ -271,7 +282,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public boolean delete( String indexName, IndexType indexType, ContentKey contentKey )
+    public boolean delete( final String indexName, final IndexType indexType, final ContentKey contentKey )
     {
         DeleteRequest deleteRequest = new DeleteRequest( indexName, indexType.toString(), contentKey.toString() );
 
@@ -289,18 +300,19 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void index( String indexName, ContentIndexData contentIndexData )
+    public void index( final String indexName, final ContentIndexData contentIndexData )
     {
         Set<IndexRequest> indexRequests = contentIndexRequestCreator.createIndexRequests( indexName, contentIndexData );
 
         for ( IndexRequest indexRequest : indexRequests )
         {
+
             final IndexResponse indexResponse = doIndex( indexRequest );
             LOG.trace( "Content indexed with id: " + indexResponse.getId() );
         }
     }
 
-    public void index( IndexRequest request )
+    public void index( final IndexRequest request )
     {
         doIndex( request );
     }
@@ -318,7 +330,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public boolean get( String indexName, IndexType indexType, ContentKey contentKey )
+    public boolean get( final String indexName, final IndexType indexType, final ContentKey contentKey )
     {
         final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
 
@@ -335,10 +347,14 @@ public class ElasticSearchIndexServiceImpl
         return getResponse.isExists();
     }
 
-    public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
+    public long count( final String indexName, final String indexType, final SearchSourceBuilder sourceBuilder )
     {
-        final SearchRequest searchRequest =
-            Requests.searchRequest( indexName ).types( indexType ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
+        final SearchRequest searchRequest = Requests.searchRequest( indexName ).
+            types( indexType ).
+            searchType( DEFAULT_SEARCH_TYPE ).
+            source( sourceBuilder );
+
+        setSearchPreference( searchRequest );
 
         final SearchResponse searchResponse = doSearchRequest( searchRequest );
 
@@ -347,7 +363,15 @@ public class ElasticSearchIndexServiceImpl
         return searchResponse.getHits().getTotalHits();
     }
 
-    public long count( String indexName, String indexType )
+    private void setSearchPreference( final SearchRequest searchRequest )
+    {
+        if ( !ROUND_ROBIN_SEARCH_PREFERENCE.equals( this.searchPreference ) )
+        {
+            searchRequest.preference( this.searchPreference );
+        }
+    }
+
+    public long count( final String indexName, final String indexType )
     {
         final CountRequestBuilder countRequestBuilder = new CountRequestBuilder( this.client );
         countRequestBuilder.setIndices( indexName );
@@ -359,7 +383,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void optimize( String indexName )
+    public void optimize( final String indexName )
     {
         OptimizeRequest optimizeRequest =
             new OptimizeRequest( indexName ).maxNumSegments( MAX_NUM_SEGMENTS ).waitForMerge( WAIT_FOR_MERGE );
@@ -372,7 +396,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void deleteIndex( String indexName )
+    public void deleteIndex( final String indexName )
     {
         final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest( indexName );
 
@@ -389,10 +413,14 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public SearchResponse search( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
+    public SearchResponse search( final String indexName, final String indexType, final SearchSourceBuilder sourceBuilder )
     {
-        final SearchRequest searchRequest =
-            Requests.searchRequest( indexName ).types( indexType ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
+        final SearchRequest searchRequest = Requests.searchRequest( indexName ).
+            types( indexType ).
+            searchType( DEFAULT_SEARCH_TYPE ).
+            source( sourceBuilder );
+
+        setSearchPreference( searchRequest );
 
         final SearchResponse searchResponse = doSearchRequest( searchRequest );
 
@@ -402,18 +430,21 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public SearchResponse search( String indexName, String indexType, String sourceBuilder )
+    public SearchResponse search( final String indexName, final String indexType, final String sourceBuilder )
     {
-        SearchRequest searchRequest = new SearchRequest( indexName ).types( indexType ).source( sourceBuilder );
+        SearchRequest searchRequest = new SearchRequest( indexName ).
+            types( indexType ).
+            source( sourceBuilder );
+
+        setSearchPreference( searchRequest );
 
         return doSearchRequest( searchRequest );
     }
 
     @Override
-    public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey )
+    public Map<String, GetField> search( final String indexName, final IndexType indexType, final ContentKey contentKey )
     {
         final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
-        getRequest.fields( "_source" );
 
         final GetResponse getResponse = this.client.get( getRequest ).actionGet();
 
@@ -437,12 +468,27 @@ public class ElasticSearchIndexServiceImpl
         return fields;
     }
 
-    private SearchResponse doSearchRequest( SearchRequest searchRequest )
+    private SearchResponse doSearchRequest( final SearchRequest searchRequest )
     {
-        return this.client.search( searchRequest ).actionGet();
+        final SearchResponse searchResponse;
+        try
+        {
+            searchResponse = this.client.search( searchRequest ).actionGet( this.searchTimeout );
+        }
+        catch ( ElasticSearchTimeoutException e )
+        {
+            throw new IndexException( "Search timed out, configured timeout = " + this.searchTimeout, e );
+        }
+
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Search failed", e );
+        }
+
+        return searchResponse;
     }
 
-    private void parseSearchResultFailures( SearchResponse res )
+    private void parseSearchResultFailures( final SearchResponse res )
     {
         if ( res.getFailedShards() > 0 )
         {
@@ -462,7 +508,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void flush( String indexName )
+    public void flush( final String indexName )
     {
         final FlushRequest flushRequest = Requests.flushRequest( indexName );
         final FlushResponse flushResponse = client.admin().indices().flush( flushRequest ).actionGet();
@@ -488,7 +534,7 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public ClusterHealthResponse getClusterHealth( String indexName, boolean waitForYellow )
+    public ClusterHealthResponse getClusterHealth( final String indexName, final boolean waitForYellow )
     {
         ClusterHealthRequest request = new ClusterHealthRequest( indexName );
 
@@ -540,6 +586,36 @@ public class ElasticSearchIndexServiceImpl
     {
         this.statusTimeout = statusTimeout;
     }
+
+    @Value("${cms.index.search.preference}")
+    public void setSearchPreference( final String searchPreference )
+    {
+        this.searchPreference = searchPreference;
+    }
+
+    @Value("${cms.index.search.timeout}")
+    public void setSearchTimeout( final String searchTimeout )
+    {
+        this.searchTimeout = searchTimeout;
+    }
+
+    @Value("${cms.index.create.replication}")
+    public void setIndexReplicationType( final String indexReplicationType )
+    {
+        try
+        {
+            this.indexReplicationType = ReplicationType.fromString( indexReplicationType );
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "Could not set replication mode : " + indexReplicationType + ", using default" );
+            this.indexReplicationType = ReplicationType.DEFAULT;
+        }
+    }
 }
+
+
+
+
 
 
