@@ -30,7 +30,6 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
 import com.enonic.vertical.adminweb.AdminStore;
 import com.enonic.vertical.adminweb.VerticalAdminException;
-import com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.security.user.User;
