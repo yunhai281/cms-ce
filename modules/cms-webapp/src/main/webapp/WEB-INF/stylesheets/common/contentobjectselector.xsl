@@ -55,7 +55,16 @@
                 <xsl:with-param name="onclick">
                     <xsl:text>editObject(this, '</xsl:text>
                     <xsl:value-of select="$name"/>
-                    <xsl:text>_portlet');</xsl:text>
+                    <xsl:text>_portlet',</xsl:text>
+                    <xsl:choose>
+                      <xsl:when test="$selectedkey != ''">
+                        <xsl:value-of select="$selectedkey"/>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:text>''</xsl:text>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:text>);</xsl:text>
                 </xsl:with-param>
             </xsl:call-template>
             <input type="hidden">
@@ -127,10 +136,6 @@
             <xsl:with-param name="name">btn<xsl:value-of select="$name"/>_portlet</xsl:with-param>
             <xsl:with-param name="onclick"><xsl:value-of select="$buttonfunction"/></xsl:with-param>
         </xsl:call-template>
-        <input type="hidden">
-            <xsl:attribute name="name"><xsl:value-of select="$name"/>_portlet</xsl:attribute>
-            <xsl:attribute name="value"><xsl:value-of select="$selectedkey"/></xsl:attribute>
-        </input>
 
 		    <xsl:call-template name="button">
             <xsl:with-param name="type" select="'button'"/>
@@ -138,11 +143,24 @@
           <xsl:with-param name="tooltip" select="'%cmdEdit%'"/>
           <xsl:with-param name="name">btn<xsl:value-of select="$name"/>_portletedit</xsl:with-param>
             <xsl:with-param name="onclick">
-                <xsl:text>editObject(this, '</xsl:text>
-                <xsl:value-of select="$name"/>
-                <xsl:text>_portlet');</xsl:text>
+              <xsl:text>editObject(this, '</xsl:text>
+              <xsl:value-of select="$name"/>
+              <xsl:text>_portlet',</xsl:text>
+              <xsl:choose>
+                <xsl:when test="$selectedkey != ''">
+                  <xsl:value-of select="$selectedkey"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>''</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:text>);</xsl:text>
             </xsl:with-param>
-        </xsl:call-template>      
+        </xsl:call-template>
+      <input type="hidden">
+        <xsl:attribute name="name"><xsl:value-of select="$name"/>_portlet</xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="$selectedkey"/></xsl:attribute>
+      </input>
 
         <xsl:call-template name="button">
             <xsl:with-param name="type" select="'button'"/>

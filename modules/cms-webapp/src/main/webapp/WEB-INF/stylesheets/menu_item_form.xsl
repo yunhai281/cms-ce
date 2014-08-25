@@ -751,10 +751,12 @@
                 f.removeAttribute("target");
             }
 
-            function editObject(objThis, objectName) {
+            function editObject(objThis, objectName, objectKey) {
                 var currentRow = getObjectIndex(objThis);
                 var button = document.getElementsByName("btn"+objectName+"edit")[currentRow];
-                var objectKey = getNextSibling(button).value;
+                if (!objectKey) {
+                  objectKey = getNextSibling(button).value;
+                }
                 var menuKey = <xsl:value-of select="$menukey"/>;
                 if (objectKey != '') {
                     OpenObjectPopup(menuKey, objectKey, objectName, currentRow);

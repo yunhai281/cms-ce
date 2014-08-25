@@ -9,7 +9,7 @@
                 xmlns:exslt-common="http://exslt.org/common"
     >
 
-	<xsl:output method="html" />
+	<xsl:output method="html" doctype-public="-//W3C//DTD HTML 4.0 Transitional//EN" doctype-system="_http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 
 	<xsl:include href="common/generic_parameters.xsl" />
 	<!-- xsl:include href="common/dropdown.xsl" /-->
