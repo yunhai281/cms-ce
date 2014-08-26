@@ -22,7 +22,7 @@ public class QueryTranslator_filterStatusTest
     public void testStatusFilter()
     {
         String expected = "{\n" +
-            "  \"filter\" : {\n" +
+            "  \"post_filter\" : {\n" +
             "    \"term\" : {\n" +
             "      \"status\" : \"2\"\n" +
             "    }\n" +

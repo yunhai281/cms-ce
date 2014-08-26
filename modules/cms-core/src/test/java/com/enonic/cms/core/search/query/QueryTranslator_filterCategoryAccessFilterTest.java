@@ -28,7 +28,7 @@ public class QueryTranslator_filterCategoryAccessFilterTest
     public void testCategoryAccessFilter_single()
     {
         String expected = "{\n" +
-            "  \"filter\" : {\n" +
+            "  \"post_filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
@@ -67,7 +67,7 @@ public class QueryTranslator_filterCategoryAccessFilterTest
     public void testCategoryAccessFilter_two_and()
     {
         String expected = "{\n" +
-            "  \"filter\" : {\n" +
+            "  \"post_filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
@@ -114,7 +114,7 @@ public class QueryTranslator_filterCategoryAccessFilterTest
     public void testCategoryAccessFilter_two_or()
     {
         String expected = "{\n" +
-            "  \"filter\" : {\n" +
+            "  \"post_Ffilter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
