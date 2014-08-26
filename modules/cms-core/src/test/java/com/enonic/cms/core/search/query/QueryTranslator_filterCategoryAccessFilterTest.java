@@ -114,7 +114,7 @@ public class QueryTranslator_filterCategoryAccessFilterTest
     public void testCategoryAccessFilter_two_or()
     {
         String expected = "{\n" +
-            "  \"post_Ffilter\" : {\n" +
+            "  \"post_filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
