@@ -1448,9 +1448,9 @@
               </form>
             </xsl:when>
             <xsl:otherwise>
-              <form name="formAdmin" method="post" action="adminpage">
+              <form name="formAdmin" method="post" action="adminpage" onsubmit="return false">
                 <input type="hidden" name="page" value="{$page}"/>
-                <input type="hidden" name="op" value="batch_remove"/>
+                <input type="hidden" name="op" value=""/>
                 <!-- newcategory is used by "move to category" -->
                 <!-- Good to know!  -->
                 <input type="hidden" name="newcategory"/>
