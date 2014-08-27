@@ -608,6 +608,7 @@ public class ElasticSearchIndexServiceImpl
         try
         {
             this.indexReplicationType = ReplicationType.fromString( indexReplicationType );
+            LOG.info( "Setting indexReplicationType to " + this.indexReplicationType.name() );
         }
         catch ( Exception e )
         {
