@@ -585,18 +585,21 @@ public class ElasticSearchIndexServiceImpl
     public void setStatusTimeout( final int statusTimeout )
     {
         this.statusTimeout = statusTimeout;
+        LOG.info( "Setting searchTimeout to " + this.statusTimeout );
     }
 
     @Value("${cms.index.search.preference}")
     public void setSearchPreference( final String searchPreference )
     {
         this.searchPreference = searchPreference;
+        LOG.info( "Setting search preference to " + this.searchPreference );
     }
 
     @Value("${cms.index.search.timeout}")
     public void setSearchTimeout( final String searchTimeout )
     {
         this.searchTimeout = searchTimeout;
+        LOG.info( "Setting searchTimeout to " + this.searchTimeout );
     }
 
     @Value("${cms.index.create.replication}")
