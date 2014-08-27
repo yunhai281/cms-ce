@@ -247,12 +247,14 @@ public class PageTemplateHandlerServlet
             else if ( formItems.containsKey( paramName + "co_portlet" ) )
             {
                 Element contentObjectElem = XMLTool.createElement( doc, contentObjectsElem, "contentobject" );
+                String coName = formItems.getString( "view" + formItems.getString( "paramname" ) + "co_portlet" );
                 contentObjectElem.setAttribute( "conobjkey", formItems.getString( paramName + "co_portlet" ) );
                 if ( paramKey != null && paramKey.length() > 0 )
                 {
                     contentObjectElem.setAttribute( "parameterkey", paramKey );
                 }
                 XMLTool.createElement( doc, contentObjectElem, "order", "0" );
+                XMLTool.createElement( doc, contentObjectElem, "name", coName );
 
                 if ( pageTemplate.getAttribute( "key" ) != null )
                 {
