@@ -86,7 +86,9 @@ UserPreferenceTable = {
         for ( key in preferences )
         {
             preference = preferences[ key ];
-            this.createRow( preference );
+            if (preference.value !== '') {
+                this.createRow(preference);
+            }
         }
     }
     // -------------------------------------------------------------------------------------------------------------------------------------
