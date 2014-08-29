@@ -118,8 +118,9 @@ public class MenuItemServiceImpl
         Preconditions.checkNotNull( command.getWantedOrder(), "wanted order cannot be null" );
 
         final MenuItemEntity section = menuItemDao.findByKey( command.getSectionKey() );
-        ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
-        orderer.order();
+        final ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
+        final Set<SectionContentEntity> orderedSectionContents = orderer.order();
+        doRegisterSectionContentForIndexUpdate( orderedSectionContents );
     }
 
     private void doExecuteSetContentHomeCommand( final SetContentHomeCommand command )
@@ -244,9 +245,10 @@ public class MenuItemServiceImpl
                 // ensure section will have it's newly added content
                 sectionContentDao.getHibernateTemplate().refresh( section );
 
-                List<ContentKey> wantedOrder = command.getOrderContentsInSectionCommand().getWantedOrder();
-                ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( wantedOrder, section, ORDER_SPACE );
-                orderer.order();
+                final List<ContentKey> wantedOrder = command.getOrderContentsInSectionCommand().getWantedOrder();
+                final ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( wantedOrder, section, ORDER_SPACE );
+                final Set<SectionContentEntity> sectionContentsWithUpdatedOrder = orderer.order();
+                doRegisterSectionContentForIndexUpdate( sectionContentsWithUpdatedOrder );
             }
         }
 
@@ -366,6 +368,7 @@ public class MenuItemServiceImpl
         for ( SectionContentEntity changedSectionContent : changedSectionContents )
         {
             changedSectionContent.setTimestamp( timeService.getNowAsDateTime().toDate() );
+            indexTransactionService.registerUpdate( changedSectionContent.getContent().getKey(), true );
         }
 
         for ( ContentKey contentKey : command.getContentsToApprove() )
@@ -417,7 +420,6 @@ public class MenuItemServiceImpl
         return lowestOrderValue - ORDER_SPACE;
     }
 
-
     private MenuItemEntity doResolveSection( final MenuItemKey sectionKey )
     {
         final MenuItemEntity section = menuItemDao.findByKey( sectionKey );
@@ -425,6 +427,7 @@ public class MenuItemServiceImpl
         Preconditions.checkArgument( section.isSection(), "menu item is not a section:" + sectionKey );
         return section;
     }
+
 
     private UserEntity doResolveUser( final UserKey userKey, final String subject )
     {
@@ -469,6 +472,14 @@ public class MenuItemServiceImpl
 
         contentHomeDao.getHibernateTemplate().getSessionFactory().evictCollection( ContentEntity.class.getName() + ".contentHomes",
                                                                                    content.getKey() );
+    }
+
+    private void doRegisterSectionContentForIndexUpdate( Iterable<SectionContentEntity> sectionContents )
+    {
+        for ( SectionContentEntity sectionContentWithUpdatedOrder : sectionContents )
+        {
+            indexTransactionService.registerUpdate( sectionContentWithUpdatedOrder.getContent().getKey(), true );
+        }
     }
 
     @Autowired
