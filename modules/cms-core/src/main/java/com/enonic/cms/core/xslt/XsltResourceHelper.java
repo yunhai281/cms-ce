@@ -7,6 +7,7 @@ package com.enonic.cms.core.xslt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 public class XsltResourceHelper
@@ -18,7 +19,7 @@ public class XsltResourceHelper
         try
         {
             final URI uri = new URI( path );
-            return removeExtraSlashes( uri.getPath() );
+            return removeExtraSlashes( URLDecoder.decode( uri.getPath(), "UTF-8") );
         }
         catch ( final Exception e )
         {
@@ -38,7 +39,7 @@ public class XsltResourceHelper
         }
     }
 
-    public static String resolveBasePath( final String path )
+    private static String resolveBasePath( final String path )
     {
         final String name = resolvePath( path );
         return removeExtraSlashes( name.substring( 0, name.lastIndexOf( '/' ) ) );
