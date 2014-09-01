@@ -35,8 +35,6 @@ final class DataSourceExecutorImpl
 
     private LivePortalTraceService livePortalTraceService;
 
-    private DatasourceExecutionTrace trace;
-
     private String defaultResultRootElementName;
 
     private final ExpressionFunctionsExecutor expressionFunctionsExecutor;
@@ -91,17 +89,18 @@ final class DataSourceExecutorImpl
 
     private void executeDataSource( final DataSourceResultBuilder result, final DataSourceElement ds )
     {
-        this.trace = DatasourceExecutionTracer.startTracing( this.context.getDataSourceType(), ds.getName(), this.livePortalTraceService );
+        final DatasourceExecutionTrace trace =
+            DatasourceExecutionTracer.startTracing( this.context.getDataSourceType(), ds.getName(), this.livePortalTraceService );
 
         try
         {
-            DatasourceExecutionTracer.traceRunnableCondition( this.trace, ds.getCondition() );
+            DatasourceExecutionTracer.traceRunnableCondition( trace, ds.getCondition() );
             boolean runnableByCondition = isRunnableByCondition( ds );
-            DatasourceExecutionTracer.traceIsExecuted( this.trace, runnableByCondition );
+            DatasourceExecutionTracer.traceIsExecuted( trace, runnableByCondition );
 
             if ( runnableByCondition )
             {
-                doExecuteDataSource( result, ds );
+                doExecuteDataSource( result, ds, trace );
             }
         }
         finally
@@ -171,11 +170,12 @@ final class DataSourceExecutorImpl
         this.invoker = invoker;
     }
 
-    private void doExecuteDataSource( final DataSourceResultBuilder result, final DataSourceElement element )
+    private void doExecuteDataSource( final DataSourceResultBuilder result, final DataSourceElement element,
+                                      final DatasourceExecutionTrace trace )
     {
         final DataSourceRequestFactory factory = new DataSourceRequestFactory( this.expressionFunctionsExecutor, this.context );
         final DataSourceRequest request = factory.createRequest( element );
-        final Document doc = doExecuteDataSource( request );
+        final Document doc = doExecuteDataSource( request, trace );
 
         final String groupName = Strings.emptyToNull( element.getResultElement() );
         final Element resultElement = (Element) doc.getRootElement().clone();
@@ -183,7 +183,7 @@ final class DataSourceExecutorImpl
         result.addElementToGroup( groupName, resultElement );
     }
 
-    private Document doExecuteDataSource( final DataSourceRequest request )
+    private Document doExecuteDataSource( final DataSourceRequest request, final DatasourceExecutionTrace trace )
     {
         DatasourceExecutionTracer.traceMethodCall( request, trace );
         RenderTrace.enterFunction( request.getName() );
