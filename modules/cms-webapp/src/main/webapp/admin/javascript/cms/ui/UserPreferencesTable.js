@@ -86,9 +86,7 @@ UserPreferenceTable = {
         for ( key in preferences )
         {
             preference = preferences[ key ];
-            if (preference.value !== '') {
-                this.createRow(preference);
-            }
+            this.createRow( preference );
         }
     }
     // -------------------------------------------------------------------------------------------------------------------------------------
@@ -137,7 +135,7 @@ UserPreferenceTable = {
         td7.innerHTML = preference.scope === 'WINDOW' ? preference.portletName : '';
         td8.innerHTML = preference.key;
         //td9.innerHTML = $.base64.decode( preference.value );
-        td9.innerHTML = $().crypt({method:"b64dec",source: preference.value });
+        td9.innerHTML = (preference.value === '') ? '' : $().crypt({method: "b64dec", source: preference.value});
 
         td2.vAlign = 'top';
         td3.vAlign = 'top';
