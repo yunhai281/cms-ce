@@ -60,8 +60,8 @@ public class SecurityServiceImpl
     @Autowired
     protected AdminConsoleLoginAccessResolver adminConsoleLoginAccessResolver;
 
-    @Value("${cms.security.session.createNewOnLogin}")
-    private Boolean createNewSessionOnLogin;
+    @Value("${cms.security.session.forceNewOnLogin}")
+    private Boolean forceNewSessionOnLogin;
 
     @Value("${cms.admin.password}")
     private String adminUserPassword;
@@ -361,7 +361,7 @@ public class SecurityServiceImpl
     {
         final String uid = qualifiedUsername.getUsername();
 
-        if ( this.createNewSessionOnLogin )
+        if ( this.forceNewSessionOnLogin )
         {
             createNewSession();
         }
