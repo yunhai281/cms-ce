@@ -56,4 +56,10 @@ public class UpdateFileContentParams
     public Integer status;
 
     public FileContentDataInput fileContentData;
+
+    /**
+     * The siteKey is used to report the context of the event to the event log.  If ignored or set to null, the eventlog will report the
+     * event on the admin console.
+     */
+    public Integer siteKey;
 }

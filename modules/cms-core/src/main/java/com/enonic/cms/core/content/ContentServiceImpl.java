@@ -56,6 +56,8 @@ import com.enonic.cms.core.search.query.IndexValueQuery;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.CategoryDao;
@@ -63,6 +65,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
 import com.enonic.cms.store.dao.MenuItemDao;
+import com.enonic.cms.store.dao.SiteDao;
 
 @Service("contentService")
 public class ContentServiceImpl
@@ -99,6 +102,9 @@ public class ContentServiceImpl
 
     @Autowired
     private LivePortalTraceService livePortalTraceService;
+
+    @Autowired
+    private SiteDao siteDao;
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SnapshotContentResult snapshotContent( SnapshotContentCommand command )
@@ -166,7 +172,7 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             final ContentEntity content = contentStorer.createContent( command );
-            logEvent( command.getCreator(), content, LogType.ENTITY_CREATED );
+            logEvent( command.getCreator(), content, LogType.ENTITY_CREATED, command.getSiteKey() );
             return content.getKey();
         }
         catch ( RuntimeException e )
@@ -186,7 +192,8 @@ public class ContentServiceImpl
 
             if ( updateContentResult.isAnyChangesMade() )
             {
-                logEvent( command.getModifier(), updateContentResult.getTargetedVersion().getContent(), LogType.ENTITY_UPDATED );
+                logEvent( command.getModifier(), updateContentResult.getTargetedVersion().getContent(), LogType.ENTITY_UPDATED,
+                          command.getSiteKey() );
             }
 
             return updateContentResult;
@@ -505,7 +512,7 @@ public class ContentServiceImpl
 
     public ContentResultSet getPageContent( int menuItemKey )
     {
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+        MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( menuItemKey ) );
         List<ContentEntity> resultList = new ArrayList<ContentEntity>();
         if ( menuItem != null )
         {
@@ -669,6 +676,11 @@ public class ContentServiceImpl
 
     private void logEvent( UserKey actor, ContentEntity content, LogType type )
     {
+        logEvent( actor, content, type, null );
+    }
+
+    private void logEvent( UserKey actor, ContentEntity content, LogType type, SiteKey siteKey )
+    {
         String title = content.getMainVersion().getTitle();
         String titleKey = " (" + content.getKey().toInt() + ")";
         if ( title.length() + titleKey.length() > ContentTitleValidator.CONTENT_TITLE_MAX_LENGTH )
@@ -684,6 +696,11 @@ public class ContentServiceImpl
         command.setTitle( title );
         command.setPath( content.getPathAsString() );
         command.setXmlData( content.getMainVersion().getContentDataAsJDomDocument() );
+        if ( siteKey != null )
+        {
+            SiteEntity site = siteDao.findByKey( siteKey );
+            command.setSite( site );
+        }
 
         logService.storeNew( command );
     }

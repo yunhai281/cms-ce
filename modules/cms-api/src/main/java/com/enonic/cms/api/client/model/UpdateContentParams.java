@@ -64,7 +64,7 @@ public class UpdateContentParams
      * value is provided.  This is the only way to remove the data for a field that has had a value that should be
      * changed to a blank value or no value.  If <code>REPLACE_NEW</code> is used, a field will no value will not be
      * changed.
-     *
+     * <p/>
      * These strategies apply only to the data set in the <code>contentData</code> field.
      * <code>publishFrom</code>, <code>publishTo</code>, <code>createNewVersion</code> and <code>setAsCurrentVersion</code>
      * are metadata that are not affected by this update strategy.
@@ -86,4 +86,9 @@ public class UpdateContentParams
 
     public String changeComment;
 
+    /**
+     * The siteKey is used to report the context of the event to the event log.  If ignored or set to null, the eventlog will report the
+     * event on the admin console.
+     */
+    public Integer siteKey;
 }

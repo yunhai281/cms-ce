@@ -88,7 +88,7 @@ public class CreateContentCommand
         this.category = value;
     }
 
-    public void setAccessRightsStrategy( AccessRightsStrategy value )
+    public void setAccessRightsStrategy( final AccessRightsStrategy value )
     {
         this.accessRightsStrategy = value;
     }
@@ -109,7 +109,7 @@ public class CreateContentCommand
         return status;
     }
 
-    public void setStatus( ContentStatus status )
+    public void setStatus( final ContentStatus status )
     {
         this.status = status;
     }
@@ -119,7 +119,7 @@ public class CreateContentCommand
         return source;
     }
 
-    public void setSource( ContentKey value )
+    public void setSource( final ContentKey value )
     {
         this.source = value;
     }
@@ -129,7 +129,7 @@ public class CreateContentCommand
         return contentName;
     }
 
-    public void setContentName( String contentName )
+    public void setContentName( final String contentName )
     {
         this.contentName = contentName;
     }

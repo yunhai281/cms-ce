@@ -20,10 +20,8 @@ import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.structure.SiteKey;
 
-/**
- * Created by rmy - Date: Jun 3, 2009
- */
 public abstract class BaseContentCommand
 {
     private DateTime availableFrom;
@@ -43,6 +41,11 @@ public abstract class BaseContentCommand
     protected List<BinaryDataAndBinary> binaryDatas = new ArrayList<BinaryDataAndBinary>();
 
     private boolean useCommandsBinaryDataToAdd = false;
+
+    /**
+     * The site key is used to report the correct context to the event log.
+     */
+    private SiteKey siteKey;
 
     public SortedMap<String, ContentAccessEntity> getContentAccessRights()
     {
@@ -117,13 +120,13 @@ public abstract class BaseContentCommand
         return language;
     }
 
-    public void setLanguage( LanguageEntity value )
+    public void setLanguage( final LanguageEntity value )
     {
         Assert.notNull( value );
         this.language = value.getKey();
     }
 
-    public void setLanguage( LanguageKey value )
+    public void setLanguage( final LanguageKey value )
     {
         Assert.notNull( value );
         this.language = value;
@@ -134,7 +137,7 @@ public abstract class BaseContentCommand
         return contentData;
     }
 
-    public void setContentData( ContentData contentData )
+    public void setContentData( final ContentData contentData )
     {
         this.contentData = contentData;
     }
@@ -144,7 +147,7 @@ public abstract class BaseContentCommand
         return binaryDatas;
     }
 
-    public void setBinaryDatas( List<BinaryDataAndBinary> value )
+    public void setBinaryDatas( final List<BinaryDataAndBinary> value )
     {
         this.binaryDatas = value;
     }
@@ -164,8 +167,18 @@ public abstract class BaseContentCommand
         return changeComment;
     }
 
-    public void setChangeComment( String changeComment )
+    public void setChangeComment( final String changeComment )
     {
         this.changeComment = changeComment;
+    }
+
+    public SiteKey getSiteKey()
+    {
+        return siteKey;
+    }
+
+    public void setSiteKey( final SiteKey siteKey )
+    {
+        this.siteKey = siteKey;
     }
 }

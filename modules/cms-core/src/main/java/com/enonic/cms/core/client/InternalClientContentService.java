@@ -82,6 +82,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserParser;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.CategoryDao;
@@ -264,6 +265,11 @@ public class InternalClientContentService
         command.setAccessRightsStrategy( CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
         command.setCreator( securityService.getImpersonatedPortalUser() );
 
+        if ( params.siteKey != null )
+        {
+            command.setSiteKey( new SiteKey( params.siteKey ) );
+        }
+
         return contentService.createContent( command ).toInt();
     }
 
@@ -295,6 +301,10 @@ public class InternalClientContentService
         createCommand.setChangeComment( params.changeComment );
         createCommand.setBinaryDatas( binaryDatas );
         createCommand.setUseCommandsBinaryDataToAdd( true );
+        if ( params.siteKey != null )
+        {
+            createCommand.setSiteKey( new SiteKey( params.siteKey ) );
+        }
 
         ContentKey contentKey = contentService.createContent( createCommand );
         return contentKey.toInt();
@@ -410,14 +420,7 @@ public class InternalClientContentService
         BinaryData image = BinaryData.createBinaryDataFromStream( null, null, "source", params.contentData );
         binaryList.add( image );
 
-        if ( binaryList == null )
-        {
-            return null;
-        }
-        else
-        {
-            return binaryList.toArray( new BinaryData[binaryList.size()] );
-        }
+        return binaryList.toArray( new BinaryData[binaryList.size()] );
     }
 
     public void assignContent( AssignContentParams params )
@@ -488,6 +491,10 @@ public class InternalClientContentService
         command.setUseCommandsBinaryDataToRemove( true );
         command.setUseCommandsBinaryDataToAdd( true );
         command.setChangeComment( params.changeComment );
+        if ( params.siteKey != null )
+        {
+            command.setSiteKey( new SiteKey( params.siteKey ) );
+        }
 
         if ( params.contentData != null )
         {
@@ -555,6 +562,10 @@ public class InternalClientContentService
         createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentdata.getTitle() ) );
         createCommand.setBinaryDatas( binaryDataEntries );
         createCommand.setUseCommandsBinaryDataToAdd( true );
+        if ( params.siteKey != null )
+        {
+            createCommand.setSiteKey( new SiteKey( params.siteKey ) );
+        }
 
         ContentKey contentKey = contentService.createContent( createCommand );
         return contentKey.toInt();
@@ -584,6 +595,10 @@ public class InternalClientContentService
         command.setAvailableFrom( params.publishFrom );
         command.setAvailableTo( params.publishTo );
         command.setStatus( ContentStatus.get( params.status ) );
+        if ( params.siteKey != null )
+        {
+            command.setSiteKey( new SiteKey( params.siteKey ) );
+        }
 
         LegacyFileContentData newContentData;
         List<BinaryDataAndBinary> binariesToAdd = null;
@@ -613,6 +628,10 @@ public class InternalClientContentService
 
         command.setUseCommandsBinaryDataToRemove( true );
         command.setBinaryDataToRemove( binariesToRemove );
+        if ( params.siteKey != null )
+        {
+            command.setSiteKey( new SiteKey( params.siteKey ) );
+        }
 
         UpdateContentResult updateContentResult = contentService.updateContent( command );
 
