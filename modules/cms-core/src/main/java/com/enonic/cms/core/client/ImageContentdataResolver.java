@@ -28,10 +28,15 @@ public class ImageContentdataResolver
     {
         Element contentDataEl = new Element( "contentdata" );
         contentDataEl.addContent( new Element( "name" ).setText( input.name.getValue() ) );
-        if ( input.description != null )
-        {
-            contentDataEl.addContent( new Element( "description" ).setText( input.description.getValue() ) );
-        }
+
+        contentDataEl.addContent( new Element( "description" ).setText( input.description == null ? "" : input.description.getValue() ) );
+
+        Element photographer = new Element( "photographer" );
+        photographer.setAttribute( "name", input.photographerName == null ? "" : input.photographerName.getValue() );
+        photographer.setAttribute( "email", input.photographerEMail == null ? "" : input.photographerEMail.getValue() );
+        contentDataEl.addContent( photographer );
+
+        contentDataEl.addContent( new Element( "copyright" ).setText( input.copyright == null ? "" : input.copyright.getValue() ) );
 
         Element keywords = buildKeywordsElement( input );
 

@@ -292,6 +292,7 @@ public class InternalClientContentService
         createCommand.setAvailableTo( params.publishTo );
         createCommand.setContentData( contentdata );
         createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentdata.getTitle() ) );
+        createCommand.setChangeComment( params.changeComment );
         createCommand.setBinaryDatas( binaryDatas );
         createCommand.setUseCommandsBinaryDataToAdd( true );
 
