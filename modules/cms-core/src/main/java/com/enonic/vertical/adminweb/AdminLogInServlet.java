@@ -81,7 +81,7 @@ public final class AdminLogInServlet
 
     /**
      * @see com.enonic.vertical.adminweb.AdminHandlerBaseServlet#doGet(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * javax.servlet.http.HttpServletResponse)
      */
     public void doGet( HttpServletRequest request, HttpServletResponse response )
         throws ServletException, IOException
@@ -145,7 +145,7 @@ public final class AdminLogInServlet
 
     /**
      * @see com.enonic.vertical.adminweb.AdminHandlerBaseServlet#doPost(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * javax.servlet.http.HttpServletResponse)
      */
     public void doPost( HttpServletRequest request, HttpServletResponse response )
         throws ServletException, IOException
@@ -248,7 +248,12 @@ public final class AdminLogInServlet
         if ( user.getUserStoreKey() != null )
         {
             final Element userStoreElem = new Element( "userstorekey" );
-            userStoreElem.setAttribute( "key", user.getUserStoreKey().toString() );
+            userStoreElem.setText( user.getUserStoreKey().toString() );
+            rootElem.addContent( userStoreElem );
+        }
+        else if ( user.getUserStoreName() != null && !user.getUserStoreName().equals( "" ) )
+        {
+            final Element userStoreElem = new Element( "userstorename" );
             userStoreElem.setText( user.getUserStoreName() );
             rootElem.addContent( userStoreElem );
         }
@@ -451,13 +456,9 @@ public final class AdminLogInServlet
 
             // Reset some cookie data:
             String deploymentPath = DeploymentPathResolver.getAdminDeploymentPath( request );
-
-            if ( userStoreKey != null )
-            {
-                CookieUtil.setCookie( response, user.getKey() + "userstorekey", userStoreKey.toString(), -1, deploymentPath );
-            }
-
+            CookieUtil.setCookie( response, user.getKey() + "userstorekey", userStoreKey.toString(), -1, deploymentPath );
             CookieUtil.setCookie( response, user.getKey() + "selectedunitkey", "-1", -1, deploymentPath );
+
             // If the enterpriseadmin user did'nt select a domain,
             // show system tab page, else show domain tab page.
             Cookie tabPageCookie = CookieUtil.getCookie( request, user.getKey() + "mainmenu_selectedTabPage" );
@@ -626,7 +627,7 @@ public final class AdminLogInServlet
         {
             securityService.changePassword( qualifiedUsername, password );
         }
-        catch (InvalidCredentialsException ex)
+        catch ( InvalidCredentialsException ex )
         {
             session.setAttribute( "passworderrorcode", EC_400_USER_NOT_FOUND );
             session.setAttribute( "passworderror", "Failed to authenticate user " + uid );
@@ -653,14 +654,14 @@ public final class AdminLogInServlet
         {
             sendMailService.sendChangePasswordMail( qualifiedUsername, password );
 
-            LOG.info( "Sent mail with new password to " +  qualifiedUsername);
+            LOG.info( "Sent mail with new password to " + qualifiedUsername );
 
             // AS DESIGNED: message "email was sent, check your INBOX" is not displayed.
             redirectClientToAdminPath( "login", request, response );
         }
-        catch (Exception e)
+        catch ( Exception e )
         {
-            final String message = String.format(SMTP_SERVER_IS_NOT_AVAILABLE, e.getCause().getMessage() );
+            final String message = String.format( SMTP_SERVER_IS_NOT_AVAILABLE, e.getCause().getMessage() );
 
             session.setAttribute( "passworderrorcode", EC_500_FAILED_SEND_MAIL );
             session.setAttribute( "passworderror", message );
