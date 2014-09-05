@@ -6,9 +6,20 @@ var SourceEditor = {
         var self = SourceEditor;
         var textAreaToTransform = document.getElementById('htmlSource');
 
-        textAreaToTransform.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
 
-        self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id, null, false);
+        if (tinyMCEPopup.editor.getContent().length > 5000) {
+            var config = {
+                "simple": true
+            };
+            self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id, config, false);
+            self.codeArea.setValue(tinyMCEPopup.editor.getContent());
+        } else {
+            self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id, null, false);
+            self.codeArea.setValue(self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent()));
+        }
+
+
+
 
         // Resize editor on window resize
         if (window.addEventListener) {

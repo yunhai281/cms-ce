@@ -56,7 +56,7 @@
                     this.appendCodeMirrorAutoResizeCssToHeadElement();
                 }
 
-                this.codeMirror = CodeMirror.fromTextArea(this.textAreaToConvert, this.config);
+                this.codeMirror = CodeMirror.fromTextArea(this.textAreaToConvert, {});
             }
         }
         catch (err) {
@@ -66,6 +66,10 @@
 
     proto.getValue = function () {
         return this.codeMirror.getValue();
+    };
+
+    proto.setValue = function (value) {
+        return this.codeMirror.setValue(value);
     };
 
     proto.reindentAllLines = function () {
@@ -82,38 +86,40 @@
     proto.setDefaultConfig = function () {
         var config = this.config;
 
-        if (this.enableAutoResize) {
-            config.viewportMargin = Infinity;
-        }
+        if (!this.config.simple) {
+            if (this.enableAutoResize) {
+                config.viewportMargin = Infinity;
+            }
 
-        if (!config.mode) {
-            config.mode = 'application/xml';
-        }
+            if (!config.mode) {
+                config.mode = 'application/xml';
+            }
 
-        if (!config.lineNumbers) {
-            config.lineNumbers = true;
-        }
+            if (config.lineNumbers == null) {
+                config.lineNumbers = true;
+            }
 
-        if (!config.lineWrapping) {
-            config.lineWrapping = true;
-        }
+            if (!config.lineWrapping) {
+                config.lineWrapping = true;
+            }
 
-        if (!config.indentUnit) {
-            config.indentUnit = 4;
-        }
+            if (!config.indentUnit) {
+                config.indentUnit = 4;
+            }
 
-        /* Add-on specific configuration */
+            /* Add-on specific configuration */
 
-        if (!config.autoCloseTags) {
-            config.autoCloseTags = true;
-        }
+            if (!config.autoCloseTags) {
+                config.autoCloseTags = true;
+            }
 
-        if (!config.styleActiveLine) {
-            config.styleActiveLine = true;
-        }
+            if (!config.styleActiveLine) {
+                config.styleActiveLine = true;
+            }
 
-        if (!config.matchTags) {
-            config.matchTags = true;
+            if (!config.matchTags) {
+                config.matchTags = true;
+            }
         }
     };
 
