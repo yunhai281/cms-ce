@@ -7,7 +7,7 @@ var SourceEditor = {
         var textAreaToTransform = document.getElementById('htmlSource');
 
 
-        if (tinyMCEPopup.editor.getContent().length > 5000) {
+        if (tinyMCEPopup.editor.getContent().length > 10000) {
             var config = {
                 "simple": true
             };
