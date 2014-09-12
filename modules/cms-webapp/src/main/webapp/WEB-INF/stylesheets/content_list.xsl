@@ -103,230 +103,231 @@
 
   <xsl:variable name="popupmode" select="not($subop = 'browse')"/>
 
-    <xsl:variable name="pageURLWithoutSearch">
-      <xsl:text>adminpage?op=</xsl:text>
-      <xsl:value-of select="$op"/>
-
-      <xsl:text>&amp;index=</xsl:text><xsl:value-of select="$index"/>
-      <xsl:text>&amp;count=</xsl:text><xsl:value-of select="$count"/>
-
-      <xsl:text>&amp;page=</xsl:text>
-      <xsl:value-of select="$page"/>
-      <xsl:text>&amp;categorykey=</xsl:text>
-      <xsl:value-of select="$cat"/>
-      <xsl:text>&amp;selectedunitkey=</xsl:text>
-      <xsl:value-of select="$selectedunitkey"/>
-      <xsl:text>&amp;subop=</xsl:text>
-      <xsl:value-of select="$subop"/>
-      <xsl:if test="$fieldname">
-        <xsl:text>&amp;fieldname=</xsl:text>
-        <xsl:value-of select="$fieldname"/>
-      </xsl:if>
-      <xsl:if test="$fieldrow">
-        <xsl:text>&amp;fieldrow=</xsl:text>
-        <xsl:value-of select="$fieldrow"/>
-      </xsl:if>
-      <xsl:if test="$contenttypestring">
-        <xsl:text>&amp;contenttypestring=</xsl:text>
-        <xsl:value-of select="$contenttypestring"/>
-      </xsl:if>
-      <xsl:if test="$contenthandler">
-        <xsl:text>&amp;contenthandler=</xsl:text>
-        <xsl:value-of select="$contenthandler"/>
-      </xsl:if>
-      <xsl:if test="$minoccurrence">
-        <xsl:text>&amp;minoccurrence=</xsl:text>
-        <xsl:value-of select="$minoccurrence"/>
-      </xsl:if>
-      <xsl:if test="$maxoccurrence">
-        <xsl:text>&amp;maxoccurrence=</xsl:text>
-        <xsl:value-of select="$maxoccurrence"/>
-      </xsl:if>
-    </xsl:variable>
+  <xsl:variable name="pageURLWithoutSearch">
+    <xsl:text>adminpage?op=</xsl:text>
+    <xsl:value-of select="$op"/>
+    <xsl:text>&amp;index=</xsl:text>
+    <xsl:value-of select="$index"/>
+    <xsl:text>&amp;count=</xsl:text>
+    <xsl:value-of select="$count"/>
+    <xsl:text>&amp;page=</xsl:text>
+    <xsl:value-of select="$page"/>
+    <xsl:text>&amp;categorykey=</xsl:text>
+    <xsl:value-of select="$cat"/>
+    <xsl:text>&amp;selectedunitkey=</xsl:text>
+    <xsl:value-of select="$selectedunitkey"/>
+    <xsl:text>&amp;subop=</xsl:text>
+    <xsl:value-of select="$subop"/>
+    <xsl:if test="$fieldname">
+      <xsl:text>&amp;fieldname=</xsl:text>
+      <xsl:value-of select="$fieldname"/>
+    </xsl:if>
+    <xsl:if test="$fieldrow">
+      <xsl:text>&amp;fieldrow=</xsl:text>
+      <xsl:value-of select="$fieldrow"/>
+    </xsl:if>
+    <xsl:if test="$contenttypestring">
+      <xsl:text>&amp;contenttypestring=</xsl:text>
+      <xsl:value-of select="$contenttypestring"/>
+    </xsl:if>
+    <xsl:if test="$contenthandler">
+      <xsl:text>&amp;contenthandler=</xsl:text>
+      <xsl:value-of select="$contenthandler"/>
+    </xsl:if>
+    <xsl:if test="$minoccurrence">
+      <xsl:text>&amp;minoccurrence=</xsl:text>
+      <xsl:value-of select="$minoccurrence"/>
+    </xsl:if>
+    <xsl:if test="$maxoccurrence">
+      <xsl:text>&amp;maxoccurrence=</xsl:text>
+      <xsl:value-of select="$maxoccurrence"/>
+    </xsl:if>
+  </xsl:variable>
 
   <xsl:variable name="pageURL">
     <xsl:value-of select="$pageURLWithoutSearch"/>
-      <xsl:choose>
-        <xsl:when test="$searchtype = 'simple'">
-          <xsl:text>&amp;searchtype=</xsl:text>
-          <xsl:value-of select="$searchtype"/>
-          <xsl:text>&amp;searchtext=</xsl:text>
-          <xsl:value-of select="$searchtext"/>
-          <xsl:text>&amp;scope=</xsl:text>
-          <xsl:value-of select="$scope"/>
-        </xsl:when>
-        <xsl:when test="$searchtype = 'advanced'">
-          <xsl:text>&amp;searchtype=</xsl:text>
-          <xsl:value-of select="$searchtype"/>
-          <xsl:text>&amp;asearchtext=</xsl:text>
-          <xsl:value-of select="$asearchtext"/>
-          <xsl:text>&amp;ascope=</xsl:text>
-          <xsl:value-of select="$ascope"/>
-          <xsl:text>&amp;subcategories=</xsl:text>
-          <xsl:value-of select="$subcategories"/>
-          <xsl:text>&amp;state=</xsl:text>
-          <xsl:value-of select="$state"/>
-          <xsl:text>&amp;owner=</xsl:text>
-          <xsl:value-of select="$owner"/>
-          <xsl:text>&amp;lastmodified=</xsl:text>
-          <xsl:value-of select="$lastmodified"/>
-          <xsl:text>&amp;poperator=</xsl:text>
-          <xsl:value-of select="$poperator"/>
-          <xsl:text>&amp;priority=</xsl:text>
-          <xsl:value-of select="$priority"/>
-          <xsl:text>&amp;filter=</xsl:text>
-          <xsl:value-of select="$filter"/>
-          <xsl:text>&amp;owner.uid=</xsl:text>
-          <xsl:value-of select="$owner.uid"/>
-          <xsl:text>&amp;owner.fullName=</xsl:text>
-          <xsl:value-of select="$owner.fullName"/>
-          <xsl:text>&amp;modifier=</xsl:text>
-          <xsl:value-of select="$modifier"/>
-          <xsl:text>&amp;modifier.uid=</xsl:text>
-          <xsl:value-of select="$modifier.uid"/>
-          <xsl:text>&amp;modifier.fullName=</xsl:text>
-          <xsl:value-of select="$modifier.fullName"/>
-          <xsl:text>&amp;datecreated=</xsl:text>
-          <xsl:value-of select="$datecreated"/>
-          <xsl:text>&amp;created=</xsl:text>
-          <xsl:value-of select="$created"/>
-          <xsl:text>&amp;modified=</xsl:text>
-          <xsl:value-of select="$modified"/>
-          <xsl:text>&amp;owner.qualifiedName=</xsl:text>
-          <xsl:value-of select="$owner.qualifiedName"/>
-          <xsl:text>&amp;modifier.qualifiedName=</xsl:text>
-          <xsl:value-of select="$modifier.qualifiedName"/>
-          <xsl:text>&amp;_assignee=</xsl:text>
-          <xsl:value-of select="$assignment.assigneeUserKey"/>
-          <xsl:text>&amp;_assigner=</xsl:text>
-          <xsl:value-of select="$assignment.assignerUserKey"/>
-          <xsl:text>&amp;duedate=</xsl:text>
-          <xsl:value-of select="$duedate"/>
-          <xsl:text>&amp;date_assignmentDueDate=</xsl:text>
-          <xsl:value-of select="$duedate"/>
-          <xsl:text>&amp;_assignmentDueDate.op=</xsl:text>
-          <xsl:value-of select="$assignment.dueDate.op"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$searchtype = 'simple'">
+        <xsl:text>&amp;searchtype=</xsl:text>
+        <xsl:value-of select="$searchtype"/>
+        <xsl:text>&amp;searchtext=</xsl:text>
+        <xsl:value-of select="$searchtext"/>
+        <xsl:text>&amp;scope=</xsl:text>
+        <xsl:value-of select="$scope"/>
+      </xsl:when>
 
-    <xsl:variable name="pageURLWithSorting">
-    	<xsl:value-of select="$pageURL"/>
-    	<xsl:if test="$sortby">
+      <xsl:when test="$searchtype = 'advanced'">
+        <xsl:text>&amp;searchtype=</xsl:text>
+        <xsl:value-of select="$searchtype"/>
+        <xsl:text>&amp;asearchtext=</xsl:text>
+        <xsl:value-of select="$asearchtext"/>
+        <xsl:text>&amp;ascope=</xsl:text>
+        <xsl:value-of select="$ascope"/>
+        <xsl:text>&amp;subcategories=</xsl:text>
+        <xsl:value-of select="$subcategories"/>
+        <xsl:text>&amp;state=</xsl:text>
+        <xsl:value-of select="$state"/>
+        <xsl:text>&amp;owner=</xsl:text>
+        <xsl:value-of select="$owner"/>
+        <xsl:text>&amp;lastmodified=</xsl:text>
+        <xsl:value-of select="$lastmodified"/>
+        <xsl:text>&amp;poperator=</xsl:text>
+        <xsl:value-of select="$poperator"/>
+        <xsl:text>&amp;priority=</xsl:text>
+        <xsl:value-of select="$priority"/>
+        <xsl:text>&amp;filter=</xsl:text>
+        <xsl:value-of select="$filter"/>
+        <xsl:text>&amp;owner.uid=</xsl:text>
+        <xsl:value-of select="$owner.uid"/>
+        <xsl:text>&amp;owner.fullName=</xsl:text>
+        <xsl:value-of select="$owner.fullName"/>
+        <xsl:text>&amp;modifier=</xsl:text>
+        <xsl:value-of select="$modifier"/>
+        <xsl:text>&amp;modifier.uid=</xsl:text>
+        <xsl:value-of select="$modifier.uid"/>
+        <xsl:text>&amp;modifier.fullName=</xsl:text>
+        <xsl:value-of select="$modifier.fullName"/>
+        <xsl:text>&amp;datecreated=</xsl:text>
+        <xsl:value-of select="$datecreated"/>
+        <xsl:text>&amp;created=</xsl:text>
+        <xsl:value-of select="$created"/>
+        <xsl:text>&amp;modified=</xsl:text>
+        <xsl:value-of select="$modified"/>
+        <xsl:text>&amp;owner.qualifiedName=</xsl:text>
+        <xsl:value-of select="$owner.qualifiedName"/>
+        <xsl:text>&amp;modifier.qualifiedName=</xsl:text>
+        <xsl:value-of select="$modifier.qualifiedName"/>
+        <xsl:text>&amp;_assignee=</xsl:text>
+        <xsl:value-of select="$assignment.assigneeUserKey"/>
+        <xsl:text>&amp;_assigner=</xsl:text>
+        <xsl:value-of select="$assignment.assignerUserKey"/>
+        <xsl:text>&amp;duedate=</xsl:text>
+        <xsl:value-of select="$duedate"/>
+        <xsl:text>&amp;date_assignmentDueDate=</xsl:text>
+        <xsl:value-of select="$duedate"/>
+        <xsl:text>&amp;_assignmentDueDate.op=</xsl:text>
+        <xsl:value-of select="$assignment.dueDate.op"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="pageURLWithSorting">
+    <xsl:value-of select="$pageURL"/>
+    <xsl:if test="$sortby">
 			<xsl:text>&amp;sortby=</xsl:text><xsl:value-of select="$sortby"/>
 			<xsl:text>&amp;sortby-direction=</xsl:text><xsl:value-of select="$sortby-direction"/>
 		</xsl:if>
-    </xsl:variable>
+  </xsl:variable>
 
-    <!-- Additional next/from parameters -->
-    <xsl:variable name="extraparams">
-      <xsl:choose>
-        <xsl:when test="$searchtype = 'simple'">
-          <!-- params needed by simple search -->
-          <xsl:text>&amp;searchtype=</xsl:text>
-          <xsl:value-of select="$searchtype"/>
-          <xsl:text>&amp;searchtext=</xsl:text>
-          <xsl:value-of select="$searchtext"/>
-          <xsl:text>&amp;scope=</xsl:text>
-          <xsl:value-of select="$scope"/>
-        </xsl:when>
-        <xsl:when test="$searchtype = 'advanced'">
-          <!-- params needed by advanced search -->
-          <xsl:text>&amp;searchtype=</xsl:text>
-          <xsl:value-of select="$searchtype"/>
-          <xsl:text>&amp;asearchtext=</xsl:text>
-          <xsl:value-of select="$asearchtext"/>
-          <xsl:text>&amp;ascope=</xsl:text>
-          <xsl:value-of select="$ascope"/>
-          <xsl:text>&amp;subcategories=</xsl:text>
-          <xsl:value-of select="$subcategories"/>
-          <xsl:text>&amp;state=</xsl:text>
-          <xsl:value-of select="$state"/>
-          <xsl:text>&amp;lastmodified=</xsl:text>
-          <xsl:value-of select="$lastmodified"/>
-          <xsl:text>&amp;poperator=</xsl:text>
-          <xsl:value-of select="$poperator"/>
-          <xsl:text>&amp;priority=</xsl:text>
-          <xsl:value-of select="$priority"/>
-          <xsl:text>&amp;filter=</xsl:text>
-          <xsl:value-of select="$filter"/>
-          <xsl:text>&amp;owner=</xsl:text>
-          <xsl:value-of select="$owner"/>
-          <xsl:text>&amp;owner.uid=</xsl:text>
-          <xsl:value-of select="$owner.uid"/>
-          <xsl:text>&amp;owner.fullName=</xsl:text>
-          <xsl:value-of select="$owner.fullName"/>
-          <xsl:text>&amp;owner.qualifiedName=</xsl:text>
-          <xsl:value-of select="$owner.qualifiedName"/>
-          <xsl:text>&amp;modifier=</xsl:text>
-          <xsl:value-of select="$modifier"/>
-          <xsl:text>&amp;modifier.uid=</xsl:text>
-          <xsl:value-of select="$modifier.uid"/>
-          <xsl:text>&amp;modifier.fullName=</xsl:text>
-          <xsl:value-of select="$modifier.fullName"/>
-          <xsl:text>&amp;modifier.qualifiedName=</xsl:text>
-          <xsl:value-of select="$modifier.qualifiedName"/>
-          <xsl:text>&amp;created=</xsl:text>
-          <xsl:value-of select="$created"/>
-          <xsl:text>&amp;datecreated=</xsl:text>
-          <xsl:value-of select="$created"/>
-          <xsl:text>&amp;created.op=</xsl:text>
-          <xsl:value-of select="$created.op"/>
-          <xsl:text>&amp;modified=</xsl:text>
-          <xsl:value-of select="$modified"/>
-          <xsl:text>&amp;datemodified=</xsl:text>
-          <xsl:value-of select="$modified"/>
-          <xsl:text>&amp;modified.op=</xsl:text>
-          <xsl:value-of select="$modified.op"/>
-          <xsl:text>&amp;cat=</xsl:text>
-          <xsl:value-of select="$cat"/>
-          <xsl:text>&amp;modified=</xsl:text>
-          <xsl:value-of select="$modified"/>
-          <xsl:text>&amp;_assignee=</xsl:text>
-          <xsl:value-of select="$assignment.assigneeUserKey"/>
-          <xsl:text>&amp;_assigner=</xsl:text>
-          <xsl:value-of select="$assignment.assignerUserKey"/>
-          <xsl:text>&amp;duedate=</xsl:text>
-          <xsl:value-of select="$duedate"/>
-          <xsl:text>&amp;date_assignmentDueDate=</xsl:text>
-          <xsl:value-of select="$duedate"/>
-          <xsl:text>&amp;_assignmentDueDate.op=</xsl:text>
-          <xsl:value-of select="$assignment.dueDate.op"/>
-        </xsl:when>
-      </xsl:choose>
-    </xsl:variable>
+  <!-- Additional next/from parameters -->
+  <xsl:variable name="extraparams">
+    <xsl:choose>
+      <xsl:when test="$searchtype = 'simple'">
+        <!-- params needed by simple search -->
+        <xsl:text>&amp;searchtype=</xsl:text>
+        <xsl:value-of select="$searchtype"/>
+        <xsl:text>&amp;searchtext=</xsl:text>
+        <xsl:value-of select="$searchtext"/>
+        <xsl:text>&amp;scope=</xsl:text>
+        <xsl:value-of select="$scope"/>
+      </xsl:when>
+      <xsl:when test="$searchtype = 'advanced'">
+        <!-- params needed by advanced search -->
+        <xsl:text>&amp;searchtype=</xsl:text>
+        <xsl:value-of select="$searchtype"/>
+        <xsl:text>&amp;asearchtext=</xsl:text>
+        <xsl:value-of select="$asearchtext"/>
+        <xsl:text>&amp;ascope=</xsl:text>
+        <xsl:value-of select="$ascope"/>
+        <xsl:text>&amp;subcategories=</xsl:text>
+        <xsl:value-of select="$subcategories"/>
+        <xsl:text>&amp;state=</xsl:text>
+        <xsl:value-of select="$state"/>
+        <xsl:text>&amp;lastmodified=</xsl:text>
+        <xsl:value-of select="$lastmodified"/>
+        <xsl:text>&amp;poperator=</xsl:text>
+        <xsl:value-of select="$poperator"/>
+        <xsl:text>&amp;priority=</xsl:text>
+        <xsl:value-of select="$priority"/>
+        <xsl:text>&amp;filter=</xsl:text>
+        <xsl:value-of select="$filter"/>
+        <xsl:text>&amp;owner=</xsl:text>
+        <xsl:value-of select="$owner"/>
+        <xsl:text>&amp;owner.uid=</xsl:text>
+        <xsl:value-of select="$owner.uid"/>
+        <xsl:text>&amp;owner.fullName=</xsl:text>
+        <xsl:value-of select="$owner.fullName"/>
+        <xsl:text>&amp;owner.qualifiedName=</xsl:text>
+        <xsl:value-of select="$owner.qualifiedName"/>
+        <xsl:text>&amp;modifier=</xsl:text>
+        <xsl:value-of select="$modifier"/>
+        <xsl:text>&amp;modifier.uid=</xsl:text>
+        <xsl:value-of select="$modifier.uid"/>
+        <xsl:text>&amp;modifier.fullName=</xsl:text>
+        <xsl:value-of select="$modifier.fullName"/>
+        <xsl:text>&amp;modifier.qualifiedName=</xsl:text>
+        <xsl:value-of select="$modifier.qualifiedName"/>
+        <xsl:text>&amp;created=</xsl:text>
+        <xsl:value-of select="$created"/>
+        <xsl:text>&amp;datecreated=</xsl:text>
+        <xsl:value-of select="$created"/>
+        <xsl:text>&amp;created.op=</xsl:text>
+        <xsl:value-of select="$created.op"/>
+        <xsl:text>&amp;modified=</xsl:text>
+        <xsl:value-of select="$modified"/>
+        <xsl:text>&amp;datemodified=</xsl:text>
+        <xsl:value-of select="$modified"/>
+        <xsl:text>&amp;modified.op=</xsl:text>
+        <xsl:value-of select="$modified.op"/>
+        <xsl:text>&amp;cat=</xsl:text>
+        <xsl:value-of select="$cat"/>
+        <xsl:text>&amp;modified=</xsl:text>
+        <xsl:value-of select="$modified"/>
+        <xsl:text>&amp;_assignee=</xsl:text>
+        <xsl:value-of select="$assignment.assigneeUserKey"/>
+        <xsl:text>&amp;_assigner=</xsl:text>
+        <xsl:value-of select="$assignment.assignerUserKey"/>
+        <xsl:text>&amp;duedate=</xsl:text>
+        <xsl:value-of select="$duedate"/>
+        <xsl:text>&amp;date_assignmentDueDate=</xsl:text>
+        <xsl:value-of select="$duedate"/>
+        <xsl:text>&amp;_assignmentDueDate.op=</xsl:text>
+        <xsl:value-of select="$assignment.dueDate.op"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:variable>
 
-    <xsl:variable name="urlForNavigation">
-      <xsl:text>adminpage?page=</xsl:text>
-      <xsl:value-of select="$page"/>
-      <xsl:text>&amp;op=</xsl:text>
-      <xsl:value-of select="$op"/>
-      <xsl:text>&amp;subop=</xsl:text>
-      <xsl:value-of select="$subop"/>
-      <xsl:text>&amp;fieldname=</xsl:text>
-      <xsl:value-of select="$fieldname"/>
-      <xsl:text>&amp;fieldrow=</xsl:text>
-      <xsl:value-of select="$fieldrow"/>
-      <xsl:text>&amp;contenttypestring=</xsl:text>
-      <xsl:value-of select="$contenttypestring"/>
-      <xsl:text>&amp;categorykey=</xsl:text>
-      <xsl:value-of select="$cat"/>
-      <xsl:text>&amp;sortby=</xsl:text>
-      <xsl:value-of select="$sortby"/>
-      <xsl:text>&amp;sortby-direction=</xsl:text>
-      <xsl:value-of select="$sortby-direction"/>
-      <xsl:text>&amp;contenthandler=</xsl:text>
-      <xsl:value-of select="$contenthandler"/>
-      <xsl:value-of select="$extraparams"/>
-      <xsl:if test="$minoccurrence">
-        <xsl:text>&amp;minoccurrence=</xsl:text>
-        <xsl:value-of select="$minoccurrence"/>
-      </xsl:if>
-      <xsl:if test="$maxoccurrence">
-        <xsl:text>&amp;maxoccurrence=</xsl:text>
-        <xsl:value-of select="$maxoccurrence"/>
-      </xsl:if>
-    </xsl:variable>
+  <xsl:variable name="urlForNavigation">
+    <xsl:text>adminpage?page=</xsl:text>
+    <xsl:value-of select="$page"/>
+    <xsl:text>&amp;op=</xsl:text>
+    <xsl:value-of select="$op"/>
+    <xsl:text>&amp;subop=</xsl:text>
+    <xsl:value-of select="$subop"/>
+    <xsl:text>&amp;fieldname=</xsl:text>
+    <xsl:value-of select="$fieldname"/>
+    <xsl:text>&amp;fieldrow=</xsl:text>
+    <xsl:value-of select="$fieldrow"/>
+    <xsl:text>&amp;contenttypestring=</xsl:text>
+    <xsl:value-of select="$contenttypestring"/>
+    <xsl:text>&amp;categorykey=</xsl:text>
+    <xsl:value-of select="$cat"/>
+    <xsl:text>&amp;sortby=</xsl:text>
+    <xsl:value-of select="$sortby"/>
+    <xsl:text>&amp;sortby-direction=</xsl:text>
+    <xsl:value-of select="$sortby-direction"/>
+    <xsl:text>&amp;contenthandler=</xsl:text>
+    <xsl:value-of select="$contenthandler"/>
+    <xsl:value-of select="$extraparams"/>
+    <xsl:if test="$minoccurrence">
+      <xsl:text>&amp;minoccurrence=</xsl:text>
+      <xsl:value-of select="$minoccurrence"/>
+    </xsl:if>
+    <xsl:if test="$maxoccurrence">
+      <xsl:text>&amp;maxoccurrence=</xsl:text>
+      <xsl:value-of select="$maxoccurrence"/>
+    </xsl:if>
+  </xsl:variable>
 
   <xsl:variable name="isPopup" select="$subop = 'relatedcontent' or
                            $subop = 'relatedfiles' or
@@ -1675,29 +1676,29 @@
                         <xsl:variable name="categorykey" select="categoryname/@key"/>
                         <xsl:variable name="ctykey" select="@contenttypekey"/>
 
-                         <xsl:variable name="clickable">
-                            <xsl:choose>
-                              <xsl:when test="@clickable">
-                                <xsl:value-of select="@clickable"/>
-                              </xsl:when>
-                              <xsl:otherwise>
-                                <xsl:apply-templates select="*" mode="clickable"/>
-                              </xsl:otherwise>
-                            </xsl:choose>
-                          </xsl:variable>
+                        <xsl:variable name="clickable">
+                          <xsl:choose>
+                            <xsl:when test="@clickable">
+                              <xsl:value-of select="@clickable"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:apply-templates select="*" mode="clickable"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </xsl:variable>
 
-                          <xsl:variable name="css-class">
-                            <xsl:text>browsetablecell</xsl:text>
-                            <xsl:if test="$clickable = 'false'">
-                              <xsl:text>arrow</xsl:text>
-                            </xsl:if>
-                            <xsl:if test="$isFileHandlerAndIsFileOfTypeImage">
-                              <xsl:text> is-added</xsl:text>
-                            </xsl:if>
-                            <xsl:if test="position() = last()">
-                              <xsl:text> row-last</xsl:text>
-                            </xsl:if>
-                          </xsl:variable>
+                        <xsl:variable name="css-class">
+                          <xsl:text>browsetablecell</xsl:text>
+                          <xsl:if test="$clickable = 'false'">
+                            <xsl:text>arrow</xsl:text>
+                          </xsl:if>
+                          <xsl:if test="$isFileHandlerAndIsFileOfTypeImage">
+                            <xsl:text> is-added</xsl:text>
+                          </xsl:if>
+                          <xsl:if test="position() = last()">
+                            <xsl:text> row-last</xsl:text>
+                          </xsl:if>
+                        </xsl:variable>
 
                         <!-- Display checkbox column -->
                         <td style="padding: 0px;" align="center" onclick="javascript: setChecked('batch_operation{@key}');">
@@ -1727,7 +1728,7 @@
                             <xsl:with-param name="title" select="title"/>
                             <xsl:with-param name="contenthandler-class-name" select="/data/contenttypes/contenttype[@key = current()/@contenttypekey]/@handler"/>
                             <xsl:with-param name="content-type-name" select="@contenttype"/>
-                         </xsl:call-template>
+                          </xsl:call-template>
                         </td>
 
                         <xsl:for-each select="saxon:evaluate($fieldsxpath)">
