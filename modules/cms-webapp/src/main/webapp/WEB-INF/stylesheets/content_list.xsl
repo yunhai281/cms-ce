@@ -1915,7 +1915,7 @@
                             <xsl:with-param name="includepublish" select="$hasCategoryPublish = true() and not($popupmode)"/>
                             <xsl:with-param name="includecopy" select="$hasCategoryPublish = true()"/>
                             <xsl:with-param name="includemove" select="$hasCategoryPublish = true()"/>
-                            <xsl:with-param name="includeremove" select="$hasCategoryPublish = true()"/>
+                            <xsl:with-param name="includeremove" select="$hasCategoryPublish = true() or ($searchtype != '')"/>
 
                             <xsl:with-param name="contenttypekey" select="@contenttypekey"/>
                             <xsl:with-param name="cat" select="$cat"/>

@@ -35,13 +35,13 @@
     <xsl:variable name="page" select="admin:toInteger($contenttypekey + 999)"/>
 
     <xsl:variable name="categorycreate"
-                  select="not($contentelem/accessrights/userright) or $contentelem/accessrights/userright/@categorycreate = 'true'"/>
+                  select="$contentelem/userright/@categorycreate = 'true'"/>
     <xsl:variable name="categorypublish"
-                  select="not($contentelem/accessrights/userright) or $contentelem/accessrights/userright/@categorypublish = 'true'"/>
+                  select="$contentelem/userright/@categorypublish = 'true'"/>
     <xsl:variable name="contentupdate"
-                  select="not($contentelem/accessrights/userright) or $contentelem/accessrights/userright/@update = 'true'"/>
+                  select="$contentelem/userright/@update = 'true'"/>
     <xsl:variable name="contentdelete"
-                  select="not($contentelem/accessrights/userright) or $contentelem/accessrights/userright/@delete = 'true'"/>
+                  select="$contentelem/userright/@delete = 'true'"/>
 
     <table border="0" cellspacing="0" cellpadding="0">
 
