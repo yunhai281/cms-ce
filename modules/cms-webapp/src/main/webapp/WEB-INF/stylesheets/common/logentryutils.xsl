@@ -31,6 +31,16 @@
               <xsl:text>%txtLogout%</xsl:text>
           </xsl:when>
 
+          <!-- type: auto_login -->
+          <xsl:when test="$typekey = 8">
+            <xsl:text>%txtAutoLogin%</xsl:text>
+          </xsl:when>
+
+          <!-- type: rememebered_login -->
+          <xsl:when test="$typekey = 9">
+            <xsl:text>%txtRememberMeLogin%</xsl:text>
+          </xsl:when>
+
           <!-- type: entity_created -->
           <xsl:when test="$typekey &gt;= 4 and $typekey &lt;= 7">
               <xsl:choose>

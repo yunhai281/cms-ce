@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +27,14 @@ import com.enonic.esl.servlet.http.CookieUtil;
 
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
 import com.enonic.cms.core.security.PasswordGenerator;
+import com.enonic.cms.core.security.SecurityLoggingXml;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -212,7 +211,7 @@ public final class AdminLogInServlet
         command.setType( LogType.LOGIN_FAILED );
         command.setInetAddress( remoteIp );
         command.setTitle( user.getUsername() );
-        command.setXmlData( createUserStoreDataDoc( user ) );
+        command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( user ) );
         command.setUser( this.securityService.getAnonymousUserKey() );
 
         this.logService.storeNew( command );
@@ -224,7 +223,7 @@ public final class AdminLogInServlet
         command.setType( LogType.LOGIN );
         command.setInetAddress( remoteIp );
         command.setTitle( user.getDisplayName() + " (" + user.getName() + ")" );
-        command.setXmlData( createUserStoreDataDoc( user.getQualifiedName() ) );
+        command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( user.getQualifiedName() ) );
         command.setUser( user.getKey() );
 
         this.logService.storeNew( command );
@@ -236,29 +235,10 @@ public final class AdminLogInServlet
         command.setType( LogType.LOGOUT );
         command.setInetAddress( remoteIp );
         command.setTitle( user.getDisplayName() + " (" + user.getName() + ")" );
+        command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( user.getQualifiedName() ) );
         command.setUser( user.getKey() );
 
         this.logService.storeNew( command );
-    }
-
-    private Document createUserStoreDataDoc( final QualifiedUsername user )
-    {
-        final Element rootElem = new Element( "data" );
-
-        if ( user.getUserStoreKey() != null )
-        {
-            final Element userStoreElem = new Element( "userstorekey" );
-            userStoreElem.setText( user.getUserStoreKey().toString() );
-            rootElem.addContent( userStoreElem );
-        }
-        else if ( user.getUserStoreName() != null && !user.getUserStoreName().equals( "" ) )
-        {
-            final Element userStoreElem = new Element( "userstorename" );
-            userStoreElem.setText( user.getUserStoreName() );
-            rootElem.addContent( userStoreElem );
-        }
-
-        return new Document( rootElem );
     }
 
     private void handlerLoginForm( HttpServletRequest request, HttpServletResponse response, HttpSession session,

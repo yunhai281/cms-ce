@@ -20,6 +20,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
+import com.enonic.cms.core.log.LogService;
+import com.enonic.cms.core.log.LogType;
+import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
@@ -35,8 +38,12 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteContext;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.GroupQuery;
+import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
@@ -46,13 +53,22 @@ public class SecurityServiceImpl
 {
 
     @Autowired
+    private GroupDao groupDao;
+
+    @Autowired
+    private LogService logService;
+
+    @Autowired
+    private SiteDao siteDao;
+
+    @Autowired
+    private SiteService siteService;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
     private UserStoreDao userStoreDao;
-
-    @Autowired
-    private GroupDao groupDao;
 
     @Autowired
     private UserStoreService userStoreService;
@@ -247,11 +263,16 @@ public class SecurityServiceImpl
         return userDao.findSingleBySpecification( userSpecification );
     }
 
-    public boolean autoLoginPortalUser( QualifiedUsername qualifiedUsername )
+    public boolean autoLoginPortalUser( QualifiedUsername qualifiedUsername, String remoteIp, SiteKey siteKey )
     {
         try
         {
             doLoginPortalUser( qualifiedUsername, null, false );
+            SiteContext siteContext = this.siteService.getSiteContext( siteKey );
+            if ( siteContext.isAuthenticationLoggingEnabled() )
+            {
+                logAutoLogin( qualifiedUsername, remoteIp, siteKey );
+            }
             return true;
         }
         catch ( InvalidCredentialsException e )
@@ -265,11 +286,12 @@ public class SecurityServiceImpl
         return doLoginAdminUser( command.getQualifiedUsername(), command.getPassword(), command.isVerifyPassword() );
     }
 
-    public boolean autoLoginAdminUser( final QualifiedUsername qualifiedUsername )
+    public boolean autoLoginAdminUser( final QualifiedUsername qualifiedUsername, String remoteIp )
     {
         try
         {
             doLoginAdminUser( qualifiedUsername, null, false );
+            logAutoLogin( qualifiedUsername, remoteIp, null );
             return true;
         }
         catch ( InvalidCredentialsException e )
@@ -670,10 +692,28 @@ public class SecurityServiceImpl
         return AdminSecurityHolder.getUser();
     }
 
+    private void logAutoLogin( final QualifiedUsername user, final String remoteIp, SiteKey siteKey )
+    {
+        UserEntity userEntity = userDao.findByUserStoreKeyAndUsername( user.getUserStoreKey(), user.getUsername() );
+
+        final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
+        command.setType( LogType.AUTO_LOGIN );
+        command.setInetAddress( remoteIp );
+        command.setUser( userEntity.getKey() );
+        command.setTitle( userEntity.getDisplayName() + " (" + userEntity.getName() + ")" );
+        command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( user ) );
+        if ( siteKey != null )
+        {
+            command.setSite( siteDao.findByKey( siteKey ) );
+        }
+
+        this.logService.storeNew( command );
+    }
+
     @Override
     public UserEntity findUserByEmail( final String userStoreName, final String email )
     {
-        UserStoreEntity userStore = null;
+        UserStoreEntity userStore;
 
         if ( Strings.isNullOrEmpty( userStoreName ) )
         {

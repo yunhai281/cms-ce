@@ -17,6 +17,7 @@ import com.enonic.cms.core.plugin.ext.HttpAutoLoginExtensions;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 
@@ -57,7 +58,7 @@ public final class AutoLoginInterceptor
 
         if ( plugin != null )
         {
-            doAutoLogin( req, plugin );
+            doAutoLogin( req, plugin, context.getSiteKey() );
         }
 
         return true;
@@ -70,7 +71,7 @@ public final class AutoLoginInterceptor
         // Do nothing
     }
 
-    private void doAutoLogin( HttpServletRequest req, HttpAutoLogin plugin )
+    private void doAutoLogin( HttpServletRequest req, HttpAutoLogin plugin, SiteKey siteKey )
     {
         UserEntity current = securityService.getLoggedInPortalUserAsEntity();
 
@@ -102,7 +103,7 @@ public final class AutoLoginInterceptor
             return;
         }
 
-        if ( securityService.autoLoginPortalUser( qualifiedUserName ) )
+        if ( securityService.autoLoginPortalUser( qualifiedUserName, req.getRemoteAddr(), siteKey ) )
         {
             LOG.debug( "Auto-login logged in user [" + qualifiedUserName + "]" );
         }

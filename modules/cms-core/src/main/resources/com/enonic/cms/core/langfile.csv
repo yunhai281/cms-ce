@@ -871,6 +871,8 @@
 %txtLoginSite%|Domenelogin|Domain login|Domæne login|Domänlogin|Dominio inicio de sesión
 %txtLoginFailed%|Login feilet|Login failed|Login mislykkedes|Inloggningen misslyckades|Fallo al iniciar sesión
 %txtLogout%|Logout|Logout|Logout|Utloggning|Cerrar sesión
+%txtAutoLogin%|Automatisk login|Auto Login|Automatisk login|Automatisk inloggning|Inicio de sesión automático
+%txtRememberMeLogin%|Husket login|Remembered login|Husket login|Sparat login|Sesión recordada
 %headEventLog%|Hendelseslogg|Event log|Hændelseslog|Händelselogg|Registro de eventos
 %tooltipViewLogEntry%|Vis detaljert loggmelding|View detailed log entry|Vis detaljeret logpost|Visa detaljerat loggmeddelande|Ver detalles de entrada del registro
 %optFieldFileAttachment%|Filvedlegg|File attachment|Filvedhæftelse|Bifogad fil|Fichero adjunto

@@ -112,6 +112,7 @@ import com.enonic.cms.core.content.category.CategoryService;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.command.ImportContentCommand;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportResult;
@@ -1833,7 +1834,7 @@ public abstract class InternalClientImpl
                                                                 previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
             siteXmlCreator.setUser( user );
-            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( params.tagItem ) );
+            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( params.tagItem ) ) );
             siteXmlCreator.setMenuItemLevels( params.levels );
             siteXmlCreator.setIncludeHiddenMenuItems( params.includeHidden );
 
@@ -1868,7 +1869,7 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+            MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( menuItemKey ) );
             if ( menuItem == null )
             {
                 XMLDocument xml = SiteXmlCreator.createEmptyMenuBranch();
@@ -1956,7 +1957,7 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+            MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( menuItemKey ) );
             if ( menuItem == null )
             {
                 XMLDocument xml = SiteXmlCreator.createEmptyMenuItems();
@@ -1973,7 +1974,7 @@ public abstract class InternalClientImpl
 
             if ( params.tagItem > -1 )
             {
-                siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( params.tagItem ) );
+                siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( params.tagItem ) ) );
             }
 
             XMLDocument xml = siteXmlCreator.createLegacyGetSubMenu( menuItem.getSite() );
@@ -2677,6 +2678,12 @@ public abstract class InternalClientImpl
             case ENTITY_OPENED:
                 logEntry.setEventType( LogEventType.ENTITY_OPENED );
                 break;
+            case AUTO_LOGIN:
+                logEntry.setEventType( LogEventType.AUTO_LOGIN );
+                break;
+            case REMEMBERED_LOGIN:
+                logEntry.setEventType( LogEventType.REMEMBERED_LOGIN );
+                break;
         }
         logEntry.setUser( logEntryEntity.getUser().getName() );
         logEntry.setUsername( logEntryEntity.getUser().getDisplayName() );
@@ -2725,7 +2732,7 @@ public abstract class InternalClientImpl
 
             if ( params.key != null )
             {
-                ContentTypeEntity contentType = contentTypeDao.findByKey( params.key );
+                ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( params.key ) );
                 if ( contentType == null )
                 {
                     throw new IllegalArgumentException( "contentType not found, given key: " + params.key );

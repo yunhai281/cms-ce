@@ -153,14 +153,14 @@ public final class ImageHandler
         {
             if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
             {
-                loggedInUser = autoLoginService.autologinWithRemoteUser( request );
+                loggedInUser = autoLoginService.autologinWithRemoteUser( request, siteDao.findByKey( sitePath.getSiteKey() ) );
             }
         }
         if ( loggedInUser.isAnonymous() )
         {
             if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED ) )
             {
-                loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
+                loggedInUser = autoLoginService.autologinWithCookie( siteDao.findByKey( sitePath.getSiteKey() ), request, response );
             }
         }
         return loggedInUser;

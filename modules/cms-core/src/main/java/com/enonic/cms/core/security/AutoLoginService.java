@@ -15,10 +15,16 @@ import org.springframework.stereotype.Service;
 
 import com.enonic.esl.servlet.http.CookieUtil;
 
+import com.enonic.cms.core.log.LogService;
+import com.enonic.cms.core.log.LogType;
+import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.login.LoginService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SiteContext;
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteService;
 
 @Service
 public class AutoLoginService
@@ -27,7 +33,11 @@ public class AutoLoginService
 
     private LoginService loginService;
 
-    public UserEntity autologinWithRemoteUser( HttpServletRequest request )
+    private LogService logService;
+
+    private SiteService siteService;
+
+    public UserEntity autologinWithRemoteUser( HttpServletRequest request, SiteEntity site )
     {
         UserEntity user = resolveUserFromRequest( request );
         if ( user == null )
@@ -37,6 +47,7 @@ public class AutoLoginService
         if ( !user.isAnonymous() )
         {
             PortalSecurityHolder.setLoggedInUser( user.getKey() );
+            logLogin( user, request.getRemoteAddr(), site, LogType.AUTO_LOGIN );
         }
         return user;
     }
@@ -45,14 +56,14 @@ public class AutoLoginService
      * Checks the cookies to see if a user is allready logged in on the site.
      * The login information in the cookie have to match user data in the database.
      *
-     * @param siteKey  The site to check if the user is logged in.
+     * @param site     The site to check if the user is logged in.
      * @param request  The Http Request, containing the cookies.
      * @param response The Http Response, on which the cookie is cleared, if the user has expired.
      * @return The logged in user, if it exists, otherwise, the anonymous user.
      */
-    public UserEntity autologinWithCookie( SiteKey siteKey, HttpServletRequest request, HttpServletResponse response )
+    public UserEntity autologinWithCookie( SiteEntity site, HttpServletRequest request, HttpServletResponse response )
     {
-        UserEntity user = resolveUserFromCookie( siteKey, request, response );
+        UserEntity user = resolveUserFromCookie( site.getKey(), request, response );
         if ( user == null )
         {
             return securityService.getAnonymousUser();
@@ -60,7 +71,7 @@ public class AutoLoginService
         if ( !user.isAnonymous() )
         {
             PortalSecurityHolder.setLoggedInUser( user.getKey() );
-            return user;
+            logLogin( user, request.getRemoteAddr(), site, LogType.REMEMBERED_LOGIN );
         }
         return user;
     }
@@ -102,7 +113,23 @@ public class AutoLoginService
             response.addCookie( cookie );
             return null;
         }
-        return securityService.getUser( userKey );
+
+        UserEntity userEntity = securityService.getUser( userKey );
+        SiteContext siteContext = siteService.getSiteContext( siteKey );
+
+        if ( siteContext.isAuthenticationLoggingEnabled() )
+        {
+            final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
+            command.setType( LogType.LOGIN );
+            command.setInetAddress( request.getRemoteAddr() );
+            command.setTitle( userEntity.getDisplayName() + " (" + userEntity.getName() + ")" );
+            command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( userEntity.getQualifiedName() ) );
+            command.setUser( userKey );
+
+            this.logService.storeNew( command );
+        }
+
+        return userEntity;
     }
 
     private UserEntity resolveUserFromRequest( HttpServletRequest request )
@@ -115,6 +142,32 @@ public class AutoLoginService
         }
 
         return securityService.getUserFromDefaultUserStore( remoteUserUID );
+    }
+
+    private void logLogin( final UserEntity user, final String remoteIp, SiteEntity site, LogType loginType )
+    {
+        final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
+        command.setType( loginType );
+        command.setInetAddress( remoteIp );
+        command.setUser( user.getKey() );
+        command.setTitle( user.getDisplayName() + " (" + user.getName() + ")" );
+        command.setXmlData( SecurityLoggingXml.createUserStoreDataDoc( user.getQualifiedName() ) );
+        command.setSite( site );
+
+        this.logService.storeNew( command );
+    }
+
+
+    @Autowired
+    public void setSiteService( SiteService siteService )
+    {
+        this.siteService = siteService;
+    }
+
+    @Autowired
+    public void setLogService( LogService logService )
+    {
+        this.logService = logService;
     }
 
     @Autowired

@@ -54,7 +54,7 @@ public final class ServicesHandler
         if ( sitePropertiesService.getSiteProperties( sitePath.getSiteKey() ).getPropertyAsBoolean(
             SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
         {
-            autoLoginService.autologinWithRemoteUser( request );
+            autoLoginService.autologinWithRemoteUser( request, siteDao.findByKey( context.getSiteKey() ) );
         }
 
         final String handlerName = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );

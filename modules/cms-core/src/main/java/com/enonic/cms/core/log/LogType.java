@@ -16,7 +16,9 @@ public enum LogType
     ENTITY_CREATED( 4 ),
     ENTITY_UPDATED( 5 ),
     ENTITY_REMOVED( 6 ),
-    ENTITY_OPENED( 7 );
+    ENTITY_OPENED( 7 ),
+    AUTO_LOGIN( 8 ),
+    REMEMBERED_LOGIN( 9 );
 
     private Integer value;
 

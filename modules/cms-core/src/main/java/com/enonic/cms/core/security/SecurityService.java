@@ -18,6 +18,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.store.dao.GroupQuery;
 
 public interface SecurityService
@@ -121,9 +122,9 @@ public interface SecurityService
      * @param qualifiedUsername The fully qualified userName, which includes user store and uid.
      * @return <code>true</code> if successful.
      */
-    boolean autoLoginPortalUser( QualifiedUsername qualifiedUsername );
+    boolean autoLoginPortalUser( QualifiedUsername qualifiedUsername, String remoteIp, SiteKey siteKey );
 
-    boolean autoLoginAdminUser( QualifiedUsername qualifiedUsername );
+    boolean autoLoginAdminUser( QualifiedUsername qualifiedUsername, String remoteIp );
 
     void changePassword( QualifiedUsername qualifiedUsername, String newPassword );
 }

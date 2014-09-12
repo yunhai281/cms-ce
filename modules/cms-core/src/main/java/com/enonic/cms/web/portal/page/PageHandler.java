@@ -106,14 +106,16 @@ public final class PageHandler
             {
                 if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
                 {
-                    loggedInPortalUser = autoLoginService.autologinWithRemoteUser( httpRequest );
+                    loggedInPortalUser =
+                        autoLoginService.autologinWithRemoteUser( httpRequest, siteDao.findByKey( sitePath.getSiteKey() ) );
                 }
             }
             if ( loggedInPortalUser.isAnonymous() )
             {
                 if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED ) )
                 {
-                    loggedInPortalUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), httpRequest, httpResponse );
+                    loggedInPortalUser =
+                        autoLoginService.autologinWithCookie( siteDao.findByKey( sitePath.getSiteKey() ), httpRequest, httpResponse );
                 }
             }
             request.setRequester( loggedInPortalUser.getKey() );

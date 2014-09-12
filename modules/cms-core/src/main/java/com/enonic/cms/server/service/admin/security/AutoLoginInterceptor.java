@@ -101,7 +101,7 @@ public final class AutoLoginInterceptor
             return;
         }
 
-        if ( securityService.autoLoginAdminUser( qualifiedUserName ) )
+        if ( securityService.autoLoginAdminUser( qualifiedUserName, req.getRemoteAddr() ) )
         {
             LOG.debug( "Auto-login logged in user [" + qualifiedUserName + "]" );
 
