@@ -132,7 +132,7 @@ public class ContentServiceImpl_deleteContentTest
             contentEntity2a );
         assertEquals( 2, refs.size() );
 
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a, null );
 
         assertEquals( 4, hibernateTemplate.find( "from RelatedContentEntity" ).size() );
 
@@ -180,7 +180,7 @@ public class ContentServiceImpl_deleteContentTest
         assertXPathNotExist( "/contentdata/myMultipleRelatedToBeModified/content[1]/@deleted",
                              contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
 
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a, null );
 
         final List refs = hibernateTemplate.find(
             "select rce from RelatedContentEntity rce, ContentEntity ce " + "where rce.key.childContentKey = ce.key " + "and ce = ? ",
@@ -230,7 +230,7 @@ public class ContentServiceImpl_deleteContentTest
         assertXPathNotExist( "/contentdata/mygroup/contentdata/myMultipleRelatedToBeModifiedGroup/content[1]/@deleted",
                              contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
 
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a, null );
 
         final List refs = hibernateTemplate.find(
             "select rce from RelatedContentEntity rce, ContentEntity ce " + "where rce.key.childContentKey = ce.key " + "and ce = ? ",

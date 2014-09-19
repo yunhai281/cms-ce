@@ -205,7 +205,7 @@ public class ContentServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void deleteContent( UserEntity deleter, ContentEntity content )
+    public void deleteContent( final UserEntity deleter, final ContentEntity content, final SiteKey siteKey )
     {
         if ( content == null )
         {
@@ -222,7 +222,7 @@ public class ContentServiceImpl
         indexTransactionService.startTransaction();
 
         contentStorer.deleteContent( deleter, content );
-        logEvent( deleter.getKey(), content, LogType.ENTITY_REMOVED );
+        logEvent( deleter.getKey(), content, LogType.ENTITY_REMOVED, siteKey );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

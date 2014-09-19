@@ -138,7 +138,7 @@ public final class PollServicesProcessor
             Document newdoc = XMLTool.createDocument();
             newdoc.appendChild( newdoc.importNode( contentElement, true ) );
             String xmlData = XMLTool.documentToString( newdoc );
-            updateContent( user, xmlData, null, null, false );
+            updateContent( user, xmlData, null, null, false, siteKey );
 
             // Set cookie to prevent user from polling a second time:
             String deploymentPath = DeploymentPathResolver.getSiteDeploymentPath( request );

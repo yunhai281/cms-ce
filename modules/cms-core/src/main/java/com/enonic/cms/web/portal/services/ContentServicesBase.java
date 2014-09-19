@@ -217,7 +217,7 @@ public abstract class ContentServicesBase
             contentLocationSpecification.setIncludeInactiveLocationsInSection( false );
             ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
 
-            contentService.deleteContent( runningUser, content );
+            contentService.deleteContent( runningUser, content, siteKey );
 
             for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
             {
@@ -253,13 +253,13 @@ public abstract class ContentServicesBase
         String xmlData = buildContent( userServices, oldTypeUser, formItems, siteKey, ctDoc );
 
         boolean asNewVersion = true;
-        updateContent( oldTypeUser, xmlData, binariesToRemoveAsBinaryDataKey, binariesToAdd, asNewVersion );
+        updateContent( oldTypeUser, xmlData, binariesToRemoveAsBinaryDataKey, binariesToAdd, asNewVersion, siteKey );
 
         redirectToPage( request, response, formItems );
     }
 
     protected ContentVersionKey updateContent( User oldTypeUser, String xmlData, List<BinaryDataKey> binariesToRemoveAsBinaryDataKey,
-                                               List<BinaryDataAndBinary> binariesToAdd, boolean asNewVersion )
+                                               List<BinaryDataAndBinary> binariesToAdd, boolean asNewVersion, SiteKey siteKey )
     {
         UserEntity runningUser = securityService.getUser( oldTypeUser );
 
@@ -294,6 +294,7 @@ public abstract class ContentServicesBase
 
         updateContentCommand.setBinaryDataToRemove( binariesToRemoveAsBinaryDataKey );
         updateContentCommand.setUseCommandsBinaryDataToRemove( true );
+        updateContentCommand.setSiteKey( siteKey );
 
         UpdateContentResult updateContentResult = contentService.updateContent( updateContentCommand );
 
@@ -351,12 +352,12 @@ public abstract class ContentServicesBase
         Document ctDoc = userServices.getContentTypeByCategory( categoryKey ).getAsDOMDocument();
         String xmlData = buildContent( userServices, oldUser, formItems, siteKey, ctDoc );
 
-        storeNewContent( oldUser, binaries, xmlData );
+        storeNewContent( oldUser, binaries, xmlData, siteKey );
 
         redirectToPage( request, response, formItems );
     }
 
-    protected ContentKey storeNewContent( User oldUser, BinaryData[] binaries, String xmlData )
+    protected ContentKey storeNewContent( User oldUser, BinaryData[] binaries, String xmlData, SiteKey siteKey )
     {
         UserEntity runningUser = securityService.getUser( oldUser );
         List<BinaryDataAndBinary> binaryDataAndBinaries = BinaryDataAndBinary.createNewFrom( binaries );
@@ -386,6 +387,7 @@ public abstract class ContentServicesBase
         command.setCreator( runningUser );
         command.setBinaryDatas( binaryDataAndBinaries );
         command.setUseCommandsBinaryDataToAdd( true );
+        command.setSiteKey( siteKey );
 
         ContentKey newContentKey = contentService.createContent( command );
         return newContentKey;

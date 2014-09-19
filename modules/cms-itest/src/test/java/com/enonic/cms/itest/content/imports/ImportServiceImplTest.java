@@ -2452,7 +2452,7 @@ public class ImportServiceImplTest
         ContentKey contentRelatingDeletedContent = contentService.createContent( createCommand );
 
         // setup: delete content to be deleted
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), fixture.findContentByKey( contentToBeDeleted ) );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), fixture.findContentByKey( contentToBeDeleted ), null );
         fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 

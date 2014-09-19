@@ -29,6 +29,7 @@ import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.SiteKey;
 
 public interface ContentService
 {
@@ -40,7 +41,7 @@ public interface ContentService
 
     UnassignContentResult unassignContent( UnassignContentCommand command );
 
-    void deleteContent( UserEntity deleter, ContentEntity content );
+    void deleteContent( UserEntity deleter, ContentEntity content, SiteKey siteKey );
 
     /**
      * Flags the given content as archived. NB! The content must be an existing content!

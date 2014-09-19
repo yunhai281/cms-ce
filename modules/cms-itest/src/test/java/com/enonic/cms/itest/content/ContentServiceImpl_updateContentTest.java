@@ -261,7 +261,7 @@ public class ContentServiceImpl_updateContentTest
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), persistedContent );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), persistedContent, null );
         fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );

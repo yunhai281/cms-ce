@@ -228,7 +228,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         //////////////////////////////////// delete related ////////////////////////////////////
 
         final ContentEntity contentEntity = ContentEntity.class.cast( fixture.findContentByKey( related1 ) );
-        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity, null );
 
         //////////////////////////////////////// update ////////////////////////////////////////
 

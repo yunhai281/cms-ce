@@ -216,7 +216,7 @@ public class InternalClientContentService
             contentLocationSpecification.setIncludeInactiveLocationsInSection( false );
             ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
 
-            contentService.deleteContent( runningUser, content );
+            contentService.deleteContent( runningUser, content, params.siteKey != null ? new SiteKey( params.siteKey ) : null );
 
             for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
             {

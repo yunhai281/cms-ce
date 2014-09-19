@@ -907,7 +907,7 @@ public class ContentBaseHandlerServlet
 
             UserEntity runningerUser = securityService.getUser( user );
 
-            contentService.deleteContent( runningerUser, content );
+            contentService.deleteContent( runningerUser, content, null );
 
             new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContentLocations( contentLocations );
         }
@@ -2511,7 +2511,7 @@ public class ContentBaseHandlerServlet
                     contentLocationSpecification.setIncludeInactiveLocationsInSection( false );
                     ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
 
-                    contentService.deleteContent( runningUser, content );
+                    contentService.deleteContent( runningUser, content, null );
 
                     new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContentLocations( contentLocations );
                 }
