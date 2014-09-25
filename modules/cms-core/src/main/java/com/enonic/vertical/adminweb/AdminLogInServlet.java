@@ -390,6 +390,7 @@ public final class AdminLogInServlet
         }
         catch ( InvalidCredentialsException vse )
         {
+            session = request.getSession();
             String message = "Failed to authenticate user (domain key: {0}): {1}";
             Object[] msgData = {userStoreKey, uid};
             VerticalAdminLogger.warn( message, msgData );
@@ -403,6 +404,7 @@ public final class AdminLogInServlet
         }
         catch ( AdminConsoleAccessDeniedException e )
         {
+            session = request.getSession();
             String message = "User is not authorized to use administration console.";
             VerticalAdminLogger.error( message );
             session.setAttribute( "loginerrorcode", EC_401_ACCESS_DENIED );
@@ -410,6 +412,8 @@ public final class AdminLogInServlet
             session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
             errorCode = EC_401_ACCESS_DENIED;
         }
+
+        session = request.getSession();
 
         if ( errorCode != null )
         {
