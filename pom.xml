@@ -18,7 +18,7 @@
   <artifactId>cms</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS</name>
-  <version>4.7.7</version>
+  <version>4.7.8-SNAPSHOT</version>
 
   <licenses>
     <license>
