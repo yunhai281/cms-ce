@@ -30,12 +30,13 @@ public class HttpServletRangeUtil
      * @param request     request to be processed
      * @param response    response to be created
      * @param filename    name of file
-     * @param contentType request contentType
-     * @param file        file to be proceed
+     * @param contentType Mime type
+     * @param file        File to be downloaded
+     * @param attachment  Whether to inline (false) or download (true)
      * @throws java.io.IOException
      */
     public static void processRequest( final HttpServletRequest request, final HttpServletResponse response, final String filename,
-                                       String contentType, final File file )
+                                       String contentType, final File file, final boolean attachment )
         throws IOException
     {
         // I. File validation
@@ -103,7 +104,7 @@ public class HttpServletRangeUtil
         final boolean acceptsGzip = acceptsGZip( request, response, contentType, filename, file, eTag );
 
         // V. Process download
-        processDownload( response, contentType, file, ranges, acceptsGzip );
+        processDownload( response, contentType, file, ranges, acceptsGzip, attachment, filename );
     }
 
     private static int checkRequestedFile( final HttpServletRequest request )
@@ -307,7 +308,8 @@ public class HttpServletRangeUtil
     }
 
     private static void processDownload( final HttpServletResponse response, final String contentType, final File file,
-                                         final List<Range> ranges, final boolean acceptGzip )
+                                         final List<Range> ranges, final boolean acceptGzip, final boolean attachment,
+                                         final String filename )
         throws IOException
     {
         RandomAccessFile input = null;
@@ -325,6 +327,7 @@ public class HttpServletRangeUtil
 
                 final Range root = new Range( 0, file.length() - 1, file.length() );
                 response.setContentType( contentType );
+                HttpServletUtil.setContentDisposition( response, attachment, filename );
 
                 // do not send CONTENT_RANGE for HTTP 200
                 // String header = String.format( "bytes %d-%d/%d", root.getStart(), root.getEnd(), root.getTotal() );
@@ -349,6 +352,7 @@ public class HttpServletRangeUtil
                 final Range section = ranges.get( 0 );
 
                 response.setContentType( contentType );
+                HttpServletUtil.setContentDisposition( response, attachment, filename );
                 response.setStatus( HttpServletResponse.SC_PARTIAL_CONTENT );
                 String header = String.format( "bytes %d-%d/%d", section.getStart(), section.getEnd(), section.getTotal() );
                 response.setHeader( HttpHeaders.CONTENT_RANGE, header );
@@ -391,13 +395,11 @@ public class HttpServletRangeUtil
             if ( input != null )
             {
                 input.close();
-                input = null;
             }
 
             if ( output != null && !aborted )
             {
                 output.close();
-                output = null;
             }
         }
     }

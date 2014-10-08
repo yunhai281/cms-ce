@@ -85,7 +85,15 @@ public final class ResourceHandler
         final File file = new File( resourceRoot, resourceFile.getPath() );
         final String mimeType = resourceFile.getMimeType();
 
-        HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), resourceFile.getName(), mimeType, file );
+        boolean download = false;
+        final String downloadParameter = context.getRequest().getParameter( "download" );
+        if ( downloadParameter != null && downloadParameter.equalsIgnoreCase( "true" ) )
+        {
+            download = true;
+        }
+
+        HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), resourceFile.getName(), mimeType, file,
+                                             download );
     }
 
     private void setHttpHeaders( final HttpServletResponse response, final SitePath sitePath )

@@ -227,6 +227,8 @@ public final class AttachmentHandler
                                       final BlobRecord blob )
         throws IOException
     {
+        boolean attachment = false;
+
         final File file = blob.getAsFile();
 
         final String mimeType = this.mimeTypeResolver.getMimeType( binaryData.getName() );
@@ -236,9 +238,9 @@ public final class AttachmentHandler
         {
             if ( download )
             {
-                HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
+                attachment = true;
             }
-            HttpServletRangeUtil.processRequest( context.getRequest(), response, binaryData.getName(), mimeType, file );
+            HttpServletRangeUtil.processRequest( context.getRequest(), response, binaryData.getName(), mimeType, file, attachment );
         }
         else
         {

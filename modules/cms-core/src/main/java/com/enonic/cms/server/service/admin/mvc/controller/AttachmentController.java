@@ -161,7 +161,8 @@ public class AttachmentController
         return new PathAndParams( path, requestParameters );
     }
 
-    private void putBinaryOnResponse( boolean download, final HttpServletRequest request, HttpServletResponse response, BinaryDataEntity binaryData, BlobRecord blob )
+    private void putBinaryOnResponse( boolean download, final HttpServletRequest request, HttpServletResponse response,
+                                      BinaryDataEntity binaryData, BlobRecord blob )
         throws IOException
     {
         final File file = blob.getAsFile();
@@ -170,7 +171,7 @@ public class AttachmentController
 
         if ( file != null )
         {
-            HttpServletRangeUtil.processRequest( request, response, binaryData.getName(), mimeType, file );
+            HttpServletRangeUtil.processRequest( request, response, binaryData.getName(), mimeType, file, download );
         }
         else
         {

@@ -56,7 +56,7 @@ public class HttpServletUtil
 
     public static void setCacheControl( HttpServletResponse response, HttpCacheControlSettings settings )
     {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         if ( settings.publicAccess )
         {
             s.append( "public" ); //Indicates that the response may be cached by any cache
@@ -83,7 +83,7 @@ public class HttpServletUtil
     public static void setContentDisposition( HttpServletResponse response, boolean attachment, String filename )
     {
 
-        StringBuffer value = new StringBuffer();
+        StringBuilder value = new StringBuilder();
         if ( attachment )
         {
             value.append( "attachment" );
@@ -93,7 +93,10 @@ public class HttpServletUtil
             value.append( "inline" );
         }
 
-        value.append( ";filename=\"" ).append( filename ).append( "\"" );
+        if ( ( filename != null ) && filename.length() > 0 )
+        {
+            value.append( ";filename=\"" ).append( filename ).append( "\"" );
+        }
 
         response.setHeader( "Content-Disposition", value.toString() );
     }
@@ -104,9 +107,7 @@ public class HttpServletUtil
 
         final MimeTypeResolver mimeTypeResolver = (MimeTypeResolver) wac.getBean( "mimeTypeResolver" );
 
-        final String mimeType = mimeTypeResolver.getMimeType( filename );
-
-        return mimeType;
+        return mimeTypeResolver.getMimeType( filename );
     }
 
     /**
@@ -207,8 +208,9 @@ public class HttpServletUtil
 
     /**
      * Check header with given value
+     *
      * @param header accept header.
-     * @param value value to be accepted.
+     * @param value  value to be accepted.
      * @return <code>TRUE</code> if header apply the given value, <code>FALSE</code> otherwise
      */
     public static boolean checkHeaderContainsValue( final String header, final String value )
