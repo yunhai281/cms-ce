@@ -95,7 +95,7 @@ public class ResourceHandlerServlet
         }
         else
         {
-            doc = admin.getResourceTreeXml( path, true, true, 1, false, true ).getAsDOMDocument();
+            doc = admin.getResourceTreeXml( path, true, true, 1, true, true ).getAsDOMDocument();
         }
 
         addAccessLevelParameters( user, parameters );

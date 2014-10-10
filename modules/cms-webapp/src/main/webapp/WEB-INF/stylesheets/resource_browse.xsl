@@ -305,6 +305,15 @@
 
           <xsl:variable name="resource-count" select="count(/resources//resource)"/>
 
+          <xsl:for-each select="/resources//folder">
+            <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
+                      select="*[name() = $sortby] | @*[concat('@',name()) = $sortby]"/>
+            <tr>
+              <xsl:call-template name="tablerowpainter"/>
+              <xsl:apply-templates select="." mode="tablerow"/>
+            </tr>
+          </xsl:for-each>
+
           <xsl:for-each select="/resources//resource">
             <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
                       select="*[name() = $sortby] | @*[concat('@',name()) = $sortby]"/>
@@ -363,7 +372,7 @@
         <xsl:text>disabled</xsl:text>
       </xsl:if>
       <xsl:if test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
-        <xsl:text> no-action</xsl:text>
+        <xsl:text>arrow</xsl:text>
       </xsl:if>
       <xsl:if test="position() = last() and $is-last-resource">
         <xsl:text> row-last</xsl:text>
@@ -419,6 +428,64 @@
           <img src="images/icon_resource_move.gif" alt="%cmdMove%" title="%cmdMove%" style="border:0"/>
         </a>
       </td>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="folder" mode="tablerow">
+    <xsl:variable name="filtered">
+      false
+    </xsl:variable>
+
+    <xsl:variable name="toolTip">
+      <xsl:value-of select="@fullPath"/>
+    </xsl:variable>
+
+    <xsl:variable name="action">
+      <xsl:text>location.href = '</xsl:text>
+      <xsl:value-of select="$pageURL"/>
+      <xsl:text>&amp;path=</xsl:text>
+      <xsl:value-of select="@fullPath"/>
+      <xsl:text>';</xsl:text>
+    </xsl:variable>
+
+    <xsl:variable name="class">
+      <xsl:text>browsetablecell</xsl:text>
+      <xsl:if test="$filtered = 'true'">
+        <xsl:text>disabled</xsl:text>
+      </xsl:if>
+      <xsl:if test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
+        <xsl:text>hand</xsl:text>
+      </xsl:if>
+    </xsl:variable>
+
+    <td title="{$toolTip}" class="{$class}" onclick="{$action}">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <img border="0" width="23" height="16" align="absmiddle" src="images/icon_resource_folder.gif"/>
+          </td>
+          <td>
+            <xsl:choose>
+              <xsl:when test="$search = 'true'">
+                <xsl:value-of select="@fullPath"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td align="center" title="{$toolTip}" class="{$class}" onclick="{$action}">
+      <xsl:value-of select="@lastModified"/>
+    </td>
+    <td align="center" title="{$toolTip}" class="{$class}"/>
+    <td align="right" title="{$toolTip}" class="{$class}" onmouseup="{$action}"/>
+    <td align="center" title="{$toolTip}" class="{$class}" onclick="{$action}"/>
+    <!-- operation column -->
+    <xsl:if test="$developer = 'true' and $move = true()">
+      <td align="center" class="{$class}"/>
     </xsl:if>
   </xsl:template>
 

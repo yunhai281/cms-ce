@@ -30,8 +30,6 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.product.ProductVersion;
-import com.enonic.cms.core.resource.ResourceFolder;
-import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
@@ -171,15 +169,8 @@ public class MainMenuServlet
 
             if ( resourceAccessResolver.hasAccessToResourceTree( user ) )
             {
-                // get resource tree xml
-                ResourceFolder root = resourceService.getResourceRoot();
-
-                ResourceXmlCreator xmlCreator = new ResourceXmlCreator();
-                xmlCreator.setIncludeFullPath( true );
-                xmlCreator.setListFolders( true );
-                xmlCreator.setListResources( false );
-                XMLDocument resourcesDoc = xmlCreator.createResourceTreeXml( root );
-                XMLTool.mergeDocuments( docSite, resourcesDoc.getAsDOMDocument(), true );
+                final Element resourcesElem = docSite.createElement( "resources" );
+                docSite.getDocumentElement().appendChild( resourcesElem );
             }
 
             DOMSource xmlSource = new DOMSource( docSite );

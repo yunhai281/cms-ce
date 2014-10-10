@@ -507,6 +507,7 @@ td.browsetablecell,
 td.browsetablecellred,
 td.browsetablecellbold,
 td.browsetablecellarrow,
+td.browsetablecellhand,
 td.browsetablecelldisabled,
 td.browsetablecell.no-action,
 td.browsetablecellredarrow,
@@ -537,6 +538,10 @@ td.browsetablecellbold {
 }
 
 td.browsetablecellarrow {
+}
+
+td.browsetablecellhand {
+    cursor: hand;
 }
 
 td.browsetablecelldisabled {
