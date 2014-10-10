@@ -17,6 +17,8 @@
     <xsl:param name="id"/>
     <!-- String, Required -->
     <xsl:param name="name"/>
+    <!-- String, Optional -->
+    <xsl:param name="default"/>
     <!-- Node -->
     <xsl:param name="content"/>
     <!-- String, Optional, see CMS doc for possible values -->
@@ -134,10 +136,18 @@
 
         <div id="editor_cms_container_{$edKey}" style="visibility:hidden">
           <textarea name="{$name}" id="{$edKey}" class="{concat('editor-textarea editor_settings_', $edKey)}" style="width:{$width}px;height:{$height}px">
-            <xsl:call-template name="serialize">
-              <xsl:with-param name="xpath" select="$content"/>
-              <xsl:with-param name="formatter" select="'raw'"/>
-            </xsl:call-template>
+            <xsl:choose>
+              <xsl:when test="$default != '' and normalize-space($content) = ''">
+                <xsl:copy-of select="$default" />
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:call-template name="serialize">
+                  <xsl:with-param name="xpath" select="$content"/>
+                  <xsl:with-param name="formatter" select="'raw'"/>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
+
           </textarea>
         </div>
 

@@ -3860,6 +3860,10 @@
           <xsl:text>']</xsl:text>
         </xsl:variable>
 
+        <xsl:variable name="default-string">
+          <xsl:apply-templates select="$input/default/node()" mode="serialize"/>
+        </xsl:variable>
+
         <x:call-template name="xhtmleditor">
           <x:with-param name="id">
             <xsl:attribute name="select">
@@ -3872,6 +3876,13 @@
             <xsl:attribute name="select">
               <xsl:text>'</xsl:text>
               <xsl:value-of select="$input/@name"/>
+              <xsl:text>'</xsl:text>
+            </xsl:attribute>
+          </x:with-param>
+          <x:with-param name="default">
+            <xsl:attribute name="select" >
+              <xsl:text>'</xsl:text>
+              <xsl:value-of select="$default-string"/>
               <xsl:text>'</xsl:text>
             </xsl:attribute>
           </x:with-param>
@@ -4181,5 +4192,35 @@
         <xsl:value-of disable-output-escaping="yes" select="$inputString"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="*" mode="serialize">
+    <xsl:text>&lt;</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:apply-templates select="@*" mode="serialize" />
+    <xsl:choose>
+      <xsl:when test="node()">
+        <xsl:text>&gt;</xsl:text>
+        <xsl:apply-templates mode="serialize" />
+        <xsl:text>&lt;/</xsl:text>
+        <xsl:value-of select="name()"/>
+        <xsl:text>&gt;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> /&gt;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="@*" mode="serialize">
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>="</xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text>"</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="text()" mode="serialize">
+    <xsl:value-of select="."/>
   </xsl:template>
 </xsl:stylesheet>
