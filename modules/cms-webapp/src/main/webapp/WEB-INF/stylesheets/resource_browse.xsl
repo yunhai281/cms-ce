@@ -305,25 +305,8 @@
 
           <xsl:variable name="resource-count" select="count(/resources//resource)"/>
 
-          <xsl:for-each select="/resources//folder">
-            <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
-                      select="*[name() = $sortby] | @*[concat('@',name()) = $sortby]"/>
-            <tr>
-              <xsl:call-template name="tablerowpainter"/>
-              <xsl:apply-templates select="." mode="tablerow"/>
-            </tr>
-          </xsl:for-each>
+          <xsl:apply-templates select="/resources/folder | /resources/resource" mode="tablerow" />
 
-          <xsl:for-each select="/resources//resource">
-            <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
-                      select="*[name() = $sortby] | @*[concat('@',name()) = $sortby]"/>
-            <tr>
-              <xsl:call-template name="tablerowpainter"/>
-              <xsl:apply-templates select="." mode="tablerow">
-                <xsl:with-param name="is-last-resource" select="$resource-count = position()"/>
-              </xsl:apply-templates>
-            </tr>
-          </xsl:for-each>
         </table>
       </td>
     </tr>
@@ -378,7 +361,8 @@
         <xsl:text> row-last</xsl:text>
       </xsl:if>
     </xsl:variable>
-
+    <tr>
+      <xsl:call-template name="tablerowpainter"/>
     <td title="{$toolTip}" class="{$class}" onclick="{$action}">
       <table border="0" cellpadding="0" cellspacing="0">
         <tr>
@@ -429,6 +413,7 @@
         </a>
       </td>
     </xsl:if>
+    </tr>
   </xsl:template>
 
   <xsl:template match="folder" mode="tablerow">
@@ -457,7 +442,8 @@
         <xsl:text>hand</xsl:text>
       </xsl:if>
     </xsl:variable>
-
+  <tr>
+    <xsl:call-template name="tablerowpainter"/>
     <td title="{$toolTip}" class="{$class}" onclick="{$action}">
       <table border="0" cellpadding="0" cellspacing="0">
         <tr>
@@ -487,6 +473,7 @@
     <xsl:if test="$developer = 'true' and $move = true()">
       <td align="center" class="{$class}"/>
     </xsl:if>
+  </tr>
   </xsl:template>
 
   <xsl:template name="resourcePath">
