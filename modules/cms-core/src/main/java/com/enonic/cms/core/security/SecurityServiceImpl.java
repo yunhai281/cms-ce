@@ -694,7 +694,17 @@ public class SecurityServiceImpl
 
     private void logAutoLogin( final QualifiedUsername user, final String remoteIp, SiteKey siteKey )
     {
-        UserEntity userEntity = userDao.findByUserStoreKeyAndUsername( user.getUserStoreKey(), user.getUsername() );
+        UserStoreEntity userStore;
+        if ( user.hasUserStoreSet() )
+        {
+            userStore = doResolveUserStore( user );
+        }
+        else
+        {
+            userStore = doGetDefaultUserStore();
+        }
+
+        UserEntity userEntity = userDao.findByUserStoreKeyAndUsername( userStore.getKey(), user.getUsername() );
 
         final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
         command.setType( LogType.AUTO_LOGIN );
