@@ -313,7 +313,6 @@
   </xsl:template>
 
   <xsl:template match="resource" mode="tablerow">
-    <xsl:param name="is-last-resource"/>
 
     <xsl:variable name="filtered">
       <xsl:choose>
@@ -357,7 +356,7 @@
       <xsl:if test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
         <xsl:text>arrow</xsl:text>
       </xsl:if>
-      <xsl:if test="position() = last() and $is-last-resource">
+      <xsl:if test="position() = last()">
         <xsl:text> row-last</xsl:text>
       </xsl:if>
     </xsl:variable>
@@ -440,6 +439,9 @@
       </xsl:if>
       <xsl:if test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
         <xsl:text>hand</xsl:text>
+      </xsl:if>
+      <xsl:if test="position() = last()">
+        <xsl:text> row-last</xsl:text>
       </xsl:if>
     </xsl:variable>
   <tr>
