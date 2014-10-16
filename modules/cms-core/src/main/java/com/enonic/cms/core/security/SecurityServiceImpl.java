@@ -349,7 +349,7 @@ public class SecurityServiceImpl
             user = userDao.findSingleBySpecification( userSpec );
         }
 
-        if ( !adminConsoleLoginAccessResolver.hasAccess( user ) )
+        if ( (user == null) || !adminConsoleLoginAccessResolver.hasAccess( user ) )
         {
             throw new AdminConsoleAccessDeniedException( qualifiedUsername );
         }
