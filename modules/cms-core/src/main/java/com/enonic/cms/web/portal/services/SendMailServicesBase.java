@@ -134,7 +134,7 @@ public abstract class SendMailServicesBase
                     StringTokenizer st = new StringTokenizer( sortOrder, "," );
                     while ( st.hasMoreTokens() )
                     {
-                        String key = st.nextToken();
+                        String key = st.nextToken().trim();
                         if ( formItems.containsKey( key ) )
                         {
                             Object value = formItems.get( key );
@@ -216,7 +216,8 @@ public abstract class SendMailServicesBase
         {
 
             // skip empty recipients when recipient type is bcc or cc
-            if ( ( type == MailRecipientType.BCC_RECIPIENT || type == MailRecipientType.CC_RECIPIENT ) && recipients[i].trim().length() == 0 )
+            if ( ( type == MailRecipientType.BCC_RECIPIENT || type == MailRecipientType.CC_RECIPIENT ) &&
+                recipients[i].trim().length() == 0 )
             {
                 continue;
             }
