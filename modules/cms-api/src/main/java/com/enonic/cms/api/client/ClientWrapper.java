@@ -49,6 +49,7 @@ import com.enonic.cms.api.client.model.GetUsersParams;
 import com.enonic.cms.api.client.model.ImportContentsParams;
 import com.enonic.cms.api.client.model.JoinGroupsParams;
 import com.enonic.cms.api.client.model.LeaveGroupsParams;
+import com.enonic.cms.api.client.model.MoveContentParams;
 import com.enonic.cms.api.client.model.RenderContentParams;
 import com.enonic.cms.api.client.model.RenderPageParams;
 import com.enonic.cms.api.client.model.SetPreferenceParams;
@@ -243,6 +244,11 @@ public abstract class ClientWrapper
     public int updateContent( UpdateContentParams params )
     {
         return this.delegate.updateContent( params );
+    }
+
+    public void moveContent( final MoveContentParams params )
+    {
+        this.delegate.moveContent( params );
     }
 
     public void deleteContent( DeleteContentParams params )

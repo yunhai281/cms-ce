@@ -49,6 +49,7 @@ import com.enonic.cms.api.client.model.GetUsersParams;
 import com.enonic.cms.api.client.model.ImportContentsParams;
 import com.enonic.cms.api.client.model.JoinGroupsParams;
 import com.enonic.cms.api.client.model.LeaveGroupsParams;
+import com.enonic.cms.api.client.model.MoveContentParams;
 import com.enonic.cms.api.client.model.RenderContentParams;
 import com.enonic.cms.api.client.model.RenderPageParams;
 import com.enonic.cms.api.client.model.SetPreferenceParams;
@@ -229,6 +230,9 @@ public interface Client
         throws ClientException;
 
     public int updateContent( UpdateContentParams params )
+        throws ClientException;
+
+    public void moveContent( MoveContentParams params )
         throws ClientException;
 
     public void deleteContent( DeleteContentParams params )

@@ -29,6 +29,7 @@ import com.enonic.cms.api.client.model.CreateImageContentParams;
 import com.enonic.cms.api.client.model.DeleteContentParams;
 import com.enonic.cms.api.client.model.GetBinaryParams;
 import com.enonic.cms.api.client.model.GetContentBinaryParams;
+import com.enonic.cms.api.client.model.MoveContentParams;
 import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
@@ -537,6 +538,24 @@ public class InternalClientContentService
         return updateContentResult.getTargetedVersionKey().toInt();
     }
 
+    public void moveContent( MoveContentParams params )
+    {
+        validateMoveContentParams( params );
+
+        ContentEntity content = contentDao.findByKey( new ContentKey( params.contentKey ) );
+        if ( content == null )
+        {
+            throw new IllegalArgumentException( "No content for given contentKey: " + params.contentKey );
+        }
+
+        CategoryEntity category = categoryDao.findByKey( new CategoryKey( params.categoryKey ) );
+        if ( category == null )
+        {
+            throw new IllegalArgumentException( "No category for given categoryKey: " + params.categoryKey );        }
+
+        contentService.moveContent( securityService.getImpersonatedPortalUser(), content, category );
+    }
+
     public int createFileContent( CreateFileContentParams params )
     {
         validateCreateFileContentParams( params );
@@ -801,6 +820,18 @@ public class InternalClientContentService
                         "Not allowed to change status of an approved or archived content version - create new content version instead" );
                 }
             }
+        }
+    }
+
+    private void validateMoveContentParams( MoveContentParams params )
+    {
+        if ( params.contentKey == null )
+        {
+            throw new IllegalArgumentException( "contentKey must be specified" );
+        }
+        if ( params.categoryKey == null )
+        {
+            throw new IllegalArgumentException( "categoryKey must be specified" );
         }
     }
 
