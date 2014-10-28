@@ -39,13 +39,19 @@ public class ContentNativeLinkCollectorTest
         str += "rubbish rubbish <a href='attachment://124shallnotbecollected'>link</a>";
         str += "rubbish rubbish <a href='attachment://125shallnotbecollected/'>link</a>";
         str += "rubbish rubbish <a href='attachment://126/more'>link</a>";
+        str += "rubbish rubbish <a href='attachment://127'>link</a>";
+        str += "rubbish rubbish <a href='attachment://128?_download=true#asdf'>link</a>";
 
         List<ContentNativeLink> list = new ContentNativeLinkCollector().collect( str );
-        assertEquals( 2, list.size() );
+        assertEquals( 4, list.size() );
         assertEquals( new ContentKey( 123 ), list.get( 0 ).getContentKey() );
         assertEquals( ContentNativeLinkType.ATTACHMENT, list.get( 0 ).getType() );
         assertEquals( new ContentKey( 126 ), list.get( 1 ).getContentKey() );
         assertEquals( ContentNativeLinkType.ATTACHMENT, list.get( 1 ).getType() );
+        assertEquals( new ContentKey( 127 ), list.get( 2 ).getContentKey() );
+        assertEquals( ContentNativeLinkType.ATTACHMENT, list.get( 2 ).getType() );
+        assertEquals( new ContentKey( 128 ), list.get( 3 ).getContentKey() );
+        assertEquals( ContentNativeLinkType.ATTACHMENT, list.get( 3 ).getType() );
     }
 
     @Test

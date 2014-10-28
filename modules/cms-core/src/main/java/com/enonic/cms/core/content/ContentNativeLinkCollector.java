@@ -36,7 +36,7 @@ public class ContentNativeLinkCollector
 
     public void onBinaryLink( int key, String link )
     {
-        if ( link.matches( "attachment://[0-9]+/.+" ) )
+        if ( link.matches( "attachment://[0-9]+([/?].+)?" ) )
         {
             links.add( new ContentNativeLink( new ContentKey( key ), link, ContentNativeLinkType.ATTACHMENT ) );
         }
