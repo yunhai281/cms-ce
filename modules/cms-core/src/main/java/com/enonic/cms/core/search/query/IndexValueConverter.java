@@ -36,6 +36,11 @@ public final class IndexValueConverter
     // new format from CMS-2545
     private final static DateTimeFormatter DATETIME_WITH_SECS_FORMAT_Z = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ssZ" );
 
+    private final static DateTimeFormatter DATETIME_WITH_MILLISECS_FORMAT_WITHOUT_Z =
+        DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss.SSS" );
+
+    private final static DateTimeFormatter DATETIME_WITH_MILLISECS_FORMAT_Z = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm:ss.SSSZ" );
+
     // new format from CMS-2545
     private final static DateTimeFormatter DATETIME_WITHOUT_SECS_FORMAT_Z = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mmZ" );
 
@@ -141,9 +146,14 @@ public final class IndexValueConverter
             return dateTimeByFullFormat;
         }
 
-        final DateTimeFormatter[] dateTimeFormatterArray =
-            new DateTimeFormatter[]{DATETIME_WITH_SECS_FORMAT, DATETIME_WITHOUT_SECS_FORMAT, FULL_DATE_FORMAT_WITH_TIME_ZONE, DATETIME_WITH_SECS_FORMAT_Z,
-                            DATETIME_WITHOUT_SECS_FORMAT_Z};
+        final DateTimeFormatter[] dateTimeFormatterArray = new DateTimeFormatter[]{ //
+            DATETIME_WITH_SECS_FORMAT, //
+            DATETIME_WITHOUT_SECS_FORMAT, //
+            FULL_DATE_FORMAT_WITH_TIME_ZONE, //
+            DATETIME_WITH_SECS_FORMAT_Z, //
+            DATETIME_WITHOUT_SECS_FORMAT_Z, //
+            DATETIME_WITH_MILLISECS_FORMAT_Z, //
+            DATETIME_WITH_MILLISECS_FORMAT_WITHOUT_Z};
 
         for ( final DateTimeFormatter dateTimeFormatter : dateTimeFormatterArray )
         {

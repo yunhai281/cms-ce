@@ -109,6 +109,15 @@ public class IndexValueConverterTest
         assertDateTimeEquals( dateTimeZoneHoursMinutes, dateTimeZoneHoursMinutesExpected );
     }
 
+    @Test
+    public void test_odd_ms_format_used_by_some_customers()
+    {
+        assertNotNull( IndexValueConverter.toDate( "2015-02-09 10:00:00.0" ) );
+        assertNotNull( IndexValueConverter.toDate( "2015-02-09 10:00:00.100" ) );
+        assertNotNull( IndexValueConverter.toDate( "2015-02-09 10:00:00.140Z" ) );
+        assertNotNull( IndexValueConverter.toDate( "2015-02-09 10:00:00.140+02:45" ) );
+    }
+
     private void assertDateTimeEquals( ReadableDateTime expected, ReadableDateTime actual )
     {
         // move to same time-zone if necessary
