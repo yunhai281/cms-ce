@@ -56,6 +56,7 @@
   <xsl:variable name="updateright" select="($parentmi = -1 and $menuupdate) or ($parentmi != -1 and $selectedmenuitem/@userupdate = 'true')"/>
   <xsl:variable name="deleteright" select="($parentmi = -1 and $menuupdate) or ($parentmi != -1 and $selectedmenuitem/@userdelete = 'true')"/>
   <xsl:variable name="administrateright" select="($parentmi = -1 and $menuadministrate) or ($parentmi != -1 and $selectedmenuitem/@useradministrate = 'true')"/>
+  <xsl:variable name="move_menu_item_right" select="($createright or $administrateright)"/>
 
   <xsl:variable name="parent-to-selected-menuitem" select="/model/parent-to-selected-menuitem/menuitem"/>
   <xsl:variable name="parentkey">
@@ -331,7 +332,7 @@
         <xsl:with-param name="type" select="'link'"/>
         <xsl:with-param name="image" select="'images/icon_move_up.gif'"/>
         <xsl:with-param name="image-disabled" select="'images/icon_move_up-disabled.gif'"/>
-        <xsl:with-param name="disabled" select="not($administrateright)"/>
+        <xsl:with-param name="disabled" select="not($move_menu_item_right)"/>
         <xsl:with-param name="tooltip" select="$disabled_message"/>
         <xsl:with-param name="href">
           <xsl:text>adminpage?page=</xsl:text><xsl:value-of select="$page"/>
@@ -352,7 +353,7 @@
         <xsl:with-param name="type" select="'link'"/>
         <xsl:with-param name="image" select="'images/icon_move_down.gif'"/>
         <xsl:with-param name="image-disabled" select="'images/icon_move_down-disabled.gif'"/>
-        <xsl:with-param name="disabled" select="not($administrateright)"/>
+        <xsl:with-param name="disabled" select="not($move_menu_item_right)"/>
         <xsl:with-param name="tooltip" select="$disabled_message"/>
         <xsl:with-param name="href">
           <xsl:text>adminpage?page=</xsl:text><xsl:value-of select="$page"/>

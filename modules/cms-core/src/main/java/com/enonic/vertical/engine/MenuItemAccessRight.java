@@ -11,18 +11,25 @@ public final class MenuItemAccessRight
 
     private boolean administrate = false;
 
+    private boolean create = false;
+
     public MenuItemAccessRight()
     {
     }
 
-    public void setPublish( boolean publish )
+    public void setPublish( final boolean publish )
     {
         this.publish = publish;
     }
 
-    public void setAdministrate( boolean administrate )
+    public void setAdministrate( final boolean administrate )
     {
         this.administrate = administrate;
+    }
+
+    public void setCreate( final boolean create )
+    {
+        this.create = create;
     }
 
     public boolean getPublish()
@@ -33,5 +40,10 @@ public final class MenuItemAccessRight
     public boolean getAdministrate()
     {
         return administrate;
+    }
+
+    public boolean getCreate()
+    {
+        return create;
     }
 }

@@ -1628,6 +1628,7 @@ final public class SecurityHandler
         {
             MenuAccessRight menuAccessRight = new MenuAccessRight();
             menuAccessRight.setRead( true );
+            menuAccessRight.setCreate( true );
             menuAccessRight.setAdministrate( true );
             return menuAccessRight;
         }
@@ -1689,6 +1690,7 @@ final public class SecurityHandler
             preparedStmt.close();
 
             menuAccessRight.setRead( rights[READ] );
+            menuAccessRight.setCreate( rights[CREATE] );
             menuAccessRight.setAdministrate( rights[ADMIN] );
         }
         catch ( SQLException sqle )
@@ -1719,6 +1721,7 @@ final public class SecurityHandler
         if ( user.isEnterpriseAdmin() || Arrays.binarySearch( groups, eaGroup ) >= 0 )
         {
             menuItemAccessRight.setRead( true );
+            menuItemAccessRight.setCreate( true );
             menuItemAccessRight.setPublish( true );
             menuItemAccessRight.setAdministrate( true );
             return menuItemAccessRight;
@@ -1760,11 +1763,11 @@ final public class SecurityHandler
             while ( resultSet.next() )
             {
                 rights[READ] |= resultSet.getBoolean( "mia_bRead" );
+                rights[ADD] |= resultSet.getBoolean( "mia_bAdd" );
                 rights[CREATE] |= resultSet.getBoolean( "mia_bCreate" );
                 rights[PUBLISH] |= resultSet.getBoolean( "mia_bPublish" );
                 rights[UPDATE] |= resultSet.getBoolean( "mia_bUpdate" );
                 rights[DELETE] |= resultSet.getBoolean( "mia_bDelete" );
-                rights[ADD] |= resultSet.getBoolean( "mia_bAdd" );
 
                 if ( resultSet.getBoolean( "mia_bAdministrate" ) )
                 {
@@ -1776,6 +1779,7 @@ final public class SecurityHandler
             preparedStmt.close();
 
             menuItemAccessRight.setRead( rights[READ] );
+            menuItemAccessRight.setCreate( rights[CREATE] );
             menuItemAccessRight.setPublish( rights[PUBLISH] );
             menuItemAccessRight.setAdministrate( rights[ADMIN] );
         }

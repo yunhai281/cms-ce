@@ -3342,7 +3342,7 @@ public final class MenuHandler
             if ( parentMenuItemKey == -1 )
             {
                 MenuAccessRight fromParentUserright = getSecurityHandler().getMenuAccessRight( user, menuKey );
-                if ( !fromParentUserright.getAdministrate() && !( hasEAPowers ) )
+                if ( !fromParentUserright.getCreate() && !fromParentUserright.getAdministrate() && !( hasEAPowers ) )
                 {
                     VerticalEngineLogger.errorSecurity(
                         "Not allowed to shift menuitems at root in menu[key={1}]. You need administrate rights on the parent to the menuitem you are moving.",
@@ -3353,7 +3353,7 @@ public final class MenuHandler
             {
                 MenuItemAccessRight fromParentUserright =
                     getSecurityHandler().getMenuItemAccessRight( user, new MenuItemKey( parentMenuItemKey ) );
-                if ( !fromParentUserright.getAdministrate() && !( hasEAPowers ) )
+                if ( !fromParentUserright.getCreate() && !fromParentUserright.getAdministrate() && !( hasEAPowers ) )
                 {
                     VerticalEngineLogger.errorSecurity(
                         "Not allowed to shift menuitems under parent[key={0}]. You need administrate rights on the parent to the menuitem you are moving.",
