@@ -45,7 +45,16 @@ public class UserServicesRedirectUrlResolver
             return appendParams( redirect, queryParams );
         }
 
-        throw new IllegalRedirectException( redirect );
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append( "Requested redirect Url: " );
+        errorMessage.append( redirect );
+        String referer = request.getHeader( "referer" );
+        if ( referer != null && !referer.equals( "" ) )
+        {
+            errorMessage.append( " - Referer: " );
+            errorMessage.append( appendParams( referer, queryParams ) );
+        }
+        throw new IllegalRedirectException( errorMessage.toString() );
     }
 
     public String resolveRedirectUrlToErrorPage( HttpServletRequest request, ExtendedMap formItems, int[] codes, MultiValueMap queryParams )

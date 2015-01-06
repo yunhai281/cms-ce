@@ -5,7 +5,6 @@
 package com.enonic.cms.web.portal.services;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import junit.framework.TestCase;
 
@@ -48,7 +47,7 @@ public class UserServicesRedirectUrlResolverTest
         catch ( Exception e )
         {
             assertTrue( e instanceof IllegalRedirectException );
-            assertEquals( redirect, e.getMessage() );
+            assertEquals( "Requested redirect Url: " + redirect, e.getMessage() );
         }
     }
 
@@ -61,8 +60,7 @@ public class UserServicesRedirectUrlResolverTest
 
     public void testResolveRedirectToPageWithNoRedirectAndNoReferer()
     {
-        String redirect = null;
-        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, redirect, null );
+        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, null, null );
         assertEquals( "/", url );
     }
 
@@ -70,8 +68,7 @@ public class UserServicesRedirectUrlResolverTest
     {
         request.addHeader( "referer", "" );
 
-        String redirect = null;
-        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, redirect, null );
+        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, null, null );
         assertEquals( "/", url );
     }
 
@@ -79,9 +76,7 @@ public class UserServicesRedirectUrlResolverTest
     {
         request.addHeader( "referer", "http://www.mycompany.com/page?id=0" );
 
-        String redirect = null;
-
-        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, redirect, null );
+        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, null, null );
         assertEquals( "http://www.mycompany.com/page?id=0", url );
     }
 
@@ -89,9 +84,7 @@ public class UserServicesRedirectUrlResolverTest
     {
         request.addHeader( "referer", "ftp://www.mycompany.com/download?file=text.txt" );
 
-        String redirect = null;
-
-        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, redirect, null );
+        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToPage( request, null, null );
         assertEquals( "ftp://www.mycompany.com/download?file=text.txt", url );
     }
 
