@@ -18,8 +18,9 @@
   <xsl:param name="canUpdatePassword"/>
   <xsl:param name="languagecode"/>
 
-  <xsl:variable name="URLToSupport" select="'http://www.enonic.com/'"/>
-  <xsl:variable name="URLToDocumentation" select="'http://www.enonic.com/community/'"/>
+  <xsl:variable name="URLToCommunity" select="'https://www.enonic.com/community/'"/>
+  <xsl:variable name="URLToSupport" select="'https://www.enonic.com/support'"/>
+  <xsl:variable name="URLToDocumentation" select="'https://enonic.com/en/docs/enonic-cms-47'"/>
 
   <xsl:template match="/">
 
@@ -174,6 +175,13 @@
                       <xsl:text>&nbsp;|&nbsp;</xsl:text>
                     </xsl:if>
                   </xsl:if>
+                  <a target="_blank">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$URLToCommunity"/>
+                    </xsl:attribute>
+                    <xsl:text>%cmdCommunity%</xsl:text>
+                  </a>
+                  <xsl:text>&nbsp;|&nbsp;</xsl:text>
                   <a target="_blank">
                     <xsl:attribute name="href">
                       <xsl:value-of select="$URLToSupport"/>
