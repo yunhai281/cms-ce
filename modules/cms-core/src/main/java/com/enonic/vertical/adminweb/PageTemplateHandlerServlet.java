@@ -104,8 +104,7 @@ public class PageTemplateHandlerServlet
             {
                 if ( createPageTemplate )
                 {
-                    createTemplateParamXML( createPageTemplate, doc, templateParams, "", null,
-                                            formItems.getString( "multiple1", null ) != null &&
+                    createTemplateParamXML( true, doc, templateParams, "", null, formItems.getString( "multiple1", null ) != null &&
                                                 formItems.getString( "multiple1", "" ).length() > 0
                                                 ? formItems.getString( "multiple1" )
                                                 : "0", "0", formItems.getString( "paramname", "" ),
@@ -113,7 +112,7 @@ public class PageTemplateHandlerServlet
                 }
                 else
                 {
-                    createTemplateParamXML( createPageTemplate, doc, templateParams, formItems.getString( "paramkey", "" ), key,
+                    createTemplateParamXML( false, doc, templateParams, formItems.getString( "paramkey", "" ), key,
                                             formItems.getString( "multiple1", null ) != null &&
                                                 ( formItems.getString( "multiple1" ) ).length() > 0
                                                 ? formItems.getString( "multiple1" )
@@ -134,13 +133,12 @@ public class PageTemplateHandlerServlet
                     String multiple = formItems.getString( "multiple" + ( j + 1 ), "0" );
                     if ( createPageTemplate )
                     {
-                        createTemplateParamXML( createPageTemplate, doc, templateParams, "", null, multiple, "0", paramNameArray[j],
-                                                separatorArray[j] );
+                        createTemplateParamXML( true, doc, templateParams, "", null, multiple, "0", paramNameArray[j], separatorArray[j] );
                     }
                     else
                     {
-                        createTemplateParamXML( createPageTemplate, doc, templateParams, paramKeyArray[j], key, multiple, "0",
-                                                paramNameArray[j], separatorArray[j] );
+                        createTemplateParamXML( false, doc, templateParams, paramKeyArray[j], key, multiple, "0", paramNameArray[j],
+                                                separatorArray[j] );
                     }
                 }
             }
@@ -441,12 +439,11 @@ public class PageTemplateHandlerServlet
             else
             {
                 createPageTemplate = ( key == -1 );
-                int pageTemplateKey;
 
                 if ( stylesheetKey == null && cssKey == null )  // createPageTemplate = false
                 {
                     //	If we are editing an existing template
-                    pageTemplateKey = Integer.parseInt( request.getParameter( "key" ) );
+                    int pageTemplateKey = Integer.parseInt( request.getParameter( "key" ) );
                     xmlData = admin.getPageTemplate( pageTemplateKey );
                     doc = XMLTool.domparse( xmlData );
                     Element pagetemplateElem = XMLTool.getElement( doc.getDocumentElement(), "pagetemplate" );
@@ -458,15 +455,6 @@ public class PageTemplateHandlerServlet
                     // If we are making a new template
                     doc = buildPageTemplateXML( formItems, key == -1 );
                     Element oldRoot = doc.getDocumentElement();
-                    String keyStr = oldRoot.getAttribute( "key" );
-                    if ( keyStr != null && keyStr.length() > 0 )
-                    {
-                        pageTemplateKey = Integer.parseInt( keyStr );
-                    }
-                    else
-                    {
-                        pageTemplateKey = -1;
-                    }
                     Element newRoot = XMLTool.createElement( doc, "pagetemplates" );
                     doc.replaceChild( newRoot, oldRoot );
                     newRoot.appendChild( oldRoot );
