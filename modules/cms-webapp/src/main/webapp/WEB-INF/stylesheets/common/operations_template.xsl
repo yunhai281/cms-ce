@@ -23,6 +23,7 @@
         <xsl:param name="enabledelete" select="'true'"/>
         <xsl:param name="domainkey" select="''"/>
         <xsl:param name="enablemove" select="'true'"/>
+        <xsl:param name="menukey"/>
 
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -191,6 +192,8 @@
                                 <xsl:text>&amp;op=remove&amp;key=</xsl:text><xsl:value-of select="$key"/>
                                 <xsl:text>&amp;cat=</xsl:text>
                                 <xsl:value-of select="$cat"/>
+                                <xsl:text>&amp;menukey=</xsl:text>
+                                <xsl:value-of select="$menukey"/>
                                 <xsl:text>&amp;selectedunitkey=</xsl:text>
                                 <xsl:value-of select="$selectedunitkey"/>
                             </xsl:with-param>

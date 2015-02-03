@@ -227,6 +227,7 @@
                         <xsl:with-param name="key" select="@key"/>
                         <xsl:with-param name="includecopy" select="'true'"/>
                         <xsl:with-param name="includeparams" select="$includeparams"/>
+                        <xsl:with-param name="menukey" select="$menukey"/>
                       </xsl:call-template>
                     </td>
                   </tr>

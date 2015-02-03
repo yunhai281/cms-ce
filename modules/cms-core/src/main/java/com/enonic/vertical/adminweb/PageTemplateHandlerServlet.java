@@ -37,6 +37,7 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.RunAsType;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.structure.page.PageSpecification;
@@ -750,6 +751,10 @@ public class PageTemplateHandlerServlet
 
         DeletePageTemplateCommand command = new DeletePageTemplateCommand( new PageTemplateKey( key ) );
         pageTemplateService.deletePageTemplate( command );
+
+        final SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
+        final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+        pageCache.removePageEntriesBySite();
 
         redirectClientToReferer( request, response );
     }
