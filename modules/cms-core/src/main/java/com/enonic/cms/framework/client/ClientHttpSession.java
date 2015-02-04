@@ -6,6 +6,7 @@ package com.enonic.cms.framework.client;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -38,8 +39,7 @@ final class ClientHttpSession
 
     public Enumeration getAttributeNames()
     {
-
-        return null;
+        return new StringTokenizer( "" );
     }
 
     public long getCreationTime()
