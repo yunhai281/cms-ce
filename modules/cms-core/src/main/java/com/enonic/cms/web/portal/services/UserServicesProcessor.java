@@ -119,8 +119,6 @@ public final class UserServicesProcessor
 
     public static final int ERR_NOT_ALLOWED = 113;
 
-    public static final int ERR_UID_WRONG_FORMAT = 114;
-
     public static final int ERR_USERSTORE_NOT_FOUND = 115;
 
 
@@ -569,14 +567,6 @@ public final class UserServicesProcessor
         catch ( Exception e )
         {
             handleExceptions( e, request, response, formItems );
-            return;
-        }
-
-        if ( uid != null && uid.contains( "@" ) )
-        {
-            String message = "username is in wrong format, email not supported: " + uid;
-            VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_UID_WRONG_FORMAT );
             return;
         }
 
