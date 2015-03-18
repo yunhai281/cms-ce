@@ -87,7 +87,7 @@ public class PageTemplateHandlerServlet
             tempElement.setAttribute( "stylesheetkey", tmp );
         }
 
-        XMLTool.createElement( doc, pageTemplate, "name", formItems.getString( "name", "" ) );
+        XMLTool.createElement( doc, pageTemplate, "name", formItems.getString( "name", "" ).trim() );
 
         XMLTool.createElement( doc, pageTemplate, "description", formItems.getString( "description", "" ) );
 

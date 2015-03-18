@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,7 +57,6 @@ import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
-import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 
 /**
  * This class handles all content object related functionality in administration console.
@@ -109,38 +107,24 @@ public final class ContentObjectHandlerServlet
             contentObject.setAttribute( "runAs", runAsKey );
         }
 
-        Element tempElement;
+        String name = formItems.getString( "name" ).trim();
         if ( updateStyleSheets )
         {
-            String name = formItems.getString( "name", null );
             if ( name != null )
             {
-                tempElement = XMLTool.createElement( doc, contentObject, "name", name );
+                XMLTool.createElement( doc, contentObject, "name", name );
             }
             else
             {
-                tempElement = XMLTool.createElement( doc, contentObject, "name" );
+                XMLTool.createElement( doc, contentObject, "name" );
             }
         }
         else
         {
-            String name = formItems.getString( "name" );
-            tempElement = XMLTool.createElement( doc, contentObject, "name", name );
+            XMLTool.createElement( doc, contentObject, "name", name );
         }
 
-        /*
-        if (formItems.containsKey("viewborderstylesheet")) {
-            tempElement = XMLTool.createElement(doc, contentObject, "borderstylesheet");
-            tempElement.setAttribute("key", formItems.getString("viewborderstylesheet"));
-        }
-
-
-        if (formItems.containsKey("viewstylesheet")) {
-            tempElement = XMLTool.createElement(doc, contentObject, "objectstylesheet");
-            tempElement.setAttribute("key", formItems.getString("viewstylesheet"));
-        }
-        */
-
+        Element tempElement;
         ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
         if ( stylesheetKey != null )
         {
@@ -154,29 +138,6 @@ public final class ContentObjectHandlerServlet
             tempElement = XMLTool.createElement( doc, contentObject, "borderstylesheet" );
             tempElement.setAttribute( "key", String.valueOf( borderStylesheetKey ) );
         }
-
-        /*
-        String ssName = formItems.getString("viewborderstylesheet", null);
-        if (ssName != null) {
-            tempElement = XMLTool.createElement(doc, contentObject, "borderstylesheet", ssName);
-            ResourceKey stylesheetKey = new ResourceKey(formItems.getInt("borderstylesheet"));
-            tempElement.setAttribute("key", String.valueOf(stylesheetKey));
-            boolean shared = admin.isResourceShared(stylesheetKey);
-            if (shared)
-                tempElement.setAttribute("shared", "true");
-        }
-
-        ssName = formItems.getString("viewstylesheet", null);
-        if (ssName != null) {
-            tempElement = XMLTool.createElement(doc, contentObject, "objectstylesheet", ssName);
-            tempElement.setAttribute("key", formItems.getString("stylesheet"));
-            ResourceKey stylesheetKey = new ResourceKey(formItems.getInt("stylesheet"));
-            tempElement.setAttribute("key", String.valueOf(stylesheetKey));
-            boolean shared = admin.isResourceShared(stylesheetKey);
-            if (shared)
-                tempElement.setAttribute("shared", "true");
-        }
-        */
 
         Element contentObjectData = XMLTool.createElement( doc, contentObject, "contentobjectdata" );
 
