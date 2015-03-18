@@ -54,9 +54,9 @@ public class BigTextTest
         final String result3 = "fulltext rydde i fruktkurv  og legge den som evnt er igjen i en mindre bolle  fulltext";
         final BigText test4 =
             new BigText( "\u001A\u007f\u00c6\u00d8\u00c5\u00e6\u00f8\u00e5\u306d\u304e\u30de\u30e8\u713c\u304d\u0082\u0099\u009f\u001A" );
-        final String result4 = "\u007f\u00c6\u00d8\u00c5\u00e6\u00f8\u00e5\u306d\u304e\u30de\u30e8\u713c\u304d\u0082\u0099\u009f";
-        assertEquals( "Ascii characters 0x0, 0x1, 0x3 and 0x4 should have been removed.", result1, test1.getText() );
-        assertEquals( "Ascii character 0x7, 0x13, 0x11 and 0x4 should have been removed.", result2, test2.getText() );
+        final String result4 = "\u00c6\u00d8\u00c5\u00e6\u00f8\u00e5\u306d\u304e\u30de\u30e8\u713c\u304d";
+        assertEquals(  result1, test1.getText() );
+        assertEquals( result2, test2.getText() );
         assertEquals( "There should be no changes in this test string", result3, test3.getText() );
         assertEquals( "There should be no changes in this test string", result4, test4.getText() );
 

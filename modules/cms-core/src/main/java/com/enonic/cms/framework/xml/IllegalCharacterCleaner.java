@@ -19,7 +19,6 @@ public final class IllegalCharacterCleaner
         "\u0006" +
         "\u0007" +
         "\u0008" +
-        "\u0009" +
         "\u000B" +
         "\u000C" +
         "\u000E" +
