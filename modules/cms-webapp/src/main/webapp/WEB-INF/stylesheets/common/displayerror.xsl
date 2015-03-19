@@ -15,7 +15,9 @@
           <xsl:call-template name="errorcodes">
             <xsl:with-param name="code" select="$code"/>
           </xsl:call-template>
-          <xsl:text>: </xsl:text>
+          <xsl:if test="$error">
+            <xsl:text>: </xsl:text>
+          </xsl:if>
         </xsl:if>
         <xsl:if test="$error">
           <xsl:for-each select="$error/part">
@@ -54,6 +56,7 @@
       <xsl:when test="$code = '18'">%errorHomeNotSelected%</xsl:when>
       <xsl:when test="$code = '19'">%errorNameIllegalChars%</xsl:when>
       <xsl:when test="$code = '20'">%errorConnector%</xsl:when>
+      <xsl:when test="$code = '21'">%errorFailedToInflateZipFileCharset%</xsl:when>
     </xsl:choose>
     
   </xsl:template>

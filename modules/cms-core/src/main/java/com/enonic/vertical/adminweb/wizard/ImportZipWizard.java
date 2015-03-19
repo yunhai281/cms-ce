@@ -249,6 +249,12 @@ public abstract class ImportZipWizard
                     zipElem.setAttribute( "allchecked", "true" );
                 }
             }
+            catch ( IllegalArgumentException e )
+            {
+                String message = "Failed to inflate zip file due to file names with special characters: %t";
+                WizardLogger.error( message, e );
+                wizardState.addError( "21", "zipfile", LoggingUtil.formatCause( message, e ) );
+            }
             catch ( IOException ioe )
             {
                 String message = "Failed to inflate zip file: %t";
