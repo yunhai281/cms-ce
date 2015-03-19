@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -101,16 +102,24 @@ public final class FormServicesProcessor
         formElement.setAttribute( "categorykey", _formElement.getAttribute( "categorykey" ) );
 
         // Set title element:
-        Element _titleElement = XMLTool.getElement( _formElement, "title" );
-        XMLTool.createElement( doc, formElement, "title", XMLTool.getElementText( _titleElement ) );
+        final String formTitleEl = formItems.getString( menuItemKey + "_form_title" );
+        final String titleElNum = StringUtils.substringAfter( formTitleEl, "form_" + menuItemKey + "_elm_" );
+        final String titleElementId = menuItemKey + "_form_" + titleElNum;
+        String title = formItems.getString( titleElementId );
+        if ( StringUtils.isBlank( title ) )
+        {
+            Element _titleElement = XMLTool.getElement( _formElement, titleElementId );
+            title = XMLTool.getElementText( _titleElement );
+        }
+        XMLTool.createElement( doc, formElement, "title", title );
 
         // There may be multiple error states/codes, so we have to keep track of them.
-        // When errors occurr, XML is inserted into the resulting document, and sent
+        // When errors occur, XML is inserted into the resulting document, and sent
         // back to the user client.
         // TIntArrayList errorCodes = new TIntArrayList(5);
         List<Integer> errorCodes = new ArrayList<Integer>( 5 );
 
-        // The people that will recieve the form mail:
+        // The people that will receive the form mail:
         Element recipientsElem = XMLTool.getElement( _formElement, "recipients" );
         if ( recipientsElem != null )
         {
