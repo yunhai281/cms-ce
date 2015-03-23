@@ -290,8 +290,6 @@ public final class ContentHandler
                                 int parentChildrenLevel )
     {
         return getContents( user, new int[]{contentKey}, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel );
-
-        // false, false, null );
     }
 
     private Document getContents( User user, int[] contentKeys, boolean publishedOnly, int parentLevel, int childrenLevel,
