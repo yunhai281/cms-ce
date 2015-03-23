@@ -101,6 +101,9 @@ public final class FormServicesProcessor
         Element formElement = XMLTool.createElement( doc, contentdataElem, "form" );
         formElement.setAttribute( "categorykey", _formElement.getAttribute( "categorykey" ) );
 
+        Element formTitleElement = XMLTool.getElement( _formElement, "title" );
+        formElement.setAttribute( "title", XMLTool.getElementText( formTitleElement ) );
+
         // Set title element:
         final String formTitleEl = formItems.getString( menuItemKey + "_form_title" );
         final String titleElNum = StringUtils.substringAfter( formTitleEl, "form_" + menuItemKey + "_elm_" );

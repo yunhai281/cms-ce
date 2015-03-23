@@ -30,7 +30,7 @@ public class FormContentDataParser
         return parser.parse();
     }
 
-    public FormContentDataParser( Document contentDataXml )
+    private FormContentDataParser( Document contentDataXml )
     {
         if ( contentDataXml == null )
         {
@@ -40,7 +40,7 @@ public class FormContentDataParser
         this.contentDataXml = contentDataXml;
     }
 
-    public ContentData parse()
+    private ContentData parse()
     {
         LegacyFormContentData contentData = new LegacyFormContentData( contentDataXml );
         contentData.replaceBinaryKeyPlaceholders( binaryDatas );

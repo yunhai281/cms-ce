@@ -29,24 +29,17 @@ public class LegacyFormContentData
 
     protected String resolveTitle()
     {
-        List nodes = contentDataEl.getChild( "form" ).getChildren( "item" );
-        Element titleNode = null;
-        for ( Object node : nodes )
-        {
-            Element formItemElement = (Element) node;
-            Attribute titleAttr = formItemElement.getAttribute( "title" );
-            if ( ( titleAttr != null ) && ( titleAttr.getValue().equals( "true" ) ) )
-            {
-                List dataNodes = formItemElement.getChildren();
-                if ( ( dataNodes != null ) && ( dataNodes.size() > 0 ) )
-                {
-                    titleNode = (Element) dataNodes.get( 0 );
-                }
-            }
-        }
-
+        final Attribute formTitleAttr = contentDataEl.getChild( "form" ).getAttribute( "title" );
         final Element generalFormTitleElement = contentDataEl.getChild( "form" ).getChild( "title" );
-        return generalFormTitleElement.getText() + ": " + ( titleNode != null ? titleNode.getText() : "" );
+
+        if ( formTitleAttr != null )
+        {
+            return formTitleAttr.getValue() + ": " + generalFormTitleElement.getText();
+        }
+        else
+        {
+            return generalFormTitleElement.getText();
+        }
     }
 
     protected List<BinaryDataAndBinary> resolveBinaryDataAndBinaryList()
