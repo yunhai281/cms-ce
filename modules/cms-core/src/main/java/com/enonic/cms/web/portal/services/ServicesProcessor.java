@@ -13,4 +13,6 @@ public interface ServicesProcessor
 
     public void handle( final PortalWebContext context )
         throws Exception;
+
+    public Integer httpResponseCodeTranslator( Integer[] errorCodes );
 }

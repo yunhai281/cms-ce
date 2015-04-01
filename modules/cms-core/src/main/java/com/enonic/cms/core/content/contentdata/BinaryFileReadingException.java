@@ -4,13 +4,10 @@
  */
 package com.enonic.cms.core.content.contentdata;
 
-/**
- * Created by rmy - Date: Jun 17, 2009
- */
-public class ContentDataParserException
+public class BinaryFileReadingException
     extends RuntimeException
 {
-    public ContentDataParserException( String message, Throwable cause )
+    public BinaryFileReadingException( String message, Throwable cause )
     {
         super( message, cause );
     }

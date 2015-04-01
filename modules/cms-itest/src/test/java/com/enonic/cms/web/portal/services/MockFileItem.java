@@ -13,12 +13,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.fileupload.FileItem;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: Jan 11, 2010
- * Time: 8:21:13 PM
- */
 public class MockFileItem
     implements FileItem
 {
@@ -107,7 +101,5 @@ public class MockFileItem
         throws IOException
     {
         return null;
-
-
     }
 }

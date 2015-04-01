@@ -71,6 +71,12 @@ public final class PageHandler
     {
         HttpSession httpSession = httpRequest.getSession( true );
 
+        String httpStatusCode = sitePath.getParam( "httpResponseCode" );
+        if (httpStatusCode != null) {
+            sitePath.removeParam( "httpResponseCode" );
+            httpResponse.setStatus( Integer.parseInt( httpStatusCode ) );
+        }
+
         if ( !sitePath.getLocalPath().startsWithSlash() )
         {
             redirectToRoot( httpRequest, httpResponse, sitePath );

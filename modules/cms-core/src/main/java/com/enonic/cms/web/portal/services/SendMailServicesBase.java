@@ -22,23 +22,24 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.core.mail.MailRecipientType;
 import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.mail.SimpleMailTemplate;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteKey;
 
 public abstract class SendMailServicesBase
     extends ContentServicesBase
 {
-    public final static int ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS = 100;
+    public final static int ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS = 100;  // http 400 Bad Request
 
-    public final static int ERR_RECIPIENT_HAS_WRONG_ADDRESS_NO_ALPHA = 101;
+    public final static int ERR_RECIPIENT_HAS_WRONG_ADDRESS_NO_ALPHA = 101;  // http 400 Bad Request
 
-    public final static int ERR_RECIPIENT_HAS_WRONG_ADDRESS_MISSING_DOT = 102;
+    public final static int ERR_RECIPIENT_HAS_WRONG_ADDRESS_MISSING_DOT = 102;  // http 400 Bad Request
 
-    public final static int ERR_MISSING_FROM_FIELDS = 103;
+    public final static int ERR_MISSING_FROM_FIELDS = 103;  // http 400 Bad Request
 
-    public final static int ERR_MISSING_TO_FIELD = 104;
+    public final static int ERR_MISSING_TO_FIELD = 104;  // http 400 Bad Request
 
-    public final static int ERR_MISSING_SUBJECT_FIELD = 105;
+    public final static int ERR_MISSING_SUBJECT_FIELD = 105;  // http 400 Bad Request
 
     public SendMailServicesBase( final String handlerName )
     {
@@ -64,7 +65,7 @@ public abstract class SendMailServicesBase
                 {
                     String message = "No \"from\" fields given. " + "At least one of \"from_name\" and \"from_email\" is required.";
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_MISSING_FROM_FIELDS );
+                    redirectToErrorPage( request, response, ERR_MISSING_FROM_FIELDS );
                     return;
                 }
                 mail.setFrom( fromName, fromEmail );
@@ -75,7 +76,7 @@ public abstract class SendMailServicesBase
                 {
                     String message = "No \"to\" fields given. At least one is required.";
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_MISSING_TO_FIELD );
+                    redirectToErrorPage( request, response, ERR_MISSING_TO_FIELD );
                     return;
                 }
                 else
@@ -83,7 +84,7 @@ public abstract class SendMailServicesBase
                     int error = addRecipients( mail, recipients, MailRecipientType.TO_RECIPIENT );
                     if ( error >= 0 )
                     {
-                        redirectToErrorPage( request, response, formItems, error );
+                        redirectToErrorPage( request, response, error );
                         return;
                     }
                 }
@@ -95,7 +96,7 @@ public abstract class SendMailServicesBase
                     int error = addRecipients( mail, recipients, MailRecipientType.BCC_RECIPIENT );
                     if ( error >= 0 )
                     {
-                        redirectToErrorPage( request, response, formItems, error );
+                        redirectToErrorPage( request, response, error );
                         return;
                     }
                 }
@@ -107,7 +108,7 @@ public abstract class SendMailServicesBase
                     int error = addRecipients( mail, recipients, MailRecipientType.CC_RECIPIENT );
                     if ( error >= 0 )
                     {
-                        redirectToErrorPage( request, response, formItems, error );
+                        redirectToErrorPage( request, response, error );
                         return;
                     }
                 }
@@ -118,7 +119,7 @@ public abstract class SendMailServicesBase
                 {
                     String message = "No \"subject\" field given. A subject field is required.";
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_MISSING_SUBJECT_FIELD );
+                    redirectToErrorPage( request, response, ERR_MISSING_SUBJECT_FIELD );
                     return;
                 }
                 else
@@ -200,7 +201,7 @@ public abstract class SendMailServicesBase
             {
                 String message = "Failed to send email: %t";
                 VerticalUserServicesLogger.error( message, esle );
-                redirectToErrorPage( request, response, formItems, ERR_EMAIL_SEND_FAILED );
+                redirectToErrorPage( request, response, ERR_EMAIL_SEND_FAILED );
             }
         }
         else
@@ -274,5 +275,29 @@ public abstract class SendMailServicesBase
     public void setSendMailService( final SendMailService sendMailService )
     {
         this.sendMailService = sendMailService;
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+
+        Integer errorCode = errorCodes[0];
+
+        switch ( errorCode )
+        {
+            case ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS:
+            case ERR_RECIPIENT_HAS_WRONG_ADDRESS_NO_ALPHA:
+            case ERR_RECIPIENT_HAS_WRONG_ADDRESS_MISSING_DOT:
+            case ERR_MISSING_FROM_FIELDS:
+            case ERR_MISSING_TO_FIELD:
+            case ERR_MISSING_SUBJECT_FIELD:
+                return HTTP_STATUS_BAD_REQUEST;
+            default:
+                return super.httpResponseCodeTranslator( errorCodes );
+        }
     }
 }

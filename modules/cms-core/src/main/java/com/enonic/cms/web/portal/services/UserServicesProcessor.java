@@ -46,6 +46,7 @@ import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalInstanceKeyResolver;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.preference.PreferenceAccessException;
 import com.enonic.cms.core.preference.PreferenceEntity;
 import com.enonic.cms.core.preference.PreferenceKey;
@@ -111,9 +112,9 @@ public final class UserServicesProcessor
 
     public static final int ERR_NEW_PASSWORD_INVALID = 108;
 
-    public static final int ERR_JOIN_GROUP_FAILED = 110;
+    public static final int ERR_JOIN_OR_LEAVE_GROUP_FAILED = 110;
 
-    public static final int ERR_JOIN_GROUP_NOT_ALLOWED = 111;
+    public static final int ERR_JOIN_OR_LEAVE_GROUP_NOT_ALLOWED = 111;
 
     public static final int ERR_SET_PREFERENCES_INVALID_PARAMS = 112;
 
@@ -288,7 +289,7 @@ public final class UserServicesProcessor
         {
             String message = "User must be logged in.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -301,7 +302,7 @@ public final class UserServicesProcessor
             String message = createMissingParametersMessage( "Set groups", missingParameters );
 
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
             return;
         }
 
@@ -335,7 +336,7 @@ public final class UserServicesProcessor
         {
             String message = "User must be logged in.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -348,7 +349,7 @@ public final class UserServicesProcessor
             String message = createMissingParametersMessage( "Join group", missingParameters );
 
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
             return;
         }
 
@@ -378,14 +379,14 @@ public final class UserServicesProcessor
             {
                 String message = "Not allowed to add user to group: %t";
                 VerticalUserServicesLogger.warn( message, e );
-                redirectToErrorPage( request, response, formItems, ERR_JOIN_GROUP_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_JOIN_OR_LEAVE_GROUP_NOT_ALLOWED );
                 return;
             }
             catch ( RuntimeException e )
             {
                 String message = "Failed to add user to group: %t";
                 VerticalUserServicesLogger.warn( message, e );
-                redirectToErrorPage( request, response, formItems, ERR_JOIN_GROUP_FAILED );
+                redirectToErrorPage( request, response, ERR_JOIN_OR_LEAVE_GROUP_FAILED );
                 return;
             }
         }
@@ -493,7 +494,7 @@ public final class UserServicesProcessor
         {
             String message = "User must be logged in.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -506,7 +507,7 @@ public final class UserServicesProcessor
             String message = createMissingParametersMessage( "Leave group", missingParameters );
 
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
             return;
         }
 
@@ -537,13 +538,13 @@ public final class UserServicesProcessor
             {
                 String message = "Not allowed to remove user from group: %t";
                 VerticalUserServicesLogger.warn( message, e );
-                redirectToErrorPage( request, response, formItems, ERR_JOIN_GROUP_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_JOIN_OR_LEAVE_GROUP_NOT_ALLOWED );
                 return;
             }
             catch ( RuntimeException e )
             {
                 VerticalUserServicesLogger.warn( e.getMessage(), e );
-                redirectToErrorPage( request, response, formItems, ERR_JOIN_GROUP_FAILED );
+                redirectToErrorPage( request, response, ERR_JOIN_OR_LEAVE_GROUP_FAILED );
                 return;
             }
         }
@@ -588,7 +589,7 @@ public final class UserServicesProcessor
                 {
                     String message = "Missing user name and/or password.";
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_MISSING_UID_PASSWD );
+                    redirectToErrorPage( request, response, ERR_MISSING_UID_PASSWD );
                     return;
                 }
                 securityService.loginPortalUser( new QualifiedUsername( userStoreKey, uid ), password );
@@ -602,7 +603,7 @@ public final class UserServicesProcessor
             {
                 String message = "Passwords don't match.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PASSWORD_MISMATCH );
+                redirectToErrorPage( request, response, ERR_PASSWORD_MISMATCH );
                 return;
             }
 
@@ -610,7 +611,7 @@ public final class UserServicesProcessor
             {
                 String message = "New password is invalid.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_NEW_PASSWORD_INVALID );
+                redirectToErrorPage( request, response, ERR_NEW_PASSWORD_INVALID );
                 return;
             }
 
@@ -622,7 +623,7 @@ public final class UserServicesProcessor
             {
                 String message = "Not allowed to update user password.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_NOT_ALLOWED );
                 return;
             }
         }
@@ -630,14 +631,14 @@ public final class UserServicesProcessor
         {
             String message = "User name and/or password is wrong: {0}";
             VerticalUserServicesLogger.warn( message, uid, null );
-            redirectToErrorPage( request, response, formItems, ERR_USER_PASSWD_WRONG );
+            redirectToErrorPage( request, response, ERR_USER_PASSWD_WRONG );
             return;
         }
         catch ( VerticalSecurityException vue )
         {
             String message = "User id and/or password incorrect: %t";
             VerticalUserServicesLogger.warn( message, vue );
-            redirectToErrorPage( request, response, formItems, ERR_USER_PASSWD_WRONG );
+            redirectToErrorPage( request, response, ERR_USER_PASSWD_WRONG );
             return;
         }
         catch ( Exception e )
@@ -674,7 +675,7 @@ public final class UserServicesProcessor
         boolean neitherEmailOrUidSet = StringUtils.isBlank( uid ) && StringUtils.isBlank( email );
         if ( neitherEmailOrUidSet )
         {
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_FOUND );
+            redirectToErrorPage( request, response, ERR_USER_NOT_FOUND );
             return;
         }
 
@@ -682,7 +683,7 @@ public final class UserServicesProcessor
         if ( missingMailBodyOrFromEmail )
         {
             VerticalUserServicesLogger.warn( "Missing either 'mail_body' or 'from_email' parameter." );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
             return;
         }
 
@@ -698,7 +699,7 @@ public final class UserServicesProcessor
             UserEntity userEntity = userDao.findSingleBySpecification( userSpecification );
             if ( userEntity == null )
             {
-                redirectToErrorPage( request, response, formItems, ERR_USER_NOT_FOUND );
+                redirectToErrorPage( request, response, ERR_USER_NOT_FOUND );
                 return;
             }
             qualifiedUsername = new QualifiedUsername( userStoreKey, userEntity.getName() );
@@ -720,14 +721,14 @@ public final class UserServicesProcessor
             {
                 String message = "User not found: " + uid;
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_USER_NOT_FOUND );
+                redirectToErrorPage( request, response, ERR_USER_NOT_FOUND );
                 return;
             }
             else
             {
                 String message = "Not allowed to change password for user: " + uid;
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_NOT_ALLOWED );
                 return;
             }
         }
@@ -778,7 +779,7 @@ public final class UserServicesProcessor
         {
             String msg = "User not logged in.";
             VerticalUserServicesLogger.warn( msg );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -827,74 +828,74 @@ public final class UserServicesProcessor
                 formItems.containsKey( FORMITEM_UID ) ? formItems.getString( FORMITEM_UID ) : formItems.getString( FORMITEM_USERNAME, "" );
 
             VerticalUserServicesLogger.warn( msg, userId, null );
-            redirectToErrorPage( request, response, formItems, ERR_UID_ALREADY_EXISTS );
+            redirectToErrorPage( request, response, ERR_UID_ALREADY_EXISTS );
         }
         else if ( e instanceof IllegalArgumentException )
         {
             String message = StringUtils.isNotBlank( e.getMessage() ) ? e.getMessage() : "Illegal arguments: %t";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
         }
         else if ( e instanceof MissingRequiredUserFieldException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
         }
         else if ( e instanceof ReadOnlyUserFieldPolicyException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
         }
         else if ( e instanceof UserStorageExistingEmailException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_EMAIL_ALREADY_EXISTS );
+            redirectToErrorPage( request, response, ERR_EMAIL_ALREADY_EXISTS );
         }
         else if ( e instanceof UserNotFoundException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_FOUND );
+            redirectToErrorPage( request, response, ERR_USER_NOT_FOUND );
         }
         else if ( e instanceof UserStorageInvalidArgumentException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
         }
         else if ( e instanceof UserStoreAccessException )
         {
             VerticalUserServicesLogger.warn( e.getMessage() );
-            redirectToErrorPage( request, response, formItems, ERR_NOT_ALLOWED );
+            redirectToErrorPage( request, response, ERR_NOT_ALLOWED );
         }
         else if ( e instanceof UnsupportedEncodingException )
         {
             String message = "Un-supported encoding: %t";
             VerticalUserServicesLogger.error( message, e );
-            redirectToErrorPage( request, response, formItems, ERR_EMAIL_SEND_FAILED );
+            redirectToErrorPage( request, response, ERR_EMAIL_SEND_FAILED );
         }
         else if ( e instanceof MessagingException )
         {
             String message = "Failed to send order received mail: %t";
             VerticalUserServicesLogger.error( message, e );
-            redirectToErrorPage( request, response, formItems, ERR_EMAIL_SEND_FAILED );
+            redirectToErrorPage( request, response, ERR_EMAIL_SEND_FAILED );
         }
         else if ( e instanceof UserStoreNotFoundException )
         {
             String message = "Userstore not found";
             VerticalUserServicesLogger.warn( message, e );
-            redirectToErrorPage( request, response, formItems, ERR_USERSTORE_NOT_FOUND );
+            redirectToErrorPage( request, response, ERR_USERSTORE_NOT_FOUND );
         }
         else if ( e instanceof UserStoreConnectorPolicyBrokenException )
         {
             String msg = e.getMessage();
             VerticalUserServicesLogger.warn( msg );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
+            redirectToErrorPage( request, response, ERR_SECURITY_EXCEPTION );
         }
         else
         {
             String message = e.getMessage() == null ? "Error" : e.getMessage();
 
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_OPERATION_BACKEND );
+            redirectToErrorPage( request, response, ERR_OPERATION_BACKEND );
         }
     }
 
@@ -921,7 +922,7 @@ public final class UserServicesProcessor
             String message = createMissingParametersMessage( "Create User", missingParameters );
 
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
             return;
         }
 
@@ -1081,7 +1082,7 @@ public final class UserServicesProcessor
         {
             String msg = "User not logged in.";
             VerticalUserServicesLogger.warn( msg );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -1165,7 +1166,7 @@ public final class UserServicesProcessor
             {
                 String message = "Missing user name and/or password.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_MISSING_UID_PASSWD );
+                redirectToErrorPage( request, response, ERR_MISSING_UID_PASSWD );
                 return;
             }
 
@@ -1210,7 +1211,7 @@ public final class UserServicesProcessor
             logLoginFailed( siteContext, username, request.getRemoteAddr() );
             String message = "User name and/or password is wrong: {0}";
             VerticalUserServicesLogger.warn( message, username, null );
-            redirectToErrorPage( request, response, formItems, ERR_USER_PASSWD_WRONG );
+            redirectToErrorPage( request, response, ERR_USER_PASSWD_WRONG );
         }
         catch ( VerticalSecurityException vse )
         {
@@ -1221,7 +1222,7 @@ public final class UserServicesProcessor
             logLoginFailed( siteContext, username, request.getRemoteAddr() );
             String message = "No rights to handle request: " + vse.getMessage();
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
+            redirectToErrorPage( request, response, ERR_SECURITY_EXCEPTION );
         }
         catch ( Exception e )
         {
@@ -1409,7 +1410,7 @@ public final class UserServicesProcessor
             {
                 String message = "User is not logged in.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+                redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
                 return;
             }
 
@@ -1454,7 +1455,7 @@ public final class UserServicesProcessor
         {
             String message = "User is not logged in.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -1491,14 +1492,14 @@ public final class UserServicesProcessor
             {
                 String message = "Illegal arguments to setPreferences: " + iae.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_SET_PREFERENCES_INVALID_PARAMS );
+                redirectToErrorPage( request, response, ERR_SET_PREFERENCES_INVALID_PARAMS );
                 return;
             }
             catch ( PreferenceAccessException e )
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_NOT_ALLOWED );
                 return;
             }
         }
@@ -1534,7 +1535,7 @@ public final class UserServicesProcessor
         {
             String message = "User is not logged in.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_USER_NOT_LOGGED_IN );
+            redirectToErrorPage( request, response, ERR_USER_NOT_LOGGED_IN );
             return;
         }
 
@@ -1563,14 +1564,14 @@ public final class UserServicesProcessor
             {
                 String message = "Illegal arguments to removePreferences: " + iae.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_SET_PREFERENCES_INVALID_PARAMS );
+                redirectToErrorPage( request, response, ERR_SET_PREFERENCES_INVALID_PARAMS );
                 return;
             }
             catch ( PreferenceAccessException e )
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_NOT_ALLOWED );
+                redirectToErrorPage( request, response, ERR_NOT_ALLOWED );
                 return;
             }
         }
@@ -1679,5 +1680,46 @@ public final class UserServicesProcessor
     public void setLoginDelay( final int loginDelay )
     {
         this.loginDelay = loginDelay;
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+
+        Integer errorCode = errorCodes[0];
+
+        switch ( errorCode )
+        {
+            case ERR_EMAIL_ALREADY_EXISTS:
+            case ERR_UID_ALREADY_EXISTS:
+            case ERR_USER_NOT_FOUND:
+            case ERR_MISSING_UID_PASSWD:
+            case ERR_PASSWORD_MISMATCH:
+            case ERR_NEW_PASSWORD_INVALID:
+            case ERR_JOIN_OR_LEAVE_GROUP_FAILED:
+            case ERR_SET_PREFERENCES_INVALID_PARAMS:
+            case ERR_USERSTORE_NOT_FOUND:
+                return HTTP_STATUS_BAD_REQUEST;
+            case ERR_USER_NOT_LOGGED_IN:
+            case ERR_USER_PASSWD_WRONG:
+                return HTTP_STATUS_UNAUTHORIZED;
+            case ERR_JOIN_OR_LEAVE_GROUP_NOT_ALLOWED:
+                return HTTP_STATUS_FORBIDDEN;
+            case ERR_NOT_ALLOWED:
+                if ( securityService.getLoggedInPortalUserAsEntity().isAnonymous() )
+                {
+                    return HTTP_STATUS_UNAUTHORIZED;
+                }
+                else
+                {
+                    return HTTP_STATUS_FORBIDDEN;
+                }
+            default:
+                return super.httpResponseCodeTranslator( errorCodes );
+        }
     }
 }

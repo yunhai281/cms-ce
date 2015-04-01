@@ -10,13 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
-import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 
 import com.enonic.cms.core.Attribute;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.portal.httpservices.IllegalRedirectException;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.structure.SitePath;
 
 @Component
@@ -57,20 +56,15 @@ public class UserServicesRedirectUrlResolver
         throw new IllegalRedirectException( errorMessage.toString() );
     }
 
-    public String resolveRedirectUrlToErrorPage( HttpServletRequest request, ExtendedMap formItems, int[] codes, MultiValueMap queryParams )
+    public String resolveRedirectUrlToErrorPage( HttpServletRequest request, Integer[] codes, ServicesProcessor errorSource )
     {
-
-        if ( queryParams == null )
-        {
-            queryParams = new MultiValueMap();
-        }
 
         // Check for a fatal exception
         for ( int code : codes )
         {
             if ( code >= 500 )
             {
-                throw new UserServicesException( code );
+                throw new HttpServicesException( code );
             }
         }
 
@@ -78,8 +72,10 @@ public class UserServicesRedirectUrlResolver
         String handler = UserServicesParameterResolver.resolveHandlerFromSitePath( originalSitePath );
         String operation = UserServicesParameterResolver.resolveOperationFromSitePath( originalSitePath );
 
+        Integer httpResponseCode = errorSource.httpResponseCodeTranslator( codes );
+
         // set error paramater on query string
-        StringBuffer errorKeyBuilder = new StringBuffer( "error_" );
+        StringBuilder errorKeyBuilder = new StringBuilder( "error_" );
         if ( handler != null && operation != null )
         {
             errorKeyBuilder.append( handler );
@@ -92,20 +88,12 @@ public class UserServicesRedirectUrlResolver
         }
 
         String errorKey = errorKeyBuilder.toString();
-        queryParams.remove( errorKey );
-        for ( int code : codes )
-        {
-            queryParams.put( errorKey, String.valueOf( code ) );
-        }
 
         String baseUrlString = request.getHeader( "referer" );
+
         if ( baseUrlString == null )
         {
-            baseUrlString = formItems.getString( "redirecterror", null );
-        }
-        if ( baseUrlString == null )
-        {
-            throw new UserServicesException( codes[0] );
+            throw new HttpServicesException( codes[0] );
         }
 
         // remove old error-parameters
@@ -113,7 +101,12 @@ public class UserServicesRedirectUrlResolver
         removeErrorParameters( url );
 
         // add query parameters to url
-        url.addParameters( queryParams );
+        for ( int code : codes )
+        {
+            url.addParameter( errorKey, String.valueOf( code ) );
+        }
+
+        url.addParameter( "httpResponseCode", httpResponseCode.toString() );
 
         return url.toString();
     }
@@ -124,7 +117,7 @@ public class UserServicesRedirectUrlResolver
         while ( paramIterator.hasNext() )
         {
             URL.Parameter param = (URL.Parameter) paramIterator.next();
-            if ( param.getKey().indexOf( "error" ) >= 0 )
+            if ( param.getKey().contains( "error" ) )
             {
                 paramIterator.remove();
             }

@@ -52,11 +52,11 @@ import com.enonic.cms.core.structure.SiteKey;
 public final class FormServicesProcessor
     extends ContentServicesBase
 {
-    private final static int ERR_MISSING_REQ = 1;
+    private final static int ERR_MISSING_REQUIRED_INPUT = 1;  // http 400 Bad Request
 
     private final static String ERR_MSG_MISSING_REQ = "Mandatory field is missing.";
 
-    private final static int ERR_VALIDATION_FAILED = 2;
+    private final static int ERR_VALIDATION_FAILED = 2;  // http 400 Bad Request
 
     private final static String ERR_MSG_VALIDATION_FAILED = "Validation failed.";
 
@@ -67,6 +67,8 @@ public final class FormServicesProcessor
     class FormException
         extends VerticalUserServicesException
     {
+        private static final long serialVersionUID = 6224618853303943458L;
+
         Document doc = null;
 
         Integer[] errorCodes = null;
@@ -178,11 +180,11 @@ public final class FormServicesProcessor
                 if ( itemElement.getAttribute( "required" ).equals( "true" ) && value.length() == 0 )
                 {
                     XMLTool.createElement( doc, itemElement, "error", ERR_MSG_MISSING_REQ ).setAttribute( "id", String.valueOf(
-                        ERR_MISSING_REQ ) );
+                        ERR_MISSING_REQUIRED_INPUT ) );
 
-                    if ( !errorCodes.contains( ERR_MISSING_REQ ) )
+                    if ( !errorCodes.contains( ERR_MISSING_REQUIRED_INPUT ) )
                     {
-                        errorCodes.add( ERR_MISSING_REQ );
+                        errorCodes.add( ERR_MISSING_REQUIRED_INPUT );
                     }
                 }
 
@@ -225,11 +227,11 @@ public final class FormServicesProcessor
                 if ( itemElement.getAttribute( "required" ).equals( "true" ) && !selected )
                 {
                     XMLTool.createElement( doc, itemElement, "error", ERR_MSG_MISSING_REQ ).setAttribute( "id", String.valueOf(
-                        ERR_MISSING_REQ ) );
+                        ERR_MISSING_REQUIRED_INPUT ) );
 
-                    if ( !errorCodes.contains( ERR_MISSING_REQ ) )
+                    if ( !errorCodes.contains( ERR_MISSING_REQUIRED_INPUT ) )
                     {
-                        errorCodes.add( ERR_MISSING_REQ );
+                        errorCodes.add( ERR_MISSING_REQUIRED_INPUT );
                     }
                 }
             }
@@ -262,11 +264,11 @@ public final class FormServicesProcessor
                 if ( "true".equals( itemElement.getAttribute( "required" ) ) && fileItem == null )
                 {
                     XMLTool.createElement( doc, itemElement, "error", ERR_MSG_MISSING_REQ ).setAttribute( "id", String.valueOf(
-                        ERR_MISSING_REQ ) );
+                        ERR_MISSING_REQUIRED_INPUT ) );
 
-                    if ( !errorCodes.contains( ERR_MISSING_REQ ) )
+                    if ( !errorCodes.contains( ERR_MISSING_REQUIRED_INPUT ) )
                     {
-                        errorCodes.add( ERR_MISSING_REQ );
+                        errorCodes.add( ERR_MISSING_REQUIRED_INPUT );
                     }
                 }
                 else if ( fileItem != null )
@@ -388,8 +390,7 @@ public final class FormServicesProcessor
                 }
                 List<BinaryDataAndBinary> binaryDataAndBinaries = BinaryDataAndBinary.createNewFrom( binaries );
 
-                boolean parseContentData = true; // always parse content data when creating content
-                ContentAndVersion parsedContentAndVersion = contentParserService.parseContentAndVersion( xmlData, null, parseContentData );
+                ContentAndVersion parsedContentAndVersion = contentParserService.parseContentAndVersion( xmlData, null, true );
                 ContentEntity parsedContent = parsedContentAndVersion.getContent();
                 ContentVersionEntity parsedVersion = parsedContentAndVersion.getVersion();
 
@@ -443,12 +444,9 @@ public final class FormServicesProcessor
         catch ( FormException e )
         {
             vsession.setAttribute( "error_form_create", e.doc );
-            int[] tmp = new int[e.errorCodes.length];
-            for ( int i = 0; i < e.errorCodes.length; i++ )
-            {
-                tmp[i] = e.errorCodes[i];
-            }
-            redirectToErrorPage( request, response, formItems, tmp, null );
+            Integer[] tmp = new Integer[e.errorCodes.length];
+            System.arraycopy( e.errorCodes, 0, tmp, 0, e.errorCodes.length );
+            redirectToErrorPage( request, response, tmp, this );
         }
     }
 
@@ -726,5 +724,11 @@ public final class FormServicesProcessor
     public void setSendMailService( final SendMailService sendMailService )
     {
         this.sendMailService = sendMailService;
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        return HTTP_STATUS_BAD_REQUEST;
     }
 }
