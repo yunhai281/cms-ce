@@ -181,7 +181,7 @@ public class ContentServiceImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public UpdateContentResult updateContent( UpdateContentCommand command )
     {
         try
