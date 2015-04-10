@@ -100,9 +100,6 @@ public class ContentStorer
     private LanguageDao languageDao;
 
     @Autowired
-    private IndexService indexService;
-
-    @Autowired
     private ContentDao contentEntityDao;
 
     @Autowired
