@@ -113,7 +113,7 @@ public class InternalClientImpl_UpdateContentTest
 
     private void createContentTypeXml()
     {
-        StringBuffer standardConfigXml = new StringBuffer();
+        StringBuilder standardConfigXml = new StringBuilder();
         standardConfigXml.append( "<config name=\"MyContentType\" version=\"1.0\">" );
         standardConfigXml.append( "     <form>" );
 
@@ -586,6 +586,62 @@ public class InternalClientImpl_UpdateContentTest
         assertEquals( runningUser, persistedContent.getAssigner() );
         assertEquals( "test assignment", persistedContent.getAssignmentDescription() );
         assertEquals( new DateTime( 2010, 6, 6, 10, 0, 0, 0 ).toDate(), persistedContent.getAssignmentDueDate() );
+    }
+
+    @Test
+    public void testUpdateContentThatWasJustCreated()
+    {
+        // This test was added because of strange transactional behaviour reported in S-155437
+
+        ContentDataInput createData = new ContentDataInput( "MyContentType" );
+        createData.add( new TextInput( "myTitle", "Update this content!" ) );
+        createData.add( new TextInput( "fieldToUpdate", "initial value" ) );
+
+        CreateContentParams createParams = new CreateContentParams();
+        createParams.categoryKey = fixture.findCategoryByName( "MyCategory" ).getKey().toInt();
+        createParams.contentData = createData;
+        createParams.status = ContentStatus.STATUS_APPROVED;
+        createParams.publishFrom = new Date();
+        int contentKey = internalClient.createContent( createParams );
+
+        fixture.flushAndClearHibernateSession();
+
+        ContentDataInput updateData = new ContentDataInput( "MyContentType" );
+        updateData.add( new TextInput( "myTitle", "Update this content!" ) );
+        updateData.add( new TextInput( "fieldToUpdate", "updated value" ) );
+
+        UpdateContentParams updateParams = new UpdateContentParams();
+        updateParams.contentKey = contentKey;
+        updateParams.contentData = updateData;
+        updateParams.status = ContentStatus.STATUS_APPROVED;
+        updateParams.publishFrom = new Date();
+        updateParams.updateStrategy = ContentDataInputUpdateStrategy.REPLACE_NEW;
+        ContentVersionKey updatedContentVersionKey = new ContentVersionKey( internalClient.updateContent( updateParams ) );
+
+        fixture.flushAndClearHibernateSession();
+
+        ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
+        final List<ContentVersionEntity> versions = persistedContent.getVersions();
+
+        assertEquals( "There should be two versions of the content", 2, versions.size() );
+
+        ContentVersionEntity originalVersion;
+        ContentVersionEntity updatedVersion;
+        if ( versions.get( 0 ).getKey().equals( updatedContentVersionKey ) )
+        {
+            updatedVersion = versions.get( 0 );
+            originalVersion = versions.get( 1 );
+        }
+        else
+        {
+            updatedVersion = versions.get( 1 );
+            originalVersion = versions.get( 0 );
+        }
+
+        assertEquals( "The updated version should be approved", com.enonic.cms.core.content.ContentStatus.APPROVED,
+                      updatedVersion.getStatus() );
+        assertEquals( "The original version should be archived", com.enonic.cms.core.content.ContentStatus.ARCHIVED,
+                      originalVersion.getStatus() );
     }
 
     private void createUpdateContent()
