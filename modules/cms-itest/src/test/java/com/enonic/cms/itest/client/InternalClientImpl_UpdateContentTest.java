@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -642,6 +643,10 @@ public class InternalClientImpl_UpdateContentTest
                       updatedVersion.getStatus() );
         assertEquals( "The original version should be archived", com.enonic.cms.core.content.ContentStatus.ARCHIVED,
                       originalVersion.getStatus() );
+        final Document originalContentXml = originalVersion.getContentDataAsJDomDocument();
+        assertEquals( "initial value", originalContentXml.getRootElement().getChild( "updatefield" ).getText());
+        final Document updatedContentXml = updatedVersion.getContentDataAsJDomDocument();
+        assertEquals( "updated value", updatedContentXml.getRootElement().getChild( "updatefield" ).getText() );
     }
 
     private void createUpdateContent()
