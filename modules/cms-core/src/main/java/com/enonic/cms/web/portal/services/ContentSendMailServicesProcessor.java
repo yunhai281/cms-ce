@@ -18,12 +18,12 @@ import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.content.CreateContentException;
 import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.contentdata.ContentDataParserException;
+import com.enonic.cms.core.content.contentdata.BinaryFileReadingException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserInvalidDataException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserUnsupportedTypeException;
 import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
 import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataException;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
@@ -33,7 +33,7 @@ import com.enonic.cms.core.structure.SiteKey;
 public final class ContentSendMailServicesProcessor
     extends SendMailServicesBase
 {
-    private final static int ERR_MISSING_CATEGORY_KEY = 150;
+    private final static int ERR_MISSING_CATEGORY_KEY = 150;  // http 400 Bad Request
 
     public ContentSendMailServicesProcessor()
     {
@@ -55,7 +55,7 @@ public final class ContentSendMailServicesProcessor
             {
                 String message = "Category key not specified.";
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+                redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
                 return;
             }
 
@@ -68,18 +68,18 @@ public final class ContentSendMailServicesProcessor
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
                 return;
             }
-            catch ( ContentDataParserException e )
+            catch ( BinaryFileReadingException e )
             {
                 VerticalUserServicesLogger.error( e.getMessage(), e );
-                throw new UserServicesException( ERR_OPERATION_BACKEND );
+                throw new HttpServicesException( ERR_OPERATION_BACKEND );
             }
             catch ( ContentDataParserUnsupportedTypeException e )
             {
                 VerticalUserServicesLogger.error( e.getMessage(), e );
-                throw new UserServicesException( ERR_OPERATION_BACKEND );
+                throw new HttpServicesException( ERR_OPERATION_BACKEND );
             }
 
             UserEntity runningUser = securityService.getUser( oldUser );
@@ -100,14 +100,14 @@ public final class ContentSendMailServicesProcessor
                 {
                     String message = e.getMessage();
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+                    redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
                     return;
                 }
                 else if ( cause instanceof InvalidContentDataException )
                 {
                     String message = e.getMessage();
                     VerticalUserServicesLogger.warn( message );
-                    redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+                    redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
                     return;
                 }
                 else
@@ -119,5 +119,22 @@ public final class ContentSendMailServicesProcessor
 
         // call parent method to ensure inherited functionality
         super.handlerCustom( request, response, session, formItems, userServices, siteKey, operation );
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+
+        Integer errorCode = errorCodes[0];
+
+        if (errorCode == ERR_MISSING_CATEGORY_KEY) {
+            return HTTP_STATUS_BAD_REQUEST;
+        }
+
+        return super.httpResponseCodeTranslator( errorCodes );
     }
 }

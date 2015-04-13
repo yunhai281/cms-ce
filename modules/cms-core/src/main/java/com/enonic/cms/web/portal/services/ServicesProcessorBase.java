@@ -56,7 +56,7 @@ import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.UserServicesService;
@@ -78,21 +78,31 @@ public abstract class ServicesProcessorBase
 
     // fatal errors
 
-    public final static int ERR_OPERATION_BACKEND = 504;
+    public final static int ERR_OPERATION_BACKEND = 504;  // http 500 Internal Server Error
 
-    public final static int ERR_OPERATION_HANDLER = 505;
-
-    public final static int ERR_SECURITY_EXCEPTION = 506;
+    public final static int ERR_SECURITY_EXCEPTION = 506;  // http 401 Unautorized or 403 Forbidden, depending on anonymous
 
     // general errors
 
-    public final static int ERR_PARAMETERS_MISSING = 400;
+    public final static int ERR_PARAMETERS_MISSING = 400;  // http 400 Bad Request
 
-    public final static int ERR_PARAMETERS_INVALID = 401;
+    public final static int ERR_PARAMETERS_INVALID = 401;  // http 400 Bad Request
 
-    public final static int ERR_EMAIL_SEND_FAILED = 402;
+    public final static int ERR_EMAIL_SEND_FAILED = 402;  // http 500 Internal Server Error
 
-    public final static int ERR_INVALID_CAPTCHA = 405;
+    public final static int ERR_INVALID_CAPTCHA = 405;  // http 400 Bad Request
+
+    public final static int ERR_CONTENT_NOT_FOUND = 406;  // http 400 Bad Request
+
+    // HTTP response status codes in use with http services:
+
+    public final static int HTTP_STATUS_BAD_REQUEST = HttpServletResponse.SC_BAD_REQUEST;
+
+    public final static int HTTP_STATUS_UNAUTHORIZED = HttpServletResponse.SC_UNAUTHORIZED;
+
+    public final static int HTTP_STATUS_FORBIDDEN = HttpServletResponse.SC_FORBIDDEN;
+
+    public final static int HTTP_STATUS_INTERNAL_SERVER_ERROR = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
     protected static final DateTimeFormatter DATE_FORMAT_FROM = DateTimeFormat.forPattern( "dd.MM.yyyy" );
 
@@ -494,8 +504,7 @@ public abstract class ServicesProcessorBase
             final String message = String.format(
                 "Domain '%s' of redirect URL not allowed (%s), in request to HTTP service '%s.%s' on site %s. " +
                     "Check setting 'cms.httpServices.redirect.allowedDomains' in cms.properties", domain, redirectUrl, handler, operation,
-                siteKey
-            );
+                siteKey );
             VerticalUserServicesLogger.warn( message );
 
             final String httpErrorMsg = String.format( "Domain of redirect URL not allowed: %s", domain );
@@ -519,7 +528,7 @@ public abstract class ServicesProcessorBase
                     }
                     vsession.setAttribute( "error_" + handler + "_" + operation,
                                            captchaService.buildErrorXMLForSessionContext( formItems ).getAsDOMDocument() );
-                    redirectToErrorPage( request, response, formItems, ERR_INVALID_CAPTCHA );
+                    redirectToErrorPage( request, response, ERR_INVALID_CAPTCHA );
                     return null;
                 }
             }
@@ -543,31 +552,35 @@ public abstract class ServicesProcessorBase
         }
         catch ( VerticalSecurityException vse )
         {
+            // If user = anonymous, 401 (Unauthorized), otherwise (403) forbidden.
             String message = "No rights to handle request: %t";
             VerticalUserServicesLogger.warn( message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
+            redirectToErrorPage( request, response, ERR_SECURITY_EXCEPTION );
         }
         catch ( ContentAccessException vse )
         {
+            // If user = anonymous, 401 (Unauthorized), otherwise (403) forbidden.
             String message = "No rights to handle request: %t";
             VerticalUserServicesLogger.warn( message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
+            redirectToErrorPage( request, response, ERR_SECURITY_EXCEPTION );
         }
         catch ( CategoryAccessException vse )
         {
+            // If user = anonymous, 401 (Unauthorized), otherwise (403) forbidden.
             String message = "No rights to handle request: %t";
             VerticalUserServicesLogger.warn( message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
+            redirectToErrorPage( request, response, ERR_SECURITY_EXCEPTION );
         }
-        catch ( UserServicesException use )
+        catch ( HttpServicesException hse )
         {
-            throw use;
+            throw hse;
         }
         catch ( Exception e )
         {
+            // 500, Internal Server Error
             String message = "Failed to handle request: %t";
             VerticalUserServicesLogger.error( message, e );
-            redirectToErrorPage( request, response, formItems, ERR_OPERATION_BACKEND );
+            redirectToErrorPage( request, response, ERR_OPERATION_BACKEND );
         }
         return null;
     }
@@ -626,15 +639,17 @@ public abstract class ServicesProcessorBase
         return url.matches( "^[a-z]{3,6}://.+" );
     }
 
-    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, int code )
+    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, int code )
     {
-        redirectToErrorPage( request, response, formItems, new int[]{code}, null );
+        Integer[] codes = new Integer[1];
+        codes[0] = code;
+        redirectToErrorPage( request, response, codes, this );
     }
 
-    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, int[] codes,
-                                        MultiValueMap queryParams )
+    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, Integer[] codes,
+                                        ServicesProcessor errorSource )
     {
-        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToErrorPage( request, formItems, codes, queryParams );
+        String url = userServicesRedirectUrlResolver.resolveRedirectUrlToErrorPage( request, codes, errorSource );
         siteRedirectHelper.sendRedirect( request, response, url );
     }
 
@@ -747,5 +762,37 @@ public abstract class ServicesProcessorBase
         return sitePath;
     }
 
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
 
+        Integer errorCode = errorCodes[0];
+
+        switch ( errorCode )
+        {
+            case ERR_PARAMETERS_MISSING:
+            case ERR_PARAMETERS_INVALID:
+            case ERR_INVALID_CAPTCHA:
+            case ERR_CONTENT_NOT_FOUND:
+                return HTTP_STATUS_BAD_REQUEST;
+            case ERR_SECURITY_EXCEPTION:
+                if ( securityService.getLoggedInPortalUserAsEntity().isAnonymous() )
+                {
+                    return HTTP_STATUS_UNAUTHORIZED;
+                }
+                else
+                {
+                    return HTTP_STATUS_FORBIDDEN;
+                }
+            case ERR_OPERATION_BACKEND:
+            case ERR_EMAIL_SEND_FAILED:
+                return HTTP_STATUS_INTERNAL_SERVER_ERROR;
+            default:
+                throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+    }
 }

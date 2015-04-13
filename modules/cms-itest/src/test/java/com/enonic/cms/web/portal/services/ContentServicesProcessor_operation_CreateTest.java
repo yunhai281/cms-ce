@@ -68,8 +68,6 @@ public class ContentServicesProcessor_operation_CreateTest
     @Autowired
     protected ContentService contentService;
 
-    private SiteRedirectHelper siteRedirectHelper;
-
     private ContentServicesProcessor customContentHandlerController;
 
     private UserServicesRedirectUrlResolver userServicesRedirectUrlResolver;
@@ -103,7 +101,7 @@ public class ContentServicesProcessor_operation_CreateTest
         customContentHandlerController.setUserServicesRedirectHelper( userServicesRedirectUrlResolver );
 
         // just need a dummy of the SiteRedirectHelper 
-        siteRedirectHelper = createMock( SiteRedirectHelper.class );
+        final SiteRedirectHelper siteRedirectHelper = createMock( SiteRedirectHelper.class );
         customContentHandlerController.setSiteRedirectHelper( siteRedirectHelper );
 
         // setup needed common data for each test
@@ -314,9 +312,8 @@ public class ContentServicesProcessor_operation_CreateTest
 
         // verify
         Mockito.verify( userServicesRedirectUrlResolver ).resolveRedirectUrlToErrorPage( Mockito.any( HttpServletRequest.class ),
-                                                                                         Mockito.any( ExtendedMap.class ),
-                                                                                         Mockito.eq( new int[]{400} ),
-                                                                                         Mockito.any( MultiValueMap.class ) );
+                                                                                         Mockito.eq( new Integer[]{400} ), Mockito.any(
+            customContentHandlerController.getClass() ) );
     }
 
     @Test

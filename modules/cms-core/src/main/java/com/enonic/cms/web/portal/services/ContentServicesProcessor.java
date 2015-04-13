@@ -29,14 +29,14 @@ import com.enonic.cms.core.content.UpdateContentResult;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
-import com.enonic.cms.core.content.contentdata.ContentDataParserException;
+import com.enonic.cms.core.content.contentdata.BinaryFileReadingException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserInvalidDataException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserUnsupportedTypeException;
 import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
 import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataException;
 import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataFormParser;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
@@ -75,7 +75,7 @@ public final class ContentServicesProcessor
         {
             String message = "Category key not specified.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+            redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -89,18 +89,18 @@ public final class ContentServicesProcessor
         {
             String message = e.getMessage();
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
             return;
         }
-        catch ( ContentDataParserException e )
+        catch ( BinaryFileReadingException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
         catch ( ContentDataParserUnsupportedTypeException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
 
         UserEntity runningUser = securityService.getUser( oldUser );
@@ -121,14 +121,14 @@ public final class ContentServicesProcessor
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
                 return;
             }
             else
@@ -153,7 +153,7 @@ public final class ContentServicesProcessor
         {
             String message = "Content key not specified.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+            redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -165,22 +165,22 @@ public final class ContentServicesProcessor
         {
             updateContentCommand = parseUpdateContentCommand( runningUser, formItems, false );
         }
-        catch ( ContentDataParserException e )
+        catch ( BinaryFileReadingException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
         catch ( ContentDataParserInvalidDataException e )
         {
             String message = e.getMessage();
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
             return;
         }
         catch ( ContentDataParserUnsupportedTypeException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
 
         updateContentCommand.setUpdateStrategy( UpdateContentCommand.UpdateStrategy.UPDATE );
@@ -199,14 +199,14 @@ public final class ContentServicesProcessor
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
                 return;
             }
             else
@@ -233,7 +233,7 @@ public final class ContentServicesProcessor
         {
             String message = "Content key not specified.";
             VerticalUserServicesLogger.error( message );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+            redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -249,18 +249,18 @@ public final class ContentServicesProcessor
         {
             String message = e.getMessage();
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+            redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
             return;
         }
-        catch ( ContentDataParserException e )
+        catch ( BinaryFileReadingException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
         catch ( ContentDataParserUnsupportedTypeException e )
         {
             VerticalUserServicesLogger.error( e.getMessage(), e );
-            throw new UserServicesException( ERR_OPERATION_BACKEND );
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
         }
 
         updateContentCommand.setUpdateStrategy( UpdateContentCommand.UpdateStrategy.MODIFY );
@@ -279,14 +279,14 @@ public final class ContentServicesProcessor
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
                 VerticalUserServicesLogger.warn( message );
-                redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
+                redirectToErrorPage( request, response, ERR_PARAMETERS_INVALID );
                 return;
             }
             else
@@ -314,7 +314,7 @@ public final class ContentServicesProcessor
 
         if ( contentKey == -1 )
         {
-            throw new UserServicesException( ERR_PARAMETERS_MISSING );
+            throw new HttpServicesException( ERR_PARAMETERS_MISSING );
         }
 
         ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
@@ -323,7 +323,7 @@ public final class ContentServicesProcessor
         {
             String message = "Content with key " + contentKey + " not found";
             VerticalUserServicesLogger.warn( message );
-            throw new UserServicesException( ERR_OPERATION_HANDLER );
+            throw new HttpServicesException( ERR_CONTENT_NOT_FOUND );
         }
 
         ContentVersionEntity persistedVersion = persistedContent.getMainVersion();

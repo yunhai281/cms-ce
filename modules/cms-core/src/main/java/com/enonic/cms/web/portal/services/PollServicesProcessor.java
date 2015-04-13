@@ -22,6 +22,7 @@ import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.xml.XMLTool;
 
 import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteKey;
@@ -31,7 +32,7 @@ public final class PollServicesProcessor
     extends ContentServicesBase
 {
     // error codes
-    public final static int ERR_UNKNOWN_POLL_SELECTION = 100;
+    public final static int ERR_UNKNOWN_POLL_SELECTION = 100;  // http 400 Bad Request
 
     public PollServicesProcessor()
     {
@@ -95,7 +96,7 @@ public final class PollServicesProcessor
             }
             else
             {
-                redirectToErrorPage( request, response, formItems, ERR_UNKNOWN_POLL_SELECTION );
+                redirectToErrorPage( request, response, ERR_UNKNOWN_POLL_SELECTION );
                 return;
             }
         }
@@ -147,5 +148,22 @@ public final class PollServicesProcessor
 
         // redirect
         redirectToPage( request, response, formItems );
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+
+        Integer errorCode = errorCodes[0];
+
+        if (errorCode == ERR_UNKNOWN_POLL_SELECTION) {
+            return HTTP_STATUS_BAD_REQUEST;
+        }
+
+        return super.httpResponseCodeTranslator( errorCodes );
     }
 }

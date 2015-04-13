@@ -4,15 +4,15 @@
  */
 package com.enonic.cms.core.portal.httpservices;
 
-public class UserServicesException
+public class HttpServicesException
     extends RuntimeException
 {
 
     private String message;
 
-    public UserServicesException( int errorCode )
+    public HttpServicesException( int errorCode )
     {
-        this.message = "Error in userservices, error code: " + errorCode;
+        this.message = "Error in http services, error code: " + errorCode;
     }
 
     public String getMessage()

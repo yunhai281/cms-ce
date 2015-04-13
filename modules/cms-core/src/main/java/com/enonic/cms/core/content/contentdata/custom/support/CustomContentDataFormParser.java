@@ -23,7 +23,7 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.io.FileUtil;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.contentdata.ContentDataParserException;
+import com.enonic.cms.core.content.contentdata.BinaryFileReadingException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserInvalidDataException;
 import com.enonic.cms.core.content.contentdata.ContentDataParserUnsupportedTypeException;
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
@@ -746,7 +746,7 @@ public class CustomContentDataFormParser
             catch ( IOException e )
             {
                 String message = "Failed to read binary data: " + fileItem.getName();
-                throw new ContentDataParserException( message, e );
+                throw new BinaryFileReadingException( message, e );
             }
             finally
             {
@@ -760,7 +760,7 @@ public class CustomContentDataFormParser
                 catch ( IOException ioe )
                 {
                     String message = "Failed to close file input stream: %t";
-                    throw new ContentDataParserException( message, ioe );
+                    throw new BinaryFileReadingException( message, ioe );
                 }
             }
             return byteArrayOutputStream.toByteArray();

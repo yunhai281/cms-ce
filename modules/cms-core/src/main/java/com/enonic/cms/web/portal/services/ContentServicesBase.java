@@ -56,6 +56,7 @@ import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataF
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCache;
+import com.enonic.cms.core.portal.httpservices.HttpServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
@@ -64,7 +65,7 @@ import com.enonic.cms.core.structure.SiteKey;
 public abstract class ContentServicesBase
     extends ServicesProcessorBase
 {
-    protected final static int ERR_MISSING_CATEGORY_KEY = 100;
+    protected final static int ERR_MISSING_CATEGORY_KEY = 100;  // http 400 Bad Request
 
     protected final static int SECONDS_IN_WEEK = 60 * 60 * 24 * 7;
 
@@ -240,7 +241,7 @@ public abstract class ContentServicesBase
         {
             String message = "Content key not specified.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+            redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -343,7 +344,7 @@ public abstract class ContentServicesBase
         {
             String message = "Category key not specified.";
             VerticalUserServicesLogger.warn( message );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
+            redirectToErrorPage( request, response, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -923,5 +924,22 @@ public abstract class ContentServicesBase
         createContentCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentData.getTitle() ) );
 
         return createContentCommand;
+    }
+
+    @Override
+    public Integer httpResponseCodeTranslator( final Integer[] errorCodes )
+    {
+        if ( errorCodes.length != 1 )
+        {
+            throw new HttpServicesException( ERR_OPERATION_BACKEND );
+        }
+
+        Integer errorCode = errorCodes[0];
+
+        if (errorCode == ERR_MISSING_CATEGORY_KEY) {
+            return HTTP_STATUS_BAD_REQUEST;
+        }
+
+        return super.httpResponseCodeTranslator( errorCodes );
     }
 }
