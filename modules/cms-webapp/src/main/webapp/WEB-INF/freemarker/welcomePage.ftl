@@ -29,7 +29,7 @@
     </a>
 
     <ul class="menu horizontal main">
-        <li><a title="Community" href="http://www.enonic.com/en/community" rel="external">Community</a></li>
+        <li><a title="Community" href="http://www.enonic.com/community" rel="external">Community</a></li>
         <li><a title="Documentation" href="http://www.enonic.com/en/docs" rel="external">Documentation</a></li>
         <li><a title="Support" href="http://www.enonic.com/en/support" rel="external">Support</a></li>
         <li><a title="Contact us" class=" last" href="http://www.enonic.com/en/contact-us" rel="external">Contact Enonic</a></li>
