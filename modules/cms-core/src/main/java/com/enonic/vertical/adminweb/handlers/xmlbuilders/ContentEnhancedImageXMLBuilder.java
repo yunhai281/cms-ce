@@ -80,7 +80,7 @@ public class ContentEnhancedImageXMLBuilder
 
         // Images
         Element images = XMLTool.createElement( doc, contentdata, "images" );
-        images.setAttribute( "deprecated", "true" );
+        images.setAttribute( "deprecated", "Use binaries instead" );
         if ( "on".equals( formItems.getString( "chkorgimageborder", null ) ) )
         {
             images.setAttribute( "border", "yes" );
