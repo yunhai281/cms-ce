@@ -66,7 +66,7 @@ public final class Version
 
     public static String getCopyright()
     {
-        return "Copyright (c) 2000-2012 Enonic AS";
+        return "Copyright (c) 2000-2015 Enonic AS";
     }
 
     public static String getTimestamp()
