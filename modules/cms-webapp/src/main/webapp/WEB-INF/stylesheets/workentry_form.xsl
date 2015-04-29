@@ -72,7 +72,7 @@
         <xsl:text>&nbsp;</xsl:text>
         <span id="titlename">
           <xsl:if test="exslt-common:node-set($workentry)/workentry/name != ''">
-            <xsl:value-of select="concat(' /', exslt-common:node-set($workentry)/workentry/name)"/>
+            <xsl:value-of select="concat('/ ', exslt-common:node-set($workentry)/workentry/name)"/>
           </xsl:if>
         </span>
     </xsl:template>
@@ -242,7 +242,7 @@
                           <xsl:with-param name="size" select="'6'"/>
                           <xsl:with-param name="maxlength" select="'5'"/>
                           <xsl:with-param name="required" select="'true'"/>
-                          <xsl:with-param name="onchange" select="'validateTimeSeconds(this)'"/>
+                          <xsl:with-param name="onchange" select="'validateTime(this)'"/>
                           <xsl:with-param name="postfield" select="' hh:mm'"/>
                         </xsl:call-template>
                       </tr>
