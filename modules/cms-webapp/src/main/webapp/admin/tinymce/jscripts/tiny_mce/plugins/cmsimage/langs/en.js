@@ -1,3 +1,3 @@
 tinyMCE.addI18n('en.cmsimage',{
-	desc : 'Insert/Edit Image'
+	desc : 'Insert/edit Image'
 });

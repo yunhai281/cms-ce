@@ -38,6 +38,9 @@ function CMSUtil()
             case 'da':
                 sLang = 'da';  // Danish.
                 break;
+            case 'es':
+                sLang = 'es';
+                break;
             default:
                 sLang = 'en';  // Fallback, English.
         }
