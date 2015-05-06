@@ -321,10 +321,6 @@ CodeMirror.defineMode("gas", function(_config, parserConfig) {
           return style;
         }
       }
-    },
-
-    lineComment: lineCommentStartSymbol,
-    blockCommentStart: "/*",
-    blockCommentEnd: "*/"
+    }
   };
 });

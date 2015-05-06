@@ -118,9 +118,6 @@
       },
 
       electricChars: "/{}:",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
-      lineComment: "//",
 
       innerMode: function(state) { return {state: state.curState, mode: state.curMode}; }
     };

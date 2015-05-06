@@ -24,26 +24,16 @@
             if (!newMatch) break;
             match = newMatch;
             start = match.index;
-            cutOff = match.index + (match[0].length || 1);
-            if (cutOff == line.length) break;
-          }
-          var matchLen = (match && match[0].length) || 0;
-          if (!matchLen) {
-            if (start == 0 && line.length == 0) {match = undefined;}
-            else if (start != doc.getLine(pos.line).length) {
-              matchLen++;
-            }
+            cutOff = match.index + 1;
           }
         } else {
           query.lastIndex = pos.ch;
-          var line = doc.getLine(pos.line), match = query.exec(line);
-          var matchLen = (match && match[0].length) || 0;
-          var start = match && match.index;
-          if (start + matchLen != line.length && !matchLen) matchLen = 1;
+          var line = doc.getLine(pos.line), match = query.exec(line),
+          start = match && match.index;
         }
-        if (match && matchLen)
+        if (match && match[0])
           return {from: Pos(pos.line, start),
-                  to: Pos(pos.line, start + matchLen),
+                  to: Pos(pos.line, start + match[0].length),
                   match: match};
       };
     } else { // String query
