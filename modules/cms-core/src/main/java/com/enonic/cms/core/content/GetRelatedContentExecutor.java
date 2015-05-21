@@ -289,6 +289,7 @@ public class GetRelatedContentExecutor
     {
         final ContentByContentQuery baseContentQuery = new ContentByContentQuery();
         baseContentQuery.setContentKeyFilter( contentFilter );
+        baseContentQuery.setCount( contentFilter.size() );
         baseContentQuery.setUser( user );
         if ( includeOfflineContent )
         {

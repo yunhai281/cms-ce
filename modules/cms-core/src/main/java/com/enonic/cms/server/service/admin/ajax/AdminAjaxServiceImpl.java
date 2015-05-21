@@ -208,6 +208,7 @@ public class AdminAjaxServiceImpl
 
             ContentByContentQuery contentByContentQuery = new ContentByContentQuery();
             contentByContentQuery.setContentKeyFilter( contentKeyList );
+            contentByContentQuery.setCount( contentKeyList.size() );
             contentByContentQuery.setUser( user );
 
             ContentResultSet contentResultSet = contentService.queryContent( contentByContentQuery );

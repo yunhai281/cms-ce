@@ -32,13 +32,6 @@ public class ApproveAndRejectMailTemplate
 
     private boolean reject;
 
-    /**
-     * Creates a new instance of ApproveAndRejectMailFormatter
-     *
-     * @param originalBody
-     * @param contentKey
-     * @param user
-     */
     public ApproveAndRejectMailTemplate( String originalBody, ContentKey contentKey, UserEntity user )
     {
         this.originalBody = originalBody;
@@ -57,6 +50,7 @@ public class ApproveAndRejectMailTemplate
         ContentByContentQuery contentByContentQuery = new ContentByContentQuery();
         contentByContentQuery.setUser( user );
         contentByContentQuery.setContentKeyFilter( keyList );
+        contentByContentQuery.setCount( keyList.size() );
 
         ContentResultSet resultSet = contentService.queryContent( contentByContentQuery );
         if ( resultSet.getLength() < 1 )

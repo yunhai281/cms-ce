@@ -404,7 +404,7 @@ public class PostProcessInstructionExecutorImpl
 
     private String doCreateUrl( boolean disableHtmlEscaping, PostProcessInstructionContext context, SitePath sitePath )
     {
-        String createdUrl = "";
+        String createdUrl;
 
         if ( disableHtmlEscaping )
         {
