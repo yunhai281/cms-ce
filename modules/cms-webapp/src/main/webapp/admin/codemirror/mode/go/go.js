@@ -158,10 +158,7 @@ CodeMirror.defineMode("go", function(config) {
       else return ctx.indented + (closing ? 0 : indentUnit);
     },
 
-    electricChars: "{}:",
-    blockCommentStart: "/*",
-    blockCommentEnd: "*/",
-    lineComment: "//"
+    electricChars: "{}:"
   };
 });
 

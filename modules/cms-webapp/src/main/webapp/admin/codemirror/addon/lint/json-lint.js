@@ -1,6 +1,6 @@
 // Depends on jsonlint.js from https://github.com/zaach/jsonlint
 
-CodeMirror.registerHelper("lint", "json", function(text) {
+CodeMirror.jsonValidator = function(text) {
   var found = [];
   jsonlint.parseError = function(str, hash) {
     var loc = hash.loc;
@@ -11,5 +11,4 @@ CodeMirror.registerHelper("lint", "json", function(text) {
   try { jsonlint.parse(text); }
   catch(e) {}
   return found;
-});
-CodeMirror.jsonValidator = CodeMirror.lint.json; // deprecated
+};

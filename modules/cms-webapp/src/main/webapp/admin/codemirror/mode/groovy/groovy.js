@@ -203,8 +203,7 @@ CodeMirror.defineMode("groovy", function(config) {
       else return ctx.indented + (closing ? 0 : config.indentUnit);
     },
 
-    electricChars: "{}",
-    fold: "brace"
+    electricChars: "{}"
   };
 });
 

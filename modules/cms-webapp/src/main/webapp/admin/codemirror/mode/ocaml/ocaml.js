@@ -106,10 +106,7 @@ CodeMirror.defineMode('ocaml', function() {
     token: function(stream, state) {
       if (stream.eatSpace()) return null;
       return state.tokenize(stream, state);
-    },
-
-    blockCommentStart: "(*",
-    blockCommentEnd: "*)"
+    }
   };
 });
 

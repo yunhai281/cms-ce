@@ -41,11 +41,9 @@
             to: CodeMirror.Pos(cur.line, token.end)};
   }
 
-  function pigHint(editor) {
+  CodeMirror.pigHint = function(editor) {
     return scriptHint(editor, pigKeywordsU, function (e, cur) {return e.getTokenAt(cur);});
-  }
-  CodeMirror.pigHint = pigHint; // deprecated
-  CodeMirror.registerHelper("hint", "pig", hinter);
+  };
 
   var pigKeywords = "VOID IMPORT RETURNS DEFINE LOAD FILTER FOREACH ORDER CUBE DISTINCT COGROUP "
   + "JOIN CROSS UNION SPLIT INTO IF OTHERWISE ALL AS BY USING INNER OUTER ONSCHEMA PARALLEL "

@@ -425,11 +425,7 @@ CodeMirror.defineMode("rust", function() {
       return lexical.indented + (closing ? 0 : (lexical.info == "alt" ? altIndentUnit : indentUnit));
     },
 
-    electricChars: "{}",
-    blockCommentStart: "/*",
-    blockCommentEnd: "*/",
-    lineComment: "//",
-    fold: "brace"
+    electricChars: "{}"
   };
 });
 
