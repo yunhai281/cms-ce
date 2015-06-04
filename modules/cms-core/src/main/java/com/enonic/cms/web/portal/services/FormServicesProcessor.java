@@ -108,9 +108,14 @@ public final class FormServicesProcessor
 
         // Set title element:
         final String formTitleEl = formItems.getString( menuItemKey + "_form_title" );
-        final String titleElNum = StringUtils.substringAfter( formTitleEl, "form_" + menuItemKey + "_elm_" );
+        String titleElNum = StringUtils.substringAfter( formTitleEl, "form_" + menuItemKey + "_elm_" );
+        if ( StringUtils.isBlank( titleElNum ) )
+        {
+            titleElNum = StringUtils.substringAfter( formTitleEl, "label_" + menuItemKey + "_form_" );
+        }
+
         final String titleElementId = menuItemKey + "_form_" + titleElNum;
-        String title = formItems.getString( titleElementId );
+        String title = formItems.getString( titleElementId, "" );
         if ( StringUtils.isBlank( title ) )
         {
             Element _titleElement = XMLTool.getElement( _formElement, titleElementId );
