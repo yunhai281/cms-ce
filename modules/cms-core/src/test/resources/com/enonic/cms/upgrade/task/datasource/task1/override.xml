@@ -11,6 +11,7 @@
       <parameter name="b" override="url">${select(param.id,'default')}</parameter>
       <parameter name="c" override="session">${select(param.id,'default')}</parameter>
       <parameter override="url">3</parameter>
+      <parameter name="query" override="url" type="string">contenttype = 't_Recipe'</parameter>
     </parameters>
   </datasource>
 </dataSources>

@@ -9,6 +9,7 @@
     <parameter>${select(param.b, select(param.id,'default'))}</parameter>
     <parameter>${select(session.c, select(param.id,'default'))}</parameter>
     <parameter>3</parameter>
+    <parameter>${select(param.query, "contenttype = 't_Recipe'")}</parameter>
   </datasource>
 </datasources>
 

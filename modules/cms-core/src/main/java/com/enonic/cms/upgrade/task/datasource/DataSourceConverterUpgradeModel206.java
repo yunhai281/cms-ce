@@ -141,7 +141,14 @@ public final class DataSourceConverterUpgradeModel206
         }
         else
         {
-            str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+            if ( right != null && right.contains( "\'" ) )
+            {
+                str.append( "\"" ).append( right ).append( "\")}" );
+            }
+            else
+            {
+                str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+            }
         }
 
         return str.toString();
@@ -162,7 +169,14 @@ public final class DataSourceConverterUpgradeModel206
         }
         else
         {
-            str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+            if ( right != null && right.contains( "\'" ) )
+            {
+                str.append( "\"" ).append( right ).append( "\")}" );
+            }
+            else
+            {
+                str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+            }
         }
 
         return str.toString();
