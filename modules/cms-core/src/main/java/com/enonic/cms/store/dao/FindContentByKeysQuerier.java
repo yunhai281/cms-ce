@@ -6,6 +6,7 @@
 package com.enonic.cms.store.dao;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +25,8 @@ class FindContentByKeysQuerier
 
     public static final int EAGER_FETCH_NUMBER_OF_SECTIONS_THRESHOLD = 10;
 
+    public static final int MAXIMUM_NUMBER_OF_PARAMETER_MARKERS = 1000;
+
     private Session hibernateSession;
 
     private ContentEagerFetches contentEagerFetches;
@@ -39,6 +42,39 @@ class FindContentByKeysQuerier
     }
 
     List<ContentEntity> queryContent( final Collection<ContentKey> contentKeys )
+    {
+        if ( contentKeys.size() <= MAXIMUM_NUMBER_OF_PARAMETER_MARKERS )
+        {
+            return queryContentPart( contentKeys );
+        }
+        else
+        {
+            List<ContentEntity> result = new ArrayList<ContentEntity>( contentKeys.size() );
+
+            final int numberOfBatches = contentKeys.size() / MAXIMUM_NUMBER_OF_PARAMETER_MARKERS + 1;
+            ArrayList<List<ContentKey>> batches = new ArrayList<List<ContentKey>>( numberOfBatches );
+            for ( int i = 0; i < numberOfBatches; i++ )
+            {
+                batches.add(new ArrayList<ContentKey>( MAXIMUM_NUMBER_OF_PARAMETER_MARKERS ));
+            }
+
+            int i = 0, batchNumber;
+            for ( ContentKey key : contentKeys )
+            {
+                batchNumber = i / MAXIMUM_NUMBER_OF_PARAMETER_MARKERS;
+                batches.get( batchNumber ).add( key );
+                i++;
+            }
+
+            for (List<ContentKey> batch : batches ){
+                result.addAll(queryContentPart( batch ));
+            }
+
+            return result;
+        }
+    }
+
+    private List<ContentEntity> queryContentPart( final Collection<ContentKey> contentKeys )
     {
         final SelectBuilder hqlQuery = new SelectBuilder( 0 );
         hqlQuery.addSelect( "c" );
