@@ -25,7 +25,7 @@ class FindContentByKeysQuerier
 
     public static final int EAGER_FETCH_NUMBER_OF_SECTIONS_THRESHOLD = 10;
 
-    public static final int MAXIMUM_NUMBER_OF_PARAMETER_MARKERS = 1000;
+    public static final int MAXIMUM_NUMBER_OF_PARAMETER_MARKERS = 50;
 
     private Session hibernateSession;
 
@@ -51,7 +51,7 @@ class FindContentByKeysQuerier
         {
             List<ContentEntity> result = new ArrayList<ContentEntity>( contentKeys.size() );
 
-            final int numberOfBatches = contentKeys.size() / MAXIMUM_NUMBER_OF_PARAMETER_MARKERS + 1;
+            final int numberOfBatches = (contentKeys.size() - 1) / MAXIMUM_NUMBER_OF_PARAMETER_MARKERS + 1;
             ArrayList<List<ContentKey>> batches = new ArrayList<List<ContentKey>>( numberOfBatches );
             for ( int i = 0; i < numberOfBatches; i++ )
             {
@@ -76,6 +76,10 @@ class FindContentByKeysQuerier
 
     private List<ContentEntity> queryContentPart( final Collection<ContentKey> contentKeys )
     {
+        if (contentKeys.size() == 0) {
+            return new ArrayList<ContentEntity>(  );
+        }
+
         final SelectBuilder hqlQuery = new SelectBuilder( 0 );
         hqlQuery.addSelect( "c" );
         hqlQuery.addFromTable( ContentEntity.class.getName(), "c", SelectBuilder.NO_JOIN, null );
