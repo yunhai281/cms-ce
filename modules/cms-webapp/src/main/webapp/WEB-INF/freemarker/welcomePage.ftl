@@ -29,10 +29,10 @@
     </a>
 
     <ul class="menu horizontal main">
-        <li><a title="Community" href="http://www.enonic.com/community" rel="external">Community</a></li>
-        <li><a title="Documentation" href="http://www.enonic.com/en/docs" rel="external">Documentation</a></li>
-        <li><a title="Support" href="http://www.enonic.com/en/support" rel="external">Support</a></li>
-        <li><a title="Contact us" class=" last" href="http://www.enonic.com/en/contact-us" rel="external">Contact Enonic</a></li>
+        <li><a title="Community" href="https://www.enonic.com/community" rel="external">Community</a></li>
+        <li><a title="Documentation" href="https://enonic.com/learn" rel="external">Documentation</a></li>
+        <li><a title="Support" href="https://www.enonic.com/en/support" rel="external">Support</a></li>
+        <li><a title="Contact us" class=" last" href="https://enonic.com/contact-us" rel="external">Contact Enonic</a></li>
     </ul>
 
 </div>
@@ -84,15 +84,11 @@
                     <h2>Learn</h2>
 
                     <p>
-                        Dig in to documentation for Editors, Administrators, Developers and Operators.<br/>
-                        We also recommend developers to check out our tutorials.
+                        Dig in to documentation for Editors, Administrators, Developers and Operators.
                     </p>
                     <ul>
                         <li>
-                            <a href="http://enonic.com/docs" rel="external">http://enonic.com/docs</a><br/>
-                        </li>
-                        <li>
-                            <a href="http://enonic.com/tutorials" rel="external">http://enonic.com/tutorials</a>
+                            <a href="https://enonic.com/learn" rel="external">https://enonic.com/learn</a><br/>
                         </li>
                     </ul>
                 </div>
@@ -108,7 +104,7 @@
                     </p>
                     <ul>
                         <li>
-                            <a href="https://enonic.com/en/docs/stk" rel="external">https://enonic.com/en/docs/stk</a>
+                            <a href="https://enonic.com/stk/" rel="external">https://enonic.com/stk/</a>
                         </li>
                         <li>
                             <a href="http://github.com/enonic/cms-stk" rel="external">http://github.com/enonic/cms-stk</a>

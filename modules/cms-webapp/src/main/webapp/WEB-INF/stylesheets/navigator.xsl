@@ -20,7 +20,7 @@
 
   <xsl:variable name="URLToCommunity" select="'https://www.enonic.com/community/'"/>
   <xsl:variable name="URLToSupport" select="'https://www.enonic.com/support'"/>
-  <xsl:variable name="URLToDocumentation" select="'https://enonic.com/en/docs/enonic-cms-47'"/>
+  <xsl:variable name="URLToDocumentation" select="'https://enonic.com/learn'"/>
 
   <xsl:template match="/">
 
