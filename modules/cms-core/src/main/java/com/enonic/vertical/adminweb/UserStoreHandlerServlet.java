@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -111,7 +112,7 @@ public class UserStoreHandlerServlet
 
     public void handlerForm( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                              ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         verifyAccessToEditUserStore();

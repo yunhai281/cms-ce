@@ -4,7 +4,10 @@
  */
 package com.enonic.cms.core.content.mail;
 
+import java.io.IOException;
 import java.util.Date;
+
+import javax.mail.MessagingException;
 
 import org.springframework.util.Assert;
 
@@ -12,12 +15,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.security.user.UserEntity;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: Jun 18, 2010
- * Time: 8:35:05 AM
- */
 public class AssignmentMailSender
 {
     public SendMailService sendMailService;
@@ -42,6 +39,7 @@ public class AssignmentMailSender
     }
 
     public void sendAssignmentMails()
+        throws IOException, MessagingException
     {
         verify();
 

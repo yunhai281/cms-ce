@@ -11,6 +11,7 @@ import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -87,7 +88,7 @@ public class SystemHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalEngineException, VerticalAdminException
+        throws VerticalEngineException, VerticalAdminException, MessagingException, IOException
     {
 
         if ( "page".equals( operation ) )

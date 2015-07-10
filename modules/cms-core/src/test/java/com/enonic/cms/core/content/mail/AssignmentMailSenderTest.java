@@ -18,12 +18,6 @@ import com.enonic.cms.core.security.user.UserKey;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: Jun 18, 2010
- * Time: 9:44:59 AM
- */
 public class AssignmentMailSenderTest
 {
 
@@ -38,6 +32,7 @@ public class AssignmentMailSenderTest
 
     @Test
     public void testAssignmentMailSender()
+        throws Exception
     {
         UserEntity updater = createUser( "updater" );
         UserEntity originalAssignee = createUser( "originalAssignee" );

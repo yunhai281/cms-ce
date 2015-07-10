@@ -4,6 +4,7 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -291,7 +293,7 @@ public class MyPageServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( "page".equals( operation ) )

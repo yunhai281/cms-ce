@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,7 +61,7 @@ final public class SimpleContentHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException
     {
 
         User user = securityService.getLoggedInAdminConsoleUser();
@@ -132,7 +133,7 @@ final public class SimpleContentHandlerServlet
     }
 
     private void fileImport( User oldUser, HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-        throws VerticalAdminException
+        throws VerticalAdminException, MessagingException
     {
 
         int categoryKey = formItems.getInt( "cat" );
@@ -235,6 +236,7 @@ final public class SimpleContentHandlerServlet
     }
 
     private void sendAssignmentMail( User oldUser, AssignmentDataParser assignmentDataParser, ImportJob importJob, ImportResult report )
+        throws IOException, MessagingException
     {
         ImportedContentAssignmentMailTemplate mailTemplate =
             new ImportedContentAssignmentMailTemplate( report.getAssigned().keySet(), contentDao );

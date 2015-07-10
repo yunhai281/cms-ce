@@ -4,8 +4,10 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -236,7 +238,7 @@ public class ContentHandlerHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( "regenerateindex".equals( operation ) )

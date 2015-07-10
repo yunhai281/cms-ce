@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -180,7 +181,7 @@ public class PublishWizard
 
     protected void processWizardData( WizardState wizardState, HttpSession session, AdminService admin, ExtendedMap formItems,
                                       User user, Document dataDoc )
-        throws WizardException, VerticalEngineException
+        throws WizardException, VerticalEngineException, IOException, MessagingException
     {
         Step step = wizardState.getCurrentStep();
         String finishName = step.getName();
@@ -219,7 +220,7 @@ public class PublishWizard
     }
 
     private void processWizardData0( WizardState wizardState, User user, int contentKey, int versionKey )
-        throws ParseException
+        throws ParseException, IOException, MessagingException
     {
         Document stateDoc = wizardState.getFirstStepState().getStateDoc();
         Element rootElem = stateDoc.getDocumentElement();
@@ -321,6 +322,7 @@ public class PublishWizard
 
 
     private void sendMessage( User user, Document stateDoc, int contentKey, int originalStatus )
+        throws IOException, MessagingException
     {
 
         Element rootElem = stateDoc.getDocumentElement();

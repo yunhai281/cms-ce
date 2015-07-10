@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -260,7 +261,7 @@ public abstract class ServicesProcessorBase
 
     protected void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
-        throws VerticalUserServicesException, VerticalCreateException, VerticalSecurityException, RemoteException
+        throws VerticalUserServicesException, VerticalCreateException, VerticalSecurityException, IOException, MessagingException
     {
         String message = "OperationWrapper CREATE not implemented.";
         VerticalUserServicesLogger.error( message );

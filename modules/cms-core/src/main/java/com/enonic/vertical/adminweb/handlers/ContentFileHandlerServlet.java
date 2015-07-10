@@ -4,9 +4,9 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import java.io.File;
 import java.io.IOException;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,11 +19,9 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentFileXMLBuilder;
-import com.enonic.vertical.adminweb.wizard.ImportZipWizard;
 import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 
@@ -47,7 +45,7 @@ public class ContentFileHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( operation.equals( "insert" ) )
@@ -99,7 +97,7 @@ public class ContentFileHandlerServlet
 
     public void handlerWizard( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, ExtendedMap parameters, User user, String wizardName )
-        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException
+        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException, MessagingException
     {
         if ( "import".equals( wizardName ) )
         {

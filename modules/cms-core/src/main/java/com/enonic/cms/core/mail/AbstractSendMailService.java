@@ -4,8 +4,12 @@
  */
 package com.enonic.cms.core.mail;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -41,9 +45,8 @@ public abstract class AbstractSendMailService
     }
 
     public final void sendMail( AbstractMailTemplate template )
+        throws IOException, MessagingException
     {
-        try
-        {
             MessageSettings settings = new MessageSettings();
 
             setFromSettings( template, settings );
@@ -98,11 +101,6 @@ public abstract class AbstractSendMailService
             }
 
             sendMessage( message );
-        }
-        catch ( Exception e )
-        {
-            this.log.error( "Failed to send mail", e );
-        }
     }
 
     private void setFromSettings( AbstractMailTemplate template, MessageSettings settings )
@@ -171,7 +169,7 @@ public abstract class AbstractSendMailService
     }
 
     private MimeMessageHelper createMessage( MessageSettings settings, boolean multipart )
-        throws Exception
+        throws UnsupportedEncodingException, MessagingException
     {
         final MimeMessageHelper message = new MimeMessageHelper( this.mailSender.createMimeMessage(), multipart, MAIL_ENCODING );
         message.setFrom( settings.getFromMail(), settings.getFromName() );

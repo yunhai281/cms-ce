@@ -185,9 +185,9 @@ public class ContentTypeHandlerServlet
         boolean reloading = formItems.getString( "reload", "" ).equals( "true" );
         boolean usehandlerindexing = false;
         HashMap<String, String> parameters = new HashMap<String, String>();
-        Element contentTypeElem = null;
-        Document xmlData = null;
-        Document doc = null;
+        Element contentTypeElem;
+        Document xmlData;
+        Document doc;
         String referer = request.getHeader( "referer" );
 
         int contentTypeKey = -1;
@@ -198,7 +198,7 @@ public class ContentTypeHandlerServlet
         }
         else
         {
-            String keyStr = (String) request.getParameter( "key" );
+            String keyStr = request.getParameter( "key" );
             if ( keyStr != null && keyStr.length() > 0 )
             {
                 contentTypeKey = Integer.parseInt( keyStr );
@@ -319,9 +319,9 @@ public class ContentTypeHandlerServlet
         String returnView = null;
         int returnRow = -1;
 
-        if ( !( request.getParameter( "returnkey" ) == null || request.getParameter( "returnkey" ).toString().equals( "" ) ) )
+        if ( !( request.getParameter( "returnkey" ) == null || request.getParameter( "returnkey" ).equals( "" ) ) )
         {
-            returnKey = request.getParameter( "returnkey" ).toString();
+            returnKey = request.getParameter( "returnkey" );
         }
         else
         {
@@ -329,9 +329,9 @@ public class ContentTypeHandlerServlet
             VerticalAdminLogger.errorAdmin( message );
         }
 
-        if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
+        if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).equals( "" ) ) )
         {
-            returnView = request.getParameter( "returnview" ).toString();
+            returnView = request.getParameter( "returnview" );
         }
         else
         {
@@ -339,9 +339,9 @@ public class ContentTypeHandlerServlet
             VerticalAdminLogger.errorAdmin( message );
         }
 
-        if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )
+        if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).equals( "" ) ) )
         {
-            returnRow = Integer.parseInt( request.getParameter( "returnrow" ).toString() );
+            returnRow = Integer.parseInt( request.getParameter( "returnrow" ) );
         }
 
         Document doc = admin.getContentTypes().getAsDOMDocument();
@@ -409,9 +409,9 @@ public class ContentTypeHandlerServlet
             String returnView = null;
             int returnRow = -1;
 
-            if ( !( request.getParameter( "returnkey" ) == null || request.getParameter( "returnkey" ).toString().equals( "" ) ) )
+            if ( !( request.getParameter( "returnkey" ) == null || request.getParameter( "returnkey" ).equals( "" ) ) )
             {
-                returnKey = request.getParameter( "returnkey" ).toString();
+                returnKey = request.getParameter( "returnkey" );
             }
             else
             {
@@ -419,9 +419,9 @@ public class ContentTypeHandlerServlet
                 VerticalAdminLogger.errorAdmin( message );
             }
 
-            if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
+            if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).equals( "" ) ) )
             {
-                returnView = request.getParameter( "returnview" ).toString();
+                returnView = request.getParameter( "returnview" );
             }
             else
             {
@@ -429,9 +429,9 @@ public class ContentTypeHandlerServlet
                 VerticalAdminLogger.errorAdmin( message );
             }
 
-            if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )
+            if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).equals( "" ) ) )
             {
-                returnRow = Integer.parseInt( request.getParameter( "returnrow" ).toString() );
+                returnRow = Integer.parseInt( request.getParameter( "returnrow" ) );
             }
 
             Document doc = admin.getContentTypes( false ).getAsDOMDocument();

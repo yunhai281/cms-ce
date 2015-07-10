@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -951,7 +952,7 @@ public class ContentBaseHandlerServlet
 
     public final void handlerUpdate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                      ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         User user = securityService.getLoggedInAdminConsoleUser();
@@ -960,7 +961,7 @@ public class ContentBaseHandlerServlet
     }
 
     public void handlerUpdate( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, User user )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         boolean makeAvailable = formItems.getBoolean( "published", false );
@@ -1205,6 +1206,7 @@ public class ContentBaseHandlerServlet
     }
 
     private void assignContent( ContentEntity submittedContent, UserEntity assigner, boolean sendMail )
+        throws IOException, MessagingException
     {
         if ( submittedContent.getAssignee() == null )
         {
@@ -2197,7 +2199,7 @@ public class ContentBaseHandlerServlet
 
     public void handlerNotify( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, User user )
-        throws VerticalAdminException
+        throws VerticalAdminException, IOException, MessagingException
     {
 
         boolean sentToApproval = formItems.containsKey( "senttoapproval" );
@@ -2332,7 +2334,7 @@ public class ContentBaseHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( "delete_version".equals( operation ) )
@@ -2593,7 +2595,7 @@ public class ContentBaseHandlerServlet
 
     public void handlerSaveAndAssign( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                       ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
         boolean sendEmail = formItems.getBoolean( "_send_email", true );
         String assignmentDescription = formItems.getString( "_assignment_description", null );

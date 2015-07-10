@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -448,7 +449,7 @@ public class SchedulerServlet
 
     public void handlerWizard( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, ExtendedMap parameters, User user, String wizardName )
-        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException
+        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException, MessagingException
     {
         if ( "createupdate".equals( wizardName ) )
         {

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -644,7 +645,7 @@ public class ContentNewsletterHandlerServlet
     }
 
     public void handlerUpdate( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, User user )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         try

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -334,7 +335,7 @@ public abstract class ContentServicesBase
 
     protected void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
-        throws VerticalUserServicesException, VerticalSecurityException, RemoteException
+        throws VerticalUserServicesException, VerticalSecurityException, IOException, MessagingException
     {
         User oldUser = securityService.getLoggedInPortalUser();
 

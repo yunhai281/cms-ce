@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -857,11 +858,11 @@ public abstract class Wizard
 
     protected abstract void processWizardData( WizardState wizardState, HttpSession session, AdminService admin, ExtendedMap formItems,
                                                User user, Document dataDoc )
-        throws VerticalAdminException, VerticalEngineException;
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException;
 
     public final void processRequest( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                       ExtendedMap formItems, ExtendedMap parameters, User user )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         // get wizard state
@@ -960,7 +961,7 @@ public abstract class Wizard
 
     private void processCurrentStep( WizardState wizardState, HttpServletRequest request, HttpServletResponse response, HttpSession session,
                                      AdminService admin, ExtendedMap formItems, ExtendedMap parameters, User user )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         Step currentStep = wizardState.currentStep;
@@ -1043,7 +1044,7 @@ public abstract class Wizard
 
     private void processWizardDataInternal( WizardState wizardState, String styleSheetSrc, HttpSession session, AdminService admin,
                                             ExtendedMap formItems, User user )
-        throws WizardException, VerticalAdminException, VerticalEngineException
+        throws WizardException, VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         // transform wizard state (optional)

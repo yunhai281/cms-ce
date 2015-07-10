@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -303,7 +304,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         String message = "OperationWrapper CREATE is not implemented (page={0})";
@@ -330,7 +331,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         handlerCustom( request, response, session, admin, formItems, operation );
@@ -338,7 +339,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         String message = "Custom operation is not implemented (page={0}): {1}";
@@ -349,7 +350,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerForm( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                              ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         String message = "OperationWrapper FORM is not implemented (page={0})";
@@ -446,7 +447,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerWizard( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, ExtendedMap parameters, User user, String wizardName )
-        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException
+        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException, MessagingException
     {
         String message = "OperationWrapper WIZARD is not implemented (page={0},wizardName={1})";
         Object[] msgData = {formItems.get( "page" ), wizardName};
@@ -455,7 +456,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerNotify( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, User user )
-        throws VerticalAdminException
+        throws VerticalAdminException, IOException, MessagingException
     {
 
         String message = "OperationWrapper NOTIFY is not implemented (page={0})";
@@ -484,7 +485,7 @@ public abstract class AdminHandlerBaseServlet
 
     public void handlerUpdate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         String message = "OperationWrapper UPDATE is not implemented (page={0})";

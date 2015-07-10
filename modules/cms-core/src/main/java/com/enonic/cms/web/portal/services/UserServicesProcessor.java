@@ -969,6 +969,7 @@ public final class UserServicesProcessor
     }
 
     private void sendCreatedNewUserMail( ExtendedMap formItems, UserKey userKey, StoreNewUserCommand command )
+        throws IOException, MessagingException
     {
         UserSpecification userSpec = new UserSpecification();
         userSpec.setKey( userKey );
@@ -981,6 +982,7 @@ public final class UserServicesProcessor
     }
 
     private void sendMailToAdmin( ExtendedMap formItems, UserEntity newUser )
+        throws IOException, MessagingException
     {
         String[] adminEmailRequiredParameters = {"admin_email", "admin_mail_body"};
 
@@ -1013,6 +1015,7 @@ public final class UserServicesProcessor
     }
 
     private void sendMailToNewUser( ExtendedMap formItems, UserEntity newUser, String password )
+        throws IOException, MessagingException
     {
         String[] sendEmailRequiredParameters = {"user_mail_body", "from_email", "email"};
 

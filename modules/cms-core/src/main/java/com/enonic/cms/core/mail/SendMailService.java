@@ -4,13 +4,17 @@
  */
 package com.enonic.cms.core.mail;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import com.enonic.cms.core.security.user.QualifiedUsername;
 
 public interface SendMailService
 {
-    public void sendMail( AbstractMailTemplate mailTemplate );
+    void sendMail( AbstractMailTemplate mailTemplate ) throws IOException, MessagingException;
 
-    public void sendChangePasswordMail( QualifiedUsername userName, String newPassword );
+    void sendChangePasswordMail( QualifiedUsername userName, String newPassword );
 
-    public void sendChangePasswordMail( QualifiedUsername userName, String newPassword, MessageSettings settings );
+    void sendChangePasswordMail( QualifiedUsername userName, String newPassword, MessageSettings settings );
 }

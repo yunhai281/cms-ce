@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -468,7 +469,7 @@ public abstract class ImportZipWizard
 
     protected void processWizardData( WizardState wizardState, HttpSession session, AdminService admin, ExtendedMap formItems, User user,
                                       Document dataDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
         Document stateDoc = wizardState.getStepState( "step1" ).getStateDoc();
         Element zipElem = XMLTool.getFirstElement( stateDoc.getDocumentElement() );
@@ -543,6 +544,7 @@ public abstract class ImportZipWizard
 
     private void sendImportedContentAssignedMail( User user, Set<ContentKey> assignedContent, AssignmentDataParser assignmentDataParser,
                                                   String assigneeKey )
+        throws IOException, MessagingException
     {
         ImportedContentAssignmentMailTemplate mailTemplate = new ImportedContentAssignmentMailTemplate( assignedContent, contentDao );
         mailTemplate.setAssignmentDescription( assignmentDataParser.getAssignmentDescription() );

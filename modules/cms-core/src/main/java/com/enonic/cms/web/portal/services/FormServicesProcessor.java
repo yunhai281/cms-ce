@@ -6,10 +6,10 @@
 package com.enonic.cms.web.portal.services;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -304,7 +304,7 @@ public final class FormServicesProcessor
 
     protected void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
-        throws VerticalUserServicesException, VerticalCreateException, VerticalSecurityException, RemoteException
+        throws VerticalUserServicesException, VerticalCreateException, VerticalSecurityException, IOException, MessagingException
     {
 
         User user = securityService.getLoggedInPortalUser();
@@ -489,7 +489,7 @@ public final class FormServicesProcessor
     }
 
     protected void mailForm( String subject, User user, int menuItemKey, String[] recipients, Element formElement, ExtendedMap formItems )
-        throws VerticalUserServicesException
+        throws VerticalUserServicesException, IOException, MessagingException
     {
 
         // don't waste time here if there are no recipients
@@ -522,7 +522,7 @@ public final class FormServicesProcessor
     }
 
     private void mailReciept( int menuItemKey, Element formElement, ExtendedMap formItems, int contentReference )
-        throws VerticalUserServicesException
+        throws VerticalUserServicesException, IOException, MessagingException
     {
 
         String toEmail = null;
@@ -585,6 +585,7 @@ public final class FormServicesProcessor
 
     private void createAndSendMail( String subject, User user, String[] recipients, ExtendedMap formItems, StringBuffer body,
                                     String fromEmail, String fromName, boolean addAttachment )
+        throws IOException, MessagingException
     {
         final SimpleMailTemplate formMail = new SimpleMailTemplate();
         if ( fromEmail != null )

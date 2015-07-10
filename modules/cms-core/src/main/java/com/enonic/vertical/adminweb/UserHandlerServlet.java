@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -904,7 +905,7 @@ public class UserHandlerServlet
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         UserStoreKey userStoreKey = new UserStoreKey( formItems.getInt( "userstorekey" ) );
@@ -1184,7 +1185,7 @@ public class UserHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         User user = securityService.getLoggedInAdminConsoleUser();
@@ -1352,7 +1353,7 @@ public class UserHandlerServlet
 
     private void handlerNotification( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                       String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, IOException, MessagingException
     {
 
         User user = securityService.getLoggedInAdminConsoleUser();

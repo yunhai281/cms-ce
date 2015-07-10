@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +74,7 @@ public class SectionHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( "moveup".equals( operation ) )
@@ -364,7 +365,7 @@ public class SectionHandlerServlet
 
     public void handlerWizard( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, ExtendedMap parameters, User user, String wizardName )
-        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException
+        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException, MessagingException
     {
         if ( "publish".equals( wizardName ) )
         {

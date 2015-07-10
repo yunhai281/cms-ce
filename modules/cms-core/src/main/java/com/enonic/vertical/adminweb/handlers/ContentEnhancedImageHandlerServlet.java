@@ -6,6 +6,7 @@ package com.enonic.vertical.adminweb.handlers;
 
 import java.io.IOException;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,7 +45,7 @@ public class ContentEnhancedImageHandlerServlet
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation, ExtendedMap parameters, User user, Document verticalDoc )
-        throws VerticalAdminException, VerticalEngineException
+        throws VerticalAdminException, VerticalEngineException, MessagingException, IOException
     {
 
         if ( operation.equals( "insert" ) )
@@ -96,7 +97,7 @@ public class ContentEnhancedImageHandlerServlet
 
     public void handlerWizard( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, ExtendedMap parameters, User user, String wizardName )
-        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException
+        throws VerticalAdminException, VerticalEngineException, TransformerException, IOException, MessagingException
     {
         if ( "import".equals( wizardName ) )
         {
