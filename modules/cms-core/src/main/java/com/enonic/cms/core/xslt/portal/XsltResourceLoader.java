@@ -5,11 +5,15 @@
 
 package com.enonic.cms.core.xslt.portal;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
+
+import com.google.common.io.ByteStreams;
 
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceName;
@@ -43,8 +47,20 @@ final class XsltResourceLoader
             throw new TransformerException( "Failed to find resource data for [" + name.toString() + "]" );
         }
 
+        byte[] file;
+
+        try
+        {
+            file = ByteStreams.toByteArray( resourceData );
+            resourceData.close();
+        }
+        catch ( IOException e )
+        {
+            throw new TransformerException( "Could not read input file: " + name, e );
+        }
+
         final StreamSource source = new StreamSource();
-        source.setInputStream( resourceData );
+        source.setInputStream( new ByteArrayInputStream( file ) );
         source.setSystemId( XsltResourceHelper.createUri( name.getPath() ) );
         return source;
     }
