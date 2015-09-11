@@ -24,6 +24,12 @@ public class UpdateContentParams
     public Integer contentKey;
 
     /**
+     * The technical name of the content, used in URLs and also changeable from the properties tab of the content in admin.
+     * If empty or same as existing name, this value will be ignored.
+     */
+    public String name;
+
+    /**
      * Optional. The key of the content's version to update. Set this if you want to update a specific version. This is only usable when
      * createNewVersion is set to false.
      */

@@ -481,6 +481,7 @@ public class InternalClientContentService
             command = UpdateContentCommand.updateExistingVersion2( contentVersionKey );
         }
 
+        command.setContentName( params.name );
         command.setSyncRelatedContent( true );
         command.setSyncAccessRights( false );
         command.setModifier( securityService.getImpersonatedPortalUser() );
