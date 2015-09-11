@@ -894,8 +894,7 @@ public class ContentStorer
 
         if ( content.isDeleted() )
         {
-            throw new ContentNotFoundException( contentKey, content.getMainVersion() != null ? content.getKey().toString() : "",
-                                                "Content is deleted" );
+            throw new ContentNotFoundException( contentKey, "Content title not available", "Content is deleted" );
         }
 
         return content;
