@@ -44,7 +44,7 @@ function callback_update_content_name( fieldName, fieldRow, contentKey, title, c
     var hiddenKeyInput = document.getElementsByName( fieldName );
     if ( hiddenKeyInput.length > 0 ) {
         var next = hiddenKeyInput[fieldRow].nextSibling;
-        if (next && next.className == 'relatedcontentsclass') {
+        if (next && (next.className == 'relatedcontentsclass') && (title != '')) {
             hiddenKeyInput[fieldRow].parentNode.removeChild( hiddenKeyInput[fieldRow].nextSibling );
 
             var titleSpan = document.createElement("span");
