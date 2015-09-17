@@ -712,7 +712,7 @@ public class ContentNewsletterHandlerServlet
         UserEntity renderer = securityService.getUser( oldUser );
 
         // Resolve run as user
-        UserEntity runAsUser = pageTemplate.resolveRunAsUser( renderer );
+        UserEntity runAsUser = pageTemplate.resolveRunAsUser( renderer, menuHandler );
         if ( runAsUser == null )
         {
             runAsUser = renderer;

@@ -948,9 +948,9 @@ public class SectionHandlerServlet
         final SiteKey siteKey = new SiteKey( menuKey );
 
         final MenuBrowseModelFactory menuBrowseModelFactory =
-            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService );
+            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService, menuHandler );
         final MenuBrowseContentModel model = menuBrowseModelFactory.createContentModel( user, siteKey, menuItemKey );
-        return model.toXML().getAsDOMDocument();
+        return model.toXML(menuHandler).getAsDOMDocument();
     }
 
     public void handlerRemove( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

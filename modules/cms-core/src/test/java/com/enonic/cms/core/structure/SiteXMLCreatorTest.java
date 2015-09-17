@@ -69,7 +69,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         assertEquals( expectedXml,
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) ) ) );
@@ -95,7 +95,7 @@ public class SiteXMLCreatorTest
         topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
         site_1.setTopMenuItems( topMenuItems );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         assertEquals( expectedXml,
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
@@ -121,7 +121,7 @@ public class SiteXMLCreatorTest
         topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
         site_1.setTopMenuItems( topMenuItems );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         assertEquals( expectedXml,
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
@@ -148,14 +148,14 @@ public class SiteXMLCreatorTest
         topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
         site_1.setTopMenuItems( topMenuItems );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setIncludeHiddenMenuItems( true );
 
         assertEquals( expectedXml,
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
-    public void xtestCreateLegacyGetMenuByMenuItem()
+    public void testCreateLegacyGetMenuByMenuItem()
         throws JDOMException, IOException
     {
 
@@ -163,14 +163,14 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setActiveMenuItem( mi_1_1 );
 
         assertEquals( expectedXml,
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
-    public void xtestCreateLegacyGetMenuByMenuItemWithOneLevelOnly()
+    public void testCreateLegacyGetMenuByMenuItemWithOneLevelOnly()
         throws JDOMException, IOException
     {
 
@@ -178,7 +178,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setActiveMenuItem( mi_1_1 );
         siteXmlCreator.setMenuItemLevels( 1 );
 
@@ -186,20 +186,20 @@ public class SiteXMLCreatorTest
                       getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) ) ) );
     }
 
-    public void xtestCreateLegacyGetSubMenu()
+    public void testCreateLegacyGetSubMenu()
         throws JDOMException, IOException
     {
 
         String expectedXml = getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-SubMenu-fixture1-result-1.xml" );
 
         SiteEntity site = createSiteFixture1();
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1 );
 
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetSubMenu( site ) ) );
     }
 
-    public void xtestCreateLegacyGetSubMenu2()
+    public void testCreateLegacyGetSubMenu2()
         throws JDOMException, IOException
     {
 
@@ -207,13 +207,13 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2 );
 
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetSubMenu( site ) ) );
     }
 
-    public void xtestCreateLegacyGetSubMenu3()
+    public void testCreateLegacyGetSubMenu3()
         throws JDOMException, IOException
     {
 
@@ -221,14 +221,14 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemInBranch( mi_1_2_1 );
 
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetSubMenu( site ) ) );
     }
 
-    public void xtestCreateLegacyGetSubMenu4()
+    public void testCreateLegacyGetSubMenu4()
         throws JDOMException, IOException
     {
 
@@ -236,7 +236,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2_2_1 );
 
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetSubMenu( site ) ) );
@@ -250,7 +250,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemLevels( 1 );
         siteXmlCreator.setMenuItemInBranch( mi_1_2 );
 
@@ -265,7 +265,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemLevels( 2 );
         siteXmlCreator.setMenuItemInBranch( mi_1 );
@@ -281,7 +281,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemLevels( 2 );
         siteXmlCreator.setMenuItemInBranch( mi_1_2 );
@@ -311,7 +311,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemInBranch( mi_1_1_1 );
 
@@ -340,7 +340,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_2_1 );
 
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenuBranch( site ) ) );
@@ -368,7 +368,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemInBranch( mi_1_1_1 );
 
@@ -399,7 +399,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_1_1 );
         siteXmlCreator.setBranchStartLevel( 1 );
 
@@ -428,7 +428,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_1_1 );
         siteXmlCreator.setBranchStartLevel( 2 );
 
@@ -457,7 +457,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2_1 );
         siteXmlCreator.setBranchStartLevel( 2 );
 
@@ -486,7 +486,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2_2 );
         siteXmlCreator.setBranchStartLevel( 3 );
 
@@ -515,7 +515,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2_2_1 );
         siteXmlCreator.setBranchStartLevel( 2 );
 
@@ -546,7 +546,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createSiteFixture1();
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( mi_1_2_2_1 );
         siteXmlCreator.setBranchStartLevel( 1 );
         siteXmlCreator.setMenuItemLevels( 2 );
@@ -559,7 +559,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createHugeSiteFixture( 5, 7, 4 );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( oneMenuItemDeepInTheHugeMenu );
         LOG.info( "Created huge site with " + keyCounter + " menu items" );
 
@@ -575,7 +575,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createHugeSiteFixture( 5, 4, 4 );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( oneMenuItemDeepInTheHugeMenu );
         LOG.info( "Created slightly huge site with " + keyCounter + " menu items" );
 
@@ -591,7 +591,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createHugeSiteFixture( 5, 7, 4 );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
 
         siteXmlCreator.setMenuItemInBranch( oneMenuItemDeepInTheHugeMenu );
 
@@ -611,7 +611,7 @@ public class SiteXMLCreatorTest
 
         SiteEntity site = createHugeSiteFixture( 5, 7, 4 );
 
-        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver, null );
         siteXmlCreator.setMenuItemInBranch( oneMenuItemDeepInTheHugeMenu );
         siteXmlCreator.setActiveMenuItem( oneMenuItemDeepInTheHugeMenu );
         LOG.info( "Created huge site with " + keyCounter + " menu items" );

@@ -5,6 +5,9 @@
 package com.enonic.cms.core.portal.datasource.context;
 
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserXmlCreator;
@@ -20,8 +23,12 @@ final class SiteContextXmlCreator
 
     private PathContextXmlCreator pathContextXmlCreator;
 
-    public SiteContextXmlCreator()
+    private MenuHandler menuHandler;
+
+    public SiteContextXmlCreator(MenuHandler menuHandler)
     {
+        this.menuHandler = menuHandler;
+
         userXmlCreator = new UserXmlCreator();
         userXmlCreator.setAdminConsoleStyle( false );
         pathContextXmlCreator = new PathContextXmlCreator();
@@ -49,7 +56,7 @@ final class SiteContextXmlCreator
 
         Element defaultRunAsUserEl = new Element( "default-run-as-user" );
         siteEl.addContent( defaultRunAsUserEl );
-        final UserEntity defaultRunAsUser = site.resolveDefaultRunAsUser();
+        final UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( site.getKey() );
         if ( defaultRunAsUser != null )
         {
             defaultRunAsUserEl.addContent( userXmlCreator.createUserElement( defaultRunAsUser, false ) );

@@ -35,6 +35,7 @@ import com.enonic.vertical.engine.MenuItemAccessRight;
 import com.enonic.vertical.engine.SectionCriteria;
 import com.enonic.vertical.engine.Types;
 import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.framework.util.TIntArrayList;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -124,6 +125,9 @@ public class PublishWizard
 
     @Autowired
     private transient ContentDao contentDao;
+
+    @Autowired
+    private MenuHandler menuHandler;
 
     private Document sectionsDoc;
 
@@ -611,7 +615,7 @@ public class PublishWizard
         int contentTypeKey = admin.getContentTypeKey( contentKey );
 
         List<SiteEntity> sites = siteService.getSitesToPublishTo( contentTypeKey, user );
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         siteXmlCreator.setIncludeMenuItems( false );
 
         Map<SiteKey, SiteProperties> sitePropertyMap = new HashMap<SiteKey, SiteProperties>();

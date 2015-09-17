@@ -31,6 +31,8 @@ import org.springframework.util.Assert;
 
 import com.google.common.collect.Lists;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLException;
 
@@ -277,6 +279,9 @@ public abstract class InternalClientImpl
 
     @Autowired
     private SitePropertiesService sitePropertiesService;
+
+    @Autowired
+    private MenuHandler menuHandler;
 
     private LivePortalTraceService livePortalTraceService;
 
@@ -1841,8 +1846,9 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
-                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
+            SiteXmlCreator siteXmlCreator =
+                new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), previewService.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                    menuHandler );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
             siteXmlCreator.setUser( user );
             siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( params.tagItem ) ) );
@@ -1887,8 +1893,9 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
-                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
+            SiteXmlCreator siteXmlCreator =
+                new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), previewService.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                    menuHandler );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
 
             siteXmlCreator.setMenuItemInBranch( menuItem );
@@ -1975,8 +1982,9 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
-                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
+            SiteXmlCreator siteXmlCreator =
+                new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), previewService.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                    menuHandler );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
             siteXmlCreator.setUser( user );
             siteXmlCreator.setMenuItemInBranch( menuItem );

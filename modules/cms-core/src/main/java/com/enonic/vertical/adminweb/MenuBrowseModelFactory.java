@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
@@ -38,14 +40,17 @@ public class MenuBrowseModelFactory
 
     private SitePropertiesService sitePropertiesService;
 
+    private MenuHandler menuHandler;
+
     public MenuBrowseModelFactory( SecurityService securityService, SiteDao siteDao, MenuItemDao menuItemDao,
-                                   SitePropertiesService sitePropertiesService )
+                                   SitePropertiesService sitePropertiesService, MenuHandler menuHandler )
     {
         this.securityService = securityService;
         this.siteDao = siteDao;
         this.menuItemDao = menuItemDao;
         this.menuItemAccessRightAccumulator = new MenuItemAccessRightAccumulator( securityService );
         this.sitePropertiesService = sitePropertiesService;
+        this.menuHandler = menuHandler;
     }
 
     public MenuBrowseMenuItemsModel createMenuItemModel( UserEntity user, SiteKey siteKey, MenuItemKey selectedMenuItemKey )
@@ -85,7 +90,7 @@ public class MenuBrowseModelFactory
     public MenuItemFormModel createMenuItemFormModel( UserEntity user, SiteKey siteKey, MenuItemKey selectedMenuItemKey,
                                                       MenuItemKey parentMenuItemKey )
     {
-        MenuItemFormModel model = new MenuItemFormModel( selectedMenuItemKey );
+        MenuItemFormModel model = new MenuItemFormModel( selectedMenuItemKey, menuHandler );
 
         SiteEntity site = siteDao.findByKey( siteKey );
         model.setSite( site );

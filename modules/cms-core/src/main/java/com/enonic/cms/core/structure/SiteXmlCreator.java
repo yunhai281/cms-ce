@@ -10,8 +10,10 @@ import java.util.Set;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.vertical.adminweb.SitePropertiesXmlCreator;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -68,16 +70,20 @@ public class SiteXmlCreator
 
     private boolean includeProperties;
 
-    public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver, MenuItemEntity menuItemInPreview )
+    private MenuHandler menuHandler;
+
+    public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver, MenuItemEntity menuItemInPreview, MenuHandler menuHandler )
     {
         this.menuItemAccessResolver = menuItemAccessResolver;
         this.menuItemInPreview = menuItemInPreview;
+        this.menuHandler = menuHandler;
     }
 
-    public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver )
+    public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver, MenuHandler menuHandler )
     {
         this.menuItemAccessResolver = menuItemAccessResolver;
         this.menuItemInPreview = null;
+        this.menuHandler = menuHandler;
     }
 
     public Element createSitesElement( Iterable<SiteEntity> sites, Map<SiteKey, SiteProperties> sitesPropertiesMap, String rootElementName )
@@ -443,7 +449,7 @@ public class SiteXmlCreator
 
         if ( includeRunAs )
         {
-            UserEntity runAsUser = site.resolveDefaultRunAsUser();
+            UserEntity runAsUser = menuHandler.getRunAsUserForSite( site.getKey() );
             if ( runAsUser != null )
             {
                 xmlDoc.startElement( "run-as" );

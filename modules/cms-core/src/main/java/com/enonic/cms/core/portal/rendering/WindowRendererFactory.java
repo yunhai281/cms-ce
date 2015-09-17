@@ -7,6 +7,8 @@ package com.enonic.cms.core.portal.rendering;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.SiteURLResolver;
@@ -19,9 +21,6 @@ import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTrans
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SitePropertiesService;
 
-/**
- * Apr 20, 2009
- */
 @Component
 public class WindowRendererFactory
 {
@@ -52,11 +51,14 @@ public class WindowRendererFactory
     @Autowired
     private LivePortalTraceService livePortalTraceService;
 
+    @Autowired
+    private MenuHandler menuHandler;
+
     public WindowRenderer createPortletRenderer( WindowRendererContext windowRendererContext )
     {
         PageCache pageCache = pageCacheService.getPageCacheService( windowRendererContext.getSite().getKey() );
 
-        WindowRenderer windowRenderer = new WindowRenderer( windowRendererContext );
+        WindowRenderer windowRenderer = new WindowRenderer( windowRendererContext, menuHandler );
 
         windowRenderer.setDataSourceExecutorFactory( datasourceExecutorFactory );
         windowRenderer.setPageCache( pageCache );

@@ -9,6 +9,8 @@ import java.util.Collection;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -95,11 +97,11 @@ public class MenuBrowseMenuItemsModel
         return menuItemsToList;
     }
 
-    XMLDocument toXML()
+    XMLDocument toXML( MenuHandler menuHandler )
     {
         Element modelEl = new org.jdom.Element( "model" );
 
-        modelEl.addContent( createSelectedMenuElement() );
+        modelEl.addContent( createSelectedMenuElement( menuHandler ) );
         modelEl.addContent( createSelectedMenuItemElement() );
         modelEl.addContent( createParentToSelectedMenuItemElement() );
         modelEl.addContent( createSelectedMenuItemPathElement() );
@@ -109,9 +111,9 @@ public class MenuBrowseMenuItemsModel
     }
 
 
-    private Element createSelectedMenuElement()
+    private Element createSelectedMenuElement( MenuHandler menuHandler )
     {
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         org.jdom.Element selectedMenuEl = siteXmlCreator.createMenuElement( site, siteProperties, userRightsForSite );
         return new org.jdom.Element( "selected-menu" ).addContent( selectedMenuEl );
     }

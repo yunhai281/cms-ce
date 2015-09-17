@@ -11,6 +11,8 @@ import org.jdom.Element;
 
 import com.google.common.collect.Maps;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -66,9 +68,9 @@ public class ContentEditFormModel
         return XMLDocumentFactory.create( new Document( createLocationMenuitemsElement() ) );
     }
 
-    XMLDocument locationSitesToXML()
+    XMLDocument locationSitesToXML( MenuHandler menuHandler )
     {
-        return XMLDocumentFactory.create( new Document( createLocationSitesElement() ) );
+        return XMLDocumentFactory.create( new Document( createLocationSitesElement( menuHandler ) ) );
     }
 
     XMLDocument pageTemplateBySiteToXML()
@@ -109,9 +111,9 @@ public class ContentEditFormModel
         return locationMenuitemsEl;
     }
 
-    private Element createLocationSitesElement()
+    private Element createLocationSitesElement( MenuHandler menuHandler )
     {
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         return siteXmlCreator.createSitesElement( contentLocations.getSites(), Maps.<SiteKey, SiteProperties>newHashMap(),
                                                   "location-sites" );
     }

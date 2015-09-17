@@ -12,6 +12,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.language.LanguageEntity;
@@ -36,6 +38,9 @@ public final class DataSourcesContextXmlCreator
 
     @Autowired
     private GroupDao groupDao;
+
+    @Autowired
+    private MenuHandler menuHandler;
 
     private UserContextXmlCreator userContextXmlCreator;
 
@@ -110,7 +115,7 @@ public final class DataSourcesContextXmlCreator
         // Site context
         if ( site != null )
         {
-            SiteContextXmlCreator siteContextXmlCreator = new SiteContextXmlCreator();
+            SiteContextXmlCreator siteContextXmlCreator = new SiteContextXmlCreator(menuHandler);
             contextElem.addContent( siteContextXmlCreator.createSiteElement( site, siteProperties ) );
         }
 

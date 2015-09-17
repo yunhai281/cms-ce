@@ -9,6 +9,8 @@ import java.util.concurrent.locks.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 import com.enonic.cms.framework.util.MimeTypeResolver;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -95,6 +97,8 @@ public class WindowRenderer
 
     private LivePortalTraceService liveTraceService;
 
+    private MenuHandler menuHandler;
+
     private static GenericConcurrencyLock<WindowCacheKey> concurrencyLock = GenericConcurrencyLock.create();
 
     /**
@@ -102,9 +106,10 @@ public class WindowRenderer
      */
     private WindowRenderingTrace windowRenderingTrace;
 
-    public WindowRenderer( WindowRendererContext windowRendererContext )
+    public WindowRenderer( WindowRendererContext windowRendererContext, MenuHandler menuHandler )
     {
         this.context = windowRendererContext;
+        this.menuHandler = menuHandler;
 
         if ( windowRendererContext.getInvocationCache() == null )
         {
@@ -548,7 +553,7 @@ public class WindowRenderer
         UserEntity current = context.getRenderer();
         MenuItemEntity menuItem = context.getMenuItem();
 
-        UserEntity resolvedRunAsUser = PortletRunAsUserResolver.resolveRunAsUser( window.getPortlet(), current, menuItem );
+        UserEntity resolvedRunAsUser = PortletRunAsUserResolver.resolveRunAsUser( window.getPortlet(), current, menuItem, menuHandler );
         if ( resolvedRunAsUser == null || resolvedRunAsUser.isDeleted() )
         {
             resolvedRunAsUser = current;

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Strings;
 
 import com.enonic.vertical.engine.PresentationEngine;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -108,6 +109,9 @@ public final class DataSourceServiceImpl
 
     @Autowired
     private MenuItemDao menuItemDao;
+
+    @Autowired
+    private MenuHandler menuHandler;
 
     private UserDao userDao;
 
@@ -372,7 +376,8 @@ public final class DataSourceServiceImpl
         }
 
         SiteXmlCreator siteXmlCreator =
-            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                menuHandler );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
         siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( tagItem ) ) );
@@ -397,7 +402,8 @@ public final class DataSourceServiceImpl
         }
 
         SiteXmlCreator siteXmlCreator =
-            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                menuHandler );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setIncludeDeviceClassResolverInfo( true );
         return siteXmlCreator.createLegacyGetMenuData( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
@@ -418,7 +424,8 @@ public final class DataSourceServiceImpl
         }
 
         SiteXmlCreator siteXmlCreator =
-            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                menuHandler );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
 
         siteXmlCreator.setMenuItemInBranch( menuItem );
@@ -466,7 +473,8 @@ public final class DataSourceServiceImpl
         }
 
         SiteXmlCreator siteXmlCreator =
-            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull(),
+                                menuHandler );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
         siteXmlCreator.setMenuItemInBranch( menuItem );

@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
@@ -75,6 +76,8 @@ public class PreviewContentHandler
 
     private DeviceClassResolverService deviceClassResolverService;
 
+    private MenuHandler menuHandler;
+
     private ExtendedMap formItems;
 
     private UserEntity previewer;
@@ -87,10 +90,11 @@ public class PreviewContentHandler
 
     private final boolean contentIsNew;
 
-    public PreviewContentHandler( ContentKey contentKey )
+    public PreviewContentHandler( ContentKey contentKey, MenuHandler menuHandler )
     {
         this.contentKey = contentKey;
         this.contentIsNew = contentKey == null;
+        this.menuHandler = menuHandler;
     }
 
     public RenderedPageResult renderPreview()
@@ -291,7 +295,7 @@ public class PreviewContentHandler
 
     private UserEntity resolveRunAsUser( MenuItemEntity menuItem )
     {
-        UserEntity runAsUser = menuItem.resolveRunAsUser( previewer, true );
+        UserEntity runAsUser = menuItem.resolveRunAsUser( previewer, true, menuHandler );
         if ( runAsUser == null )
         {
             runAsUser = previewer;

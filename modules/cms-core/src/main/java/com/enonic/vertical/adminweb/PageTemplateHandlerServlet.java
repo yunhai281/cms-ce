@@ -724,7 +724,7 @@ public class PageTemplateHandlerServlet
 
             addAccessLevelParameters( user, parameters );
 
-            UserEntity defaultRunAsUser = siteDao.findByKey( formItems.getInt( "menukey" ) ).resolveDefaultRunAsUser();
+            UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( formItems.getInt( "menukey" ) );
             String defaultRunAsUserName = "NA";
             if ( defaultRunAsUser != null )
             {

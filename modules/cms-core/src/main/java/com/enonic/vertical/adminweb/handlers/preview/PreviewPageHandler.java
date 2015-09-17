@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 import com.enonic.vertical.adminweb.VerticalAdminException;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.content.ContentEntity;
@@ -101,7 +102,7 @@ public class PreviewPageHandler
 
     private boolean transliterate;
 
-    public RenderedPageResult renderPreview( final SiteKey siteKey, final MenuItemKey parentKey, final MenuItemKey menuItemKey )
+    public RenderedPageResult renderPreview( final SiteKey siteKey, final MenuItemKey parentKey, final MenuItemKey menuItemKey, MenuHandler menuHandler )
     {
         final MenuItemEntity menuItem = resolveModifiedMenuItem( siteKey, parentKey, menuItemKey );
         final PageTemplateEntity pageTemplate = menuItem.getPage().getTemplate();
@@ -125,7 +126,7 @@ public class PreviewPageHandler
         final PreviewContext previewContext = new PreviewContext( new MenuItemPreviewContext( menuItem ) );
         previewService.setPreviewContext( previewContext );
 
-        final UserEntity runAsUser = resolveRunAsUser( menuItem );
+        final UserEntity runAsUser = resolveRunAsUser( menuItem, menuHandler );
         final LanguageEntity language = LanguageResolver.resolve( menuItem.getSite(), menuItem );
         final ResolverContext resolverContext = new ResolverContext( wrappedRequest, menuItem.getSite(), menuItem, language );
         resolverContext.setUser( previewer );
@@ -401,9 +402,9 @@ public class PreviewPageHandler
         return menuItemName;
     }
 
-    private UserEntity resolveRunAsUser( final MenuItemEntity modifiedMenuItem )
+    private UserEntity resolveRunAsUser( final MenuItemEntity modifiedMenuItem, MenuHandler menuHandler )
     {
-        UserEntity runAsUser = modifiedMenuItem.resolveRunAsUser( previewer, true );
+        UserEntity runAsUser = modifiedMenuItem.resolveRunAsUser( previewer, true, menuHandler );
         if ( runAsUser == null )
         {
             runAsUser = previewer;

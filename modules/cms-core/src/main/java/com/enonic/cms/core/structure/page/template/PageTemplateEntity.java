@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import com.enonic.esl.util.ArrayUtil;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
@@ -446,7 +447,7 @@ public class PageTemplateEntity
         return null;
     }
 
-    public UserEntity resolveRunAsUser( UserEntity currentUser )
+    public UserEntity resolveRunAsUser( UserEntity currentUser, MenuHandler menuHandler )
     {
         if ( currentUser.isAnonymous() )
         {
@@ -462,9 +463,10 @@ public class PageTemplateEntity
         }
         else if ( runAsType.equals( RunAsType.DEFAULT_USER ) )
         {
-            if ( getSite().resolveDefaultRunAsUser() != null )
+            UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( getSite().getKey() );
+            if ( defaultRunAsUser != null )
             {
-                return getSite().resolveDefaultRunAsUser();
+                return defaultRunAsUser;
             }
             return null;
         }

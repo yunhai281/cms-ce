@@ -639,7 +639,7 @@ public final class PageTemplateHandler
 
             // attribute: runAs & defaultRunAsUser
             elem.setAttribute( "runAs", pageTemplate.getRunAs().toString() );
-            UserEntity defaultRunAsUser = pageTemplate.getSite().resolveDefaultRunAsUser();
+            UserEntity defaultRunAsUser = getMenuHandler().getRunAsUserForSite( pageTemplate.getSite().getKey() );
             String defaultRunAsUserName = "NA";
             if ( defaultRunAsUser != null )
             {

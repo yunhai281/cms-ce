@@ -210,7 +210,7 @@ public final class PresentationLayerServlet
             formItems.put( "deviceClassResolverExist", resourceExists( site.getDeviceClassResolver() ) ? "true" : "false" );
             formItems.put( "defaultLocalizationResourceExist", resourceExists( site.getDefaultLocalizationResource() ) ? "true" : "false" );
             formItems.put( "localeResolverExist", resourceExists( site.getLocaleResolver() ) ? "true" : "false" );
-            UserEntity runAsUser = site.resolveDefaultRunAsUser();
+            UserEntity runAsUser = menuHandler.getRunAsUserForSite( site.getKey() );
             formItems.put( "defaultRunAsUser",
                            runAsUser == null ? "" : runAsUser.getDisplayName() + " (" + runAsUser.getQualifiedName() + ")" );
 
@@ -236,7 +236,7 @@ public final class PresentationLayerServlet
     private String getMenuDataXML( SiteEntity site )
     {
         String menuDataXML;
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         siteXmlCreator.setIncludeSiteURLInfo( true );
         siteXmlCreator.setIncludeDeviceClassResolverInfo( true );
         siteXmlCreator.setIncludeLocalizationInfo( true );

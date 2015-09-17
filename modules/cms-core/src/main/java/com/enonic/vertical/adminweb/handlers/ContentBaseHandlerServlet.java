@@ -615,7 +615,7 @@ public class ContentBaseHandlerServlet
 
             XMLTool.mergeDocuments( doc, model.locationsToXML().getAsDOMDocument(), true );
             XMLTool.mergeDocuments( doc, model.locationMenuitemsToXML().getAsDOMDocument(), true );
-            XMLTool.mergeDocuments( doc, model.locationSitesToXML().getAsDOMDocument(), true );
+            XMLTool.mergeDocuments( doc, model.locationSitesToXML(menuHandler).getAsDOMDocument(), true );
             XMLTool.mergeDocuments( doc, model.pageTemplateBySiteToXML().getAsDOMDocument(), true );
 
         }
@@ -1825,7 +1825,7 @@ public class ContentBaseHandlerServlet
 
             UserEntity previewer = securityService.getUser( oldUser );
 
-            PreviewContentHandler previewContentHandler = new PreviewContentHandler( contentKey );
+            PreviewContentHandler previewContentHandler = new PreviewContentHandler( contentKey, menuHandler );
             previewContentHandler.setSite( site );
             previewContentHandler.setTimeService( timeService );
             previewContentHandler.setPreviewService( previewService );

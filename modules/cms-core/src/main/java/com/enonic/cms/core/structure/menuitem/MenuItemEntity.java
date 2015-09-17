@@ -25,6 +25,8 @@ import org.jdom.Element;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.CacheSettings;
@@ -47,6 +49,8 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 public class MenuItemEntity
     implements Serializable
 {
+    private static final long serialVersionUID = -7685294763479393483L;
+
     private MenuItemKey key;
 
     private String name;
@@ -901,7 +905,7 @@ public class MenuItemEntity
         return s.toString();
     }
 
-    public UserEntity resolveRunAsUser( UserEntity currentUser, boolean doFirstLevelCheckOnPageTemplate )
+    public UserEntity resolveRunAsUser( UserEntity currentUser, boolean doFirstLevelCheckOnPageTemplate, MenuHandler menuHandler )
     {
         if ( currentUser.isAnonymous() )
         {
@@ -910,6 +914,7 @@ public class MenuItemEntity
         }
 
         RunAsType runAsType = getRunAs();
+        UserEntity siteRunAsUser = menuHandler.getRunAsUserForSite( getSite().getKey() );
 
         if ( runAsType.equals( RunAsType.PERSONALIZED ) )
         {
@@ -917,9 +922,9 @@ public class MenuItemEntity
         }
         else if ( runAsType.equals( RunAsType.DEFAULT_USER ) )
         {
-            if ( getSite().resolveDefaultRunAsUser() != null )
+            if ( siteRunAsUser != null )
             {
-                return getSite().resolveDefaultRunAsUser();
+                return siteRunAsUser;
             }
             return null;
         }
@@ -930,7 +935,7 @@ public class MenuItemEntity
                 PageTemplateEntity pageTemplate = getPage().getTemplate();
                 if ( pageTemplate != null )
                 {
-                    UserEntity runAsUser = pageTemplate.resolveRunAsUser( currentUser );
+                    UserEntity runAsUser = pageTemplate.resolveRunAsUser( currentUser, menuHandler );
                     if ( runAsUser != null )
                     {
                         return runAsUser;
@@ -941,12 +946,11 @@ public class MenuItemEntity
             MenuItemEntity parent = getParent();
             if ( parent != null )
             {
-                return parent.resolveRunAsUser( currentUser, false );
+                return parent.resolveRunAsUser( currentUser, false, menuHandler );
             }
             else
             {
-                UserEntity defaultRunAsUser = getSite().resolveDefaultRunAsUser();
-                return defaultRunAsUser != null ? defaultRunAsUser : currentUser;
+                return siteRunAsUser != null ? siteRunAsUser : currentUser;
             }
         }
         else

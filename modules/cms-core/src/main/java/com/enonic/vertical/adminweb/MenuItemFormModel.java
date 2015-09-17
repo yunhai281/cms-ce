@@ -22,6 +22,8 @@ import org.jdom.Element;
 
 import java.util.List;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 /**
  * model for edit menu item page
  */
@@ -38,9 +40,12 @@ public class MenuItemFormModel
 
     private List<MenuItemEntity> selectedMenuItemPath;
 
-    public MenuItemFormModel( MenuItemKey selectedMenuItemKey )
+    private MenuHandler menuHandler;
+
+    public MenuItemFormModel( MenuItemKey selectedMenuItemKey, MenuHandler menuHandler )
     {
         this.newMenuItem = selectedMenuItemKey == null;
+        this.menuHandler = menuHandler;
     }
 
     public XMLDocument toXML()
@@ -55,7 +60,7 @@ public class MenuItemFormModel
 
     private Element createSelectedMenuElement()
     {
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         return siteXmlCreator.createMenuElement( site, siteProperties, userRightsForSite );
     }
 

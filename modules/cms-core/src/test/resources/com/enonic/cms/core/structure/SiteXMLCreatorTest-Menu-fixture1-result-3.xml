@@ -13,23 +13,23 @@
       <menuitem key="1" menukey="1" modifier="KEY" order="0" owner="KEY" path="true" timestamp="2007-07-25 09:00" type="content"
                 visible="yes">
         <name>mi 1</name>
-        <alternative-name/>
-        <subtitle deprecated="Use alternative-name instead"/>
+        <menu-name />
+        <display-name />
         <show-in-menu>true</show-in-menu>
         <description/>
         <keywords/>
         <parameters/>
-        <menuitems istop="no"/>
+        <menuitems child-count="2" istop="no"/>
       </menuitem>
       <menuitem key="2" menukey="1" modifier="KEY" order="0" owner="KEY" timestamp="2007-07-25 09:00" type="content" visible="yes">
         <name>mi 2</name>
-        <alternative-name/>
-        <subtitle deprecated="Use alternative-name instead"/>
+        <menu-name />
+        <display-name />
         <show-in-menu>true</show-in-menu>
         <description/>
         <keywords/>
         <parameters/>
-        <menuitems istop="no"/>
+        <menuitems child-count="1" istop="no"/>
       </menuitem>
     </menuitems>
   </menu>
