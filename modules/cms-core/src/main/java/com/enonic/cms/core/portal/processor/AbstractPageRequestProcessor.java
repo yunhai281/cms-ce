@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.util.Assert;
 
+import com.enonic.vertical.engine.handlers.MenuHandler;
+
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
 import com.enonic.cms.core.resolver.ResolverContext;
@@ -26,9 +28,6 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
 import com.enonic.cms.store.dao.SectionContentDao;
 
-/**
- * Sep 28, 2009
- */
 public abstract class AbstractPageRequestProcessor
     extends AbstractBasePortalRequestProcessor
 {
@@ -45,6 +44,8 @@ public abstract class AbstractPageRequestProcessor
     protected SectionContentDao sectionContentDao;
 
     protected SitePropertiesService sitePropertiesService;
+
+    protected MenuHandler menuHandler;
 
     protected AbstractPageRequestProcessor( final PageRequestProcessorContext context )
     {
@@ -69,7 +70,7 @@ public abstract class AbstractPageRequestProcessor
         final SiteEntity site = context.getSite();
 
         // run-as-user 
-        UserEntity runAsUser = menuItem.resolveRunAsUser( requester, true );
+        UserEntity runAsUser = menuHandler.resolveRunAsUserForMenuItem( menuItem, requester, true );
         if ( runAsUser == null )
         {
             runAsUser = requester;
@@ -129,5 +130,10 @@ public abstract class AbstractPageRequestProcessor
     public void setSitePropertiesService( final SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;
+    }
+
+    public void setMenuHandler( final MenuHandler menuHandler )
+    {
+        this.menuHandler = menuHandler;
     }
 }

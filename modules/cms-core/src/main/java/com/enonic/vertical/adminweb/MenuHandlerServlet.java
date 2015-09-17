@@ -1091,9 +1091,9 @@ public class MenuHandlerServlet
     {
         SiteKey siteKey = new SiteKey( menuKey );
         MenuBrowseModelFactory menuBrowseModelFactory =
-            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService );
+            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService, menuHandler );
         MenuBrowseMenuItemsModel model = menuBrowseModelFactory.createMenuItemModel( user, siteKey, menuItemKey );
-        return model.toXML();
+        return model.toXML( menuHandler );
     }
 
     public static String getSiteUrl( HttpServletRequest request, int menuKey )
@@ -1193,7 +1193,7 @@ public class MenuHandlerServlet
 
         SiteKey siteKey = new SiteKey( formItems.getString( "menukey" ) );
         MenuBrowseModelFactory menuBrowseModelFactory =
-            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService );
+            new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService, menuHandler );
         MenuBrowseMenuItemsModel model = menuBrowseModelFactory.createMenuItemModel( userEntity, siteKey, menuItemParentToMoveBelow );
 
         // add the moving menuitem as a bottom child of the new parent
@@ -1210,7 +1210,7 @@ public class MenuHandlerServlet
         menuItemsToListWithMovingMenuItemAdded.add( menuItemAndUserAccessRightsForMenuItemToMove );
         model.setMenuItemsToList( menuItemsToListWithMovingMenuItemAdded );
 
-        session.setAttribute( "menuxml", model.toXML().getAsString() );
+        session.setAttribute( "menuxml", model.toXML( menuHandler ).getAsString() );
 
         ExtendedMap params = new ExtendedMap();
         params.put( "page", formItems.get( "page" ) );
@@ -1502,7 +1502,7 @@ public class MenuHandlerServlet
         DefaultSiteAccumulatedAccessRights defaultSiteAccessRightsAccumulated =
             defaultSiteAccessRightAccumulator.getAccessRightsAccumulated( site, user );
 
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( null, menuHandler );
         org.jdom.Element selectedMenuEl = siteXmlCreator.createMenuElement( site, sitePropertiesService.getSiteProperties( site.getKey() ),
                                                                             defaultSiteAccessRightsAccumulated );
         modelEl.addContent( new org.jdom.Element( "selected-menu" ).addContent( selectedMenuEl ) );
@@ -1803,7 +1803,7 @@ public class MenuHandlerServlet
         try
         {
             final PreviewPageHandler previewPageHandler = previewPageHandlerFactory.create( request, formItems );
-            final RenderedPageResult renderedPageResult = previewPageHandler.renderPreview( siteKey, parentKey, menuItemKey );
+            final RenderedPageResult renderedPageResult = previewPageHandler.renderPreview( siteKey, parentKey, menuItemKey, menuHandler );
 
             final PrintWriter writer = response.getWriter();
             writer.write( renderedPageResult.getContent() );
@@ -2089,7 +2089,7 @@ public class MenuHandlerServlet
             }
 
             MenuBrowseModelFactory menuBrowseModelFactory =
-                new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService );
+                new MenuBrowseModelFactory( securityService, siteDao, menuItemDao, sitePropertiesService, menuHandler );
             SiteKey siteKey = new SiteKey( menuKey );
             UserEntity userEntity = securityService.getUser( user );
             MenuItemFormModel model =
@@ -2401,7 +2401,7 @@ public class MenuHandlerServlet
 
             addAccessLevelParameters( user, parameters );
 
-            UserEntity defaultRunAsUser = siteDao.findByKey( formItems.getInt( "menukey" ) ).resolveDefaultRunAsUser();
+            UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( formItems.getInt( "menukey" ) );
             String defaultRunAsUserName = "NA";
             if ( defaultRunAsUser != null )
             {

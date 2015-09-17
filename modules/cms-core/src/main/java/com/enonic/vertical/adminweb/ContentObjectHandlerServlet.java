@@ -483,6 +483,7 @@ public final class ContentObjectHandlerServlet
     {
 
         int menuKey = formItems.getInt( "menukey", -1 );
+        final SiteKey siteKey = new SiteKey( menuKey );
 
         if ( operation.equals( "datasourcepreview" ) )
         {
@@ -501,7 +502,6 @@ public final class ContentObjectHandlerServlet
                 {
                     XMLTool.createCDATASection( documentAsW3cDocument, rootElem, formItems.getString( "document", "" ) );
                 }
-                final SiteKey siteKey = new SiteKey( menuKey );
                 String xmlData;
                 XMLDocument dataSourcesXml = XMLDocumentFactory.create( formItems.getString( "datasources" ) );
                 String docType = formItems.getString( "documenttype" );
@@ -615,7 +615,7 @@ public final class ContentObjectHandlerServlet
             parameters.put( "fieldname", formItems.getString( "fieldname", null ) );
             parameters.put( "fieldrow", formItems.getString( "fieldrow", null ) );
 
-            UserEntity defaultRunAsUser = siteDao.findByKey( menuKey ).resolveDefaultRunAsUser();
+            UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( siteKey );
             String defaultRunAsUserName = "NA";
             if ( defaultRunAsUser != null )
             {
@@ -750,7 +750,7 @@ public final class ContentObjectHandlerServlet
         String queryParam = "";
         String script = "";
 
-        int menuKey = formItems.getInt( "menukey" );
+        int siteKey = formItems.getInt( "menukey" );
 
         if ( request.getParameter( "key" ) == null || request.getParameter( "key" ).equals( "" ) )
         {
@@ -913,14 +913,14 @@ public final class ContentObjectHandlerServlet
         ExtendedMap parameters = new ExtendedMap();
 
         // Get default css if present
-        ResourceKey defaultCSS = admin.getDefaultCSSByMenu( menuKey );
+        ResourceKey defaultCSS = admin.getDefaultCSSByMenu( siteKey );
         if ( defaultCSS != null )
         {
             parameters.put( "defaultcsskey", defaultCSS.toString() );
             parameters.put( "defaultcsskeyExist", resourceService.getResourceFile( defaultCSS ) == null ? "false" : "true" );
         }
 
-        addCommonParameters( admin, user, request, parameters, -1, menuKey );
+        addCommonParameters( admin, user, request, parameters, -1, siteKey );
 
         if ( createContentObject )
         {
@@ -934,7 +934,7 @@ public final class ContentObjectHandlerServlet
             parameters.put( "queryparam", queryParam );
         }
 
-        parameters.put( "menukey", String.valueOf( menuKey ) );
+        parameters.put( "menukey", String.valueOf( siteKey ) );
 
         parameters.put( "page", String.valueOf( request.getParameter( "page" ) ) );
 
@@ -963,7 +963,7 @@ public final class ContentObjectHandlerServlet
 
         addAccessLevelParameters( user, parameters );
 
-        UserEntity defaultRunAsUser = siteDao.findByKey( menuKey ).resolveDefaultRunAsUser();
+        UserEntity defaultRunAsUser = menuHandler.getRunAsUserForSite( siteKey );
         String defaultRunAsUserName = "NA";
         if ( defaultRunAsUser != null )
         {

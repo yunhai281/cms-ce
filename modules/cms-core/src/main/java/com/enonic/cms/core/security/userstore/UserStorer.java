@@ -173,7 +173,6 @@ public class UserStorer
         userToDelete.setTimestamp( timeService.getNowAsDateTime() );
 
         rememberedLoginDao.removeUsage( userToDelete.getKey() );
-        siteDao.removeUsage( userToDelete );
 
         final GroupEntity userGroup = userToDelete.getUserGroup();
         if ( userGroup != null )

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
+import com.enonic.vertical.engine.handlers.MenuHandler;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
@@ -150,6 +151,9 @@ public abstract class AbstractAdminwebServlet
 
     @Autowired
     protected LogService logService;
+
+    @Autowired
+    protected MenuHandler menuHandler;
 
     @Autowired
     protected MenuItemService menuItemService;

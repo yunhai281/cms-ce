@@ -222,16 +222,4 @@ public final class SiteEntityDao
     {
         return findPageList( SiteEntity.class, null, index, count );
     }
-
-    @Override
-    public void removeUsage( UserEntity user )
-    {
-        SiteEntity example = new SiteEntity();
-        example.setDefaultRunAsUser( user );
-        List<SiteEntity> sites = findByExample( SiteEntity.class, example );
-        for ( SiteEntity site : sites )
-        {
-            site.setDefaultRunAsUser( null );
-        }
-    }
 }

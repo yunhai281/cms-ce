@@ -33,6 +33,4 @@ public interface SiteDao
     List<SiteEntity> findAll();
 
     EntityPageList<SiteEntity> findAll( int index, int count );
-
-    void removeUsage( UserEntity user );
 }

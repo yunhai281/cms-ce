@@ -24,13 +24,14 @@ import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupKey;
-import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
 public class SiteEntity
     implements Serializable
 {
+    private static final long serialVersionUID = -9069139070885625332L;
+
     private SiteKey key;
 
     private String name;
@@ -53,8 +54,6 @@ public class SiteEntity
 
     private String statisticsUrl;
 
-    private UserEntity defaultRunAsUser;
-
     private Map<CaseInsensitiveString, MenuItemEntity> topMenuItems = new HashMap<CaseInsensitiveString, MenuItemEntity>();
 
     private Map<GroupKey, DefaultSiteAccessEntity> defaultAccesses;
@@ -65,6 +64,7 @@ public class SiteEntity
     private transient Document xmlDataAsJDOMDocument;
 
     private transient SiteData siteData;
+
 
     public SiteKey getKey()
     {
@@ -106,50 +106,9 @@ public class SiteEntity
         return language;
     }
 
-
-    public String getSiteURL()
-    {
-        return "";
-    }
-
-    /*
-    public String getBasePath()
-    {
-        String path = null;
-        if ( virtualHost != null && virtualHost.length() > 0 )
-        {
-            path = virtualHost;
-            if ( contextPath != null && contextPath.length() > 0 )
-            {
-                if ( !virtualHost.endsWith( "/" ) && !contextPath.startsWith( "/" ) )
-                {
-                    path += "/";
-                }
-                path += contextPath;
-            }
-        }
-        return path;
-    }
-    */
-
     public String getStatisticsUrl()
     {
         return statisticsUrl;
-    }
-
-    public UserEntity getDefaultRunAsUser()
-    {
-        return defaultRunAsUser;
-    }
-
-    public UserEntity resolveDefaultRunAsUser()
-    {
-        final UserEntity defaultRunAsUser = this.defaultRunAsUser;
-        if ( defaultRunAsUser != null && defaultRunAsUser.isDeleted() )
-        {
-            return null;
-        }
-        return defaultRunAsUser;
     }
 
     public boolean isDeviceClassificationEnabled()
@@ -255,11 +214,6 @@ public class SiteEntity
     public Set<String> getAllowedPageTypes()
     {
         return getSiteData().getAllowedPageTypes();
-    }
-
-    public void setDefaultRunAsUser( UserEntity value )
-    {
-        this.defaultRunAsUser = value;
     }
 
     public ResourceKey getDefaultCssKey()

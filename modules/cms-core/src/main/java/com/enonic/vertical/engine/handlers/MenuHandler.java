@@ -629,7 +629,7 @@ public final class MenuHandler
                     buildSectionTypeXML( key, menuItemElement );
                     break;
                 case SHORTCUT:
-                    buildShortcutTypeXML( new MenuItemKey(key), menuItemElement );
+                    buildShortcutTypeXML( new MenuItemKey( key ), menuItemElement );
                     break;
             }
         }
@@ -675,10 +675,13 @@ public final class MenuHandler
             MenuItemEntity shortcutMenuItem = currentMenuItem.getMenuItemShortcut();
 
             Element shortcutElem = XMLTool.createElement( menuItemElement.getOwnerDocument(), menuItemElement, "shortcut" );
-            if (shortcutMenuItem != null) {
+            if ( shortcutMenuItem != null )
+            {
                 shortcutElem.setAttribute( "key", shortcutMenuItem.getKey().toString() );
                 shortcutElem.setAttribute( "name", shortcutMenuItem.getName() );
-            } else {
+            }
+            else
+            {
                 shortcutElem.setAttribute( "key", "" );
                 shortcutElem.setAttribute( "name", "" );
             }
@@ -2132,7 +2135,7 @@ public final class MenuHandler
         throws VerticalRemoveException, VerticalSecurityException
     {
 
-        MenuItemEntity menuItemToRemove = menuItemDao.findByKey( new MenuItemKey(menuItemKey) );
+        MenuItemEntity menuItemToRemove = menuItemDao.findByKey( new MenuItemKey( menuItemKey ) );
 
         List<MenuItemEntity> shortcuttingMenuItems = getShortcuttingMenuItems( menuItemToRemove );
 
@@ -4533,6 +4536,87 @@ public final class MenuHandler
             }
         }
     }
+
+    public UserEntity getRunAsUserForSite( final SiteKey siteKey )
+    {
+        return getRunAsUserForSite( siteKey.toInt() );
+    }
+
+    public UserEntity getRunAsUserForSite( final int siteKey )
+    {
+        String sql = "SELECT men_usr_hRunAs FROM " + MENU_TABLE + " WHERE men_lKey = ?";
+        String userKey = getCommonHandler().getString( sql, siteKey );
+        if ( userKey == null || userKey.equals( "" ) )
+        {
+            return null;
+        }
+        UserEntity defaultRunAsUser = userDao.findByKey( new UserKey( userKey ) );
+        if ( defaultRunAsUser.isDeleted() )
+        {
+            return null;
+        }
+        else
+        {
+            return defaultRunAsUser;
+        }
+    }
+
+    public UserEntity resolveRunAsUserForMenuItem( MenuItemEntity menuItem, UserEntity currentUser,
+                                                   boolean doFirstLevelCheckOnPageTemplate )
+    {
+        if ( currentUser.isAnonymous() )
+        {
+            // Anonymous user cannot run as any other user
+            return currentUser;
+        }
+
+        RunAsType runAsType = menuItem.getRunAs();
+
+        if ( runAsType.equals( RunAsType.PERSONALIZED ) )
+        {
+            return currentUser;
+        }
+        else if ( runAsType.equals( RunAsType.DEFAULT_USER ) )
+        {
+            UserEntity runAsUser = getRunAsUserForSite( menuItem.getSite().getKey() );
+            if ( runAsUser != null )
+            {
+                return runAsUser;
+            }
+            return null;
+        }
+        else if ( runAsType.equals( RunAsType.INHERIT ) )
+        {
+            if ( doFirstLevelCheckOnPageTemplate && menuItem.getPage() != null )
+            {
+                PageTemplateEntity pageTemplate = menuItem.getPage().getTemplate();
+                if ( pageTemplate != null )
+                {
+                    UserEntity runAsUser = pageTemplate.resolveRunAsUser( currentUser, this );
+                    if ( runAsUser != null )
+                    {
+                        return runAsUser;
+                    }
+                }
+            }
+
+            MenuItemEntity parent = menuItem.getParent();
+            if ( parent != null )
+            {
+                return resolveRunAsUserForMenuItem( parent, currentUser, false );
+            }
+            else
+            {
+                UserEntity defaultRunAsUser = getRunAsUserForSite( menuItem.getSite().getKey() );
+                return defaultRunAsUser != null ? defaultRunAsUser : currentUser;
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException( "Unsopported runAsType: " + runAsType );
+        }
+    }
+
 
     @Value("${cms.xml.storeXHTML}")
     public void setStoreXHTML( final String storeXHTML )
