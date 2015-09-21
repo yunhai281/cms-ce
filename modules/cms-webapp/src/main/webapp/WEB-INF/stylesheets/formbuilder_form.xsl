@@ -135,7 +135,7 @@
                     <tr>
                       <td>
                         <input type="checkbox" name="{$input_name}" disabled="disabled">
-                          <xsl:if test="data = '1'">
+                          <xsl:if test="data = '1' or data = 'on' or data = 'true'">
                             <xsl:attribute name="checked">checked</xsl:attribute>
                           </xsl:if>
                         </input>
