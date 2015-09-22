@@ -317,7 +317,7 @@
             </xsl:variable>
 
             <input type="checkbox" name="{$checkboxid}" id="{$checkboxid}" value="{@name}">
-              <xsl:if test="( @type = 'file' and not( @exists = 'true' ) ) or @allchecked = 'true'">
+              <xsl:if test="( ( @type = 'file' and not( @exists = 'true' ) ) or @allchecked = 'true') and not ( $disabled )">
                 <xsl:attribute name="checked">
                   <xsl:text>checked</xsl:text>
                 </xsl:attribute>
