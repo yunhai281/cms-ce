@@ -474,6 +474,8 @@
                                 <xsl:with-param name="removeButton" select="false()"/>
                                 <xsl:with-param name="reloadButton" select="true()"/>
                                 <xsl:with-param name="disableReloadButton" select="$styleSheetsExists"/>
+                                <xsl:with-param name="inputSize" select="60"/>
+                                <xsl:with-param name="hovertext" select="/contentobjects/contentobject/objectstylesheet/@key"/>
                             </xsl:call-template>
                         </tr>
                     </table>
@@ -495,6 +497,7 @@
                                 <xsl:with-param name="valid" select="/contentobjects/contentobject/borderstylesheet/@valid"/>
                                 <xsl:with-param name="reloadButton" select="true()"/>
                                 <xsl:with-param name="disableReloadButton" select="$styleSheetsExists"/>
+                                <xsl:with-param name="inputSize" select="60"/>
                             </xsl:call-template>
                         </tr>
                     </table>

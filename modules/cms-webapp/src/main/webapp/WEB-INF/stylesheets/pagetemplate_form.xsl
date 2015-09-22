@@ -880,6 +880,8 @@
                                   <xsl:with-param name="onchange">
 	                                    <xsl:text>javascript: updateStyleSheet();</xsl:text>
 	                                </xsl:with-param>
+                                  <xsl:with-param name="inputSize" select="60"/>
+                                  <xsl:with-param name="hovertext" select="$selstylesheetkey"/>
 	                            </xsl:call-template>
                         	</tr>
                             <tr>

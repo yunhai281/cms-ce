@@ -26,6 +26,7 @@
         <xsl:param name="disableReloadButton" select="false()"/>
         <xsl:param name="position"/>
         <xsl:param name="inputSize" select="40"/>
+        <xsl:param name="hovertext" select="''"/>
 
         <xsl:variable name="myId">
             <xsl:choose>
@@ -65,7 +66,9 @@
                     <xsl:when test="$valid = 'false'">
                         <xsl:text>%msgResourceNotValid%</xsl:text>
                     </xsl:when>
-                    <xsl:otherwise/>
+                    <xsl:otherwise>
+                        <xsl:value-of select="$hovertext"/>
+                    </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
             
