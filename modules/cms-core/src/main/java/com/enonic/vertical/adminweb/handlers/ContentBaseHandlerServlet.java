@@ -615,7 +615,7 @@ public class ContentBaseHandlerServlet
 
             XMLTool.mergeDocuments( doc, model.locationsToXML().getAsDOMDocument(), true );
             XMLTool.mergeDocuments( doc, model.locationMenuitemsToXML().getAsDOMDocument(), true );
-            XMLTool.mergeDocuments( doc, model.locationSitesToXML(menuHandler).getAsDOMDocument(), true );
+            XMLTool.mergeDocuments( doc, model.locationSitesToXML( menuHandler ).getAsDOMDocument(), true );
             XMLTool.mergeDocuments( doc, model.pageTemplateBySiteToXML().getAsDOMDocument(), true );
 
         }
@@ -1121,58 +1121,47 @@ public class ContentBaseHandlerServlet
         {
             formItems.put( "feedback", "0" );
         }
-
         else if ( makeAvailable )
-
         {
-            formItems.put( "feedback", "2" );
+            if ( updateContentResult.hasChangedSinceOrigin() )
+            {
+                formItems.put( "feedback", "102" );
+            }
+            else
+            {
+                formItems.put( "feedback", "2" );
+            }
         }
-
         else if ( sentToApproval )
-
         {
             formItems.put( "feedback", "3" );
         }
-
         else if ( rejected )
-
         {
             formItems.put( "feedback", "4" );
         }
-
         else if ( createNewDraftVersion )
-
         {
             formItems.put( "feedback", "5" );
         }
-
         else
-
         {
             formItems.put( "feedback", "1" );
         }
-
-        formItems.put( "versionkey", updateContentResult.getTargetedVersionKey().
-
-            toInt()
-
-        );
+        formItems.put( "versionkey", updateContentResult.getTargetedVersionKey().toInt() );
 
         if ( assignTo )
         {
             redirectToSendToAssigneeForm( request, response, formItems );
         }
-
         else if ( addToSection )
         {
             redirectToPublishWizard( request, response, formItems );
         }
-
         else if ( ( sentToApproval || rejected ) && !isEnterpriseAdmin )
         {
             redirectToNotifyForm( request, response, formItems );
         }
-
         else if ( ( sentToApproval || rejected ) && isEnterpriseAdmin )
         {
             if ( closeAfterSuccess )
@@ -1181,17 +1170,14 @@ public class ContentBaseHandlerServlet
             }
             redirectToForm( request, response, formItems );
         }
-
         else if ( closeAfterSuccess )
         {
             redirectToReferer( request, response, formItems );
         }
-
         else
         {
             redirectToForm( request, response, formItems );
         }
-
     }
 
     private void updateAssignment( ContentEntity parsedContent, UserEntity updater )
