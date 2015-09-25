@@ -5,6 +5,8 @@
 package com.enonic.cms.core.content;
 
 
+import com.enonic.cms.core.security.user.UserEntity;
+
 public class UpdateContentResult
 {
     private ContentVersionEntity targetedVersion;
@@ -15,6 +17,9 @@ public class UpdateContentResult
 
     private boolean accessRightsChanged = false;
 
+    private boolean changedSinceOrigin = false;
+
+    private UserEntity modifier;
 
     public ContentVersionEntity getTargetedVersion()
     {
@@ -33,6 +38,11 @@ public class UpdateContentResult
     public boolean isAnyChangesMade()
     {
         return targetedVersionChanged || contentChanged || accessRightsChanged;
+    }
+
+    public boolean hasChangedSinceOrigin ()
+    {
+        return changedSinceOrigin;
     }
 
     /*public boolean isContentChanged()
@@ -68,5 +78,11 @@ public class UpdateContentResult
     public void setTargetedVersion( ContentVersionEntity value )
     {
         targetedVersion = value;
+    }
+
+    public void markVersionAsChangedSinceOriginBy( UserEntity modifier )
+    {
+        this.changedSinceOrigin = true;
+        this.modifier = modifier;
     }
 }

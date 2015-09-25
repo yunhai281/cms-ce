@@ -580,6 +580,26 @@ public class ContentStorer
             persistedVersion.setModifiedBy( modifier );
 
             result.markTargetedVersionAsChanged();
+
+            final ContentEntity persistedContent = persistedVersion.getContent();
+
+            final List<ContentVersionEntity> allVersions = persistedContent.getVersions();
+            ContentVersionEntity newestVersion = null;
+
+            // Find the newest version stored in the database for later comparison
+            for ( ContentVersionEntity version : allVersions )
+            {
+                if ( newestVersion == null || version.getKey().toInt() > newestVersion.getKey().toInt() )
+                {
+                    newestVersion = version;
+                }
+            }
+            if ( ( newestVersion != null ) && ( updateContentCommand.getNewestVersionKey() != null ) &&
+                !newestVersion.getKey().equals( updateContentCommand.getNewestVersionKey() ) )
+            {
+                result.markVersionAsChangedSinceOriginBy( modifier );
+            }
+
         }
 
         result.setTargetedVersion( persistedVersion );
@@ -588,11 +608,22 @@ public class ContentStorer
     private void doStoreAsNewVersion( final UpdateContentCommand updateContentCommand, final UpdateContentResult result )
     {
         final ContentVersionEntity persistedVersion = contentVersionDao.findByKey( updateContentCommand.getVersionKeyToBaseNewVersionOn() );
+        final ContentEntity persistedContent = persistedVersion.getContent();
 
-        final ContentVersionEntity newVersionToPersist = new ContentVersionEntity();
+        final List<ContentVersionEntity> allVersions = persistedContent.getVersions();
+        ContentVersionEntity newestVersion = null;
+
+        // Find the newest version stored in the database for later comparison
+        for ( ContentVersionEntity version : allVersions )
+        {
+            if ( newestVersion == null || version.getKey().toInt() > newestVersion.getKey().toInt() )
+            {
+                newestVersion = version;
+            }
+        }
 
         // Connect the version to it's content...
-        final ContentEntity persistedContent = persistedVersion.getContent();
+        final ContentVersionEntity newVersionToPersist = new ContentVersionEntity();
         persistedContent.addVersion( newVersionToPersist );
 
         newVersionToPersist.setStatus( persistedVersion.getStatus() );
@@ -675,6 +706,12 @@ public class ContentStorer
         }
 
         flushPendingHibernateWork();
+
+        if ( ( newestVersion != null ) && ( updateContentCommand.getNewestVersionKey() != null ) &&
+            !newestVersion.getKey().equals( updateContentCommand.getNewestVersionKey() ) )
+        {
+            result.markVersionAsChangedSinceOriginBy( modifier );
+        }
 
         result.setTargetedVersion( newVersionToPersist );
         result.markTargetedVersionAsChanged();

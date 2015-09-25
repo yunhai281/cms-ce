@@ -58,6 +58,8 @@ public class UpdateContentCommand
 
     private Set<String> blockGroupsToPurgeByName = new HashSet<String>();
 
+    private ContentVersionKey newestVersionKey;
+
     public void populateContentValuesFromContent( ContentEntity content )
     {
         setContentName( content.getName() );
@@ -261,6 +263,16 @@ public class UpdateContentCommand
     public void setStatus( ContentStatus status )
     {
         this.status = status;
+    }
+
+    public ContentVersionKey getNewestVersionKey()
+    {
+        return newestVersionKey;
+    }
+
+    public void setNewestVersionKey( final ContentVersionKey newestVersionKey )
+    {
+        this.newestVersionKey = newestVersionKey;
     }
 
     public enum UpdateStrategy

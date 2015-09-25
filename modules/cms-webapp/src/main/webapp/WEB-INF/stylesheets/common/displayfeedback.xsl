@@ -29,15 +29,19 @@
 
 		<xsl:choose>
 			<xsl:when test="$code = '0'">%feedbackContentNothingToSave%</xsl:when>
-			<xsl:when test="$code = '1'">%feedbackContentSaved%</xsl:when>
-			<xsl:when test="$code = '2'">%feedbackContentPublished%</xsl:when>
+			<xsl:when test="$code = '1' or $code = '101'">%feedbackContentSaved%</xsl:when>
+			<xsl:when test="$code = '2' or $code = '102'">%feedbackContentPublished%</xsl:when>
 			<xsl:when test="$code = '4'">%feedbackContentRejected%</xsl:when>
-			<xsl:when test="$code = '5'">%feedbackContentNewVersion%</xsl:when>
+			<xsl:when test="$code = '5' or $code = '105'">%feedbackContentNewVersion%</xsl:when>
 			<xsl:when test="$code = '6'">%feedbackResourceSaved%</xsl:when>
 			<xsl:when test="$code = '7'">%feedbackVersionDeleted%</xsl:when>
 			<xsl:when test="$code = '9'">%feedbackContentAlreadyDeleted%</xsl:when>
 			<xsl:when test="$code = '10'">%feedbackNoReadAccess%</xsl:when>
 		</xsl:choose>
+
+		<xsl:if test="$code &gt; 100">
+			<br/><font color="red">%feedbackWarningNotLatest%</font>
+		</xsl:if>
 
 	</xsl:template>
 

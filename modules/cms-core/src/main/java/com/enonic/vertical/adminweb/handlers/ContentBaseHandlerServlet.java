@@ -976,6 +976,11 @@ public class ContentBaseHandlerServlet
         boolean assignTo = formItems.getBoolean( "assignto", false );
         boolean doSendAssignmentEmails = true;
         boolean createSnapshot = formItems.getBoolean( "_create_snapshot", false );
+        int newestVersionKeyFromForm = formItems.getInt( "newestVersionKey", -1 );
+        ContentVersionKey newestVersionKey = null;
+        if (newestVersionKeyFromForm >= 0) {
+            newestVersionKey = new ContentVersionKey( newestVersionKeyFromForm );
+        }
 
         String owner = formItems.getString( "_pubdata_owner", "" );
         boolean isEnterpriseAdmin = userDao.findBuiltInEnterpriseAdminUser().getKey().toString().equals( owner );
@@ -1074,6 +1079,7 @@ public class ContentBaseHandlerServlet
         updateContentCommand.setUseCommandsBinaryDataToAdd( true );
         updateContentCommand.setBinaryDataToRemove( binariesToRemoveAsBinaryDataKey );
         updateContentCommand.setUseCommandsBinaryDataToRemove( true );
+        updateContentCommand.setNewestVersionKey( newestVersionKey );
 
         UpdateContentResult updateContentResult = contentService.updateContent( updateContentCommand );
 
@@ -1142,11 +1148,25 @@ public class ContentBaseHandlerServlet
         }
         else if ( createNewDraftVersion )
         {
-            formItems.put( "feedback", "5" );
+            if ( updateContentResult.hasChangedSinceOrigin() )
+            {
+                formItems.put( "feedback", "105" );
+            }
+            else
+            {
+                formItems.put( "feedback", "5" );
+            }
         }
         else
         {
-            formItems.put( "feedback", "1" );
+            if ( updateContentResult.hasChangedSinceOrigin() )
+            {
+                formItems.put( "feedback", "101" );
+            }
+            else
+            {
+                formItems.put( "feedback", "1" );
+            }
         }
         formItems.put( "versionkey", updateContentResult.getTargetedVersionKey().toInt() );
 

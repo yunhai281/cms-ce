@@ -70,6 +70,9 @@
       <input type="hidden" name="approveruid">
         <xsl:attribute name="value"><xsl:value-of select="/contents/content/approveruid"/></xsl:attribute>
       </input>
+      <input type="hidden" name="newestVersionKey">
+        <xsl:attribute name="value"><xsl:value-of select="/contents/content/versions/version[1]/@key"/></xsl:attribute>
+      </input>
     </xsl:if>
 
     <xsl:if test="$create=1">
