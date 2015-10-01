@@ -552,7 +552,8 @@ public class InternalClientContentService
         CategoryEntity category = categoryDao.findByKey( new CategoryKey( params.categoryKey ) );
         if ( category == null )
         {
-            throw new IllegalArgumentException( "No category for given categoryKey: " + params.categoryKey );        }
+            throw new IllegalArgumentException( "No category for given categoryKey: " + params.categoryKey );
+        }
 
         contentService.moveContent( securityService.getImpersonatedPortalUser(), content, category );
     }
