@@ -80,7 +80,7 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
     {
         final String expectedStr = toString( expected );
         final String actualStr = toString( actual );
-        assertEquals( actualStr, expectedStr );
+        assertEquals( expectedStr, actualStr );
     }
 
     private Document readDoc( final String name )
