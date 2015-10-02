@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 Enonic AS
+ * Copyright 2000-2015 Enonic AS
  * http://www.enonic.com/license
  */
 
@@ -39,7 +39,7 @@ public class HTTPService
         {
             URLConnection urlConn = setUpConnection( address, timeoutMs, readTimeoutMs );
             reader = setUpReader( encoding, urlConn );
-            StringBuffer sb = new StringBuffer( 1024 );
+            StringBuilder sb = new StringBuilder( 1024 );
             char[] line = new char[1024];
             int charCount = reader.read( line );
             while ( charCount > 0 )
@@ -73,10 +73,16 @@ public class HTTPService
 
     public byte[] getURLAsBytes( String address, int timeoutMs, int readTimeoutMs )
     {
-        BufferedReader reader = null;
+        return getURLAsBytes( address, timeoutMs, readTimeoutMs,
+                              "text/html;application/xhtml+xml;application/xml;" );
+    }
+
+    public byte[] getURLAsBytes( String address, int timeoutMs, int readTimeoutMs, String mediaTypes )
+    {
         try
         {
             URLConnection urlConn = setUpConnection( address, timeoutMs, readTimeoutMs );
+            urlConn.setRequestProperty( "Accept", mediaTypes );
 
             InputStream responseStream = urlConn.getInputStream();
             return IOUtils.toByteArray( responseStream );
@@ -85,18 +91,6 @@ public class HTTPService
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
             LOG.warn( message );
-        }
-        finally
-        {
-            try
-            {
-                closeReader( reader );
-            }
-            catch ( IOException ioe )
-            {
-                String message = "Failed to close reader stream: \"" + address + "\": " + ioe.getMessage();
-                LOG.warn( message );
-            }
         }
 
         return null;
