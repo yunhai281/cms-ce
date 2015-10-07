@@ -27,7 +27,8 @@ public class GetUrlAsXmlHandlerTest
         throws Exception
     {
         this.httpService = Mockito.mock( HTTPService.class );
-        Mockito.when( this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt() ) ).thenReturn(
+        Mockito.when(
+            this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString() ) ).thenReturn(
             "<dummy/>".getBytes() );
         this.handler.setHttpService( this.httpService );
     }
@@ -45,7 +46,8 @@ public class GetUrlAsXmlHandlerTest
     {
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsXml_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, -1 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, -1,
+                                                                              "application/xhtml+xml,application/xml,text/xml" );
     }
 
     @Test
@@ -56,7 +58,8 @@ public class GetUrlAsXmlHandlerTest
         this.request.addParam( "timeout", "1000" );
         this.request.addParam( "readTimeout", "1000" );
         testHandle( "getUrlAsXml_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 1000, 1000 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 1000, 1000,
+                                                                              "application/xhtml+xml,application/xml,text/xml" );
     }
 
     @Test(expected = DataSourceException.class)
@@ -72,11 +75,14 @@ public class GetUrlAsXmlHandlerTest
     public void testUrlYieldsNull()
         throws Exception
     {
-        Mockito.when( this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt() ) ).thenReturn( null );
+        Mockito.when(
+            this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString() ) ).thenReturn(
+            null );
 
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsXmlUrlYieldsNull_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, -1 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, -1,
+                                                                              "application/xhtml+xml,application/xml,text/xml" );
     }
 
 

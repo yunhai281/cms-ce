@@ -34,7 +34,8 @@ public final class GetUrlAsXmlHandler
     protected Document handle( final DataSourceRequest req, final GetUrlAsXmlParams params )
         throws Exception
     {
-        final byte[] data = this.httpService.getURLAsBytes( params.url, params.timeout, params.readTimeout );
+        final byte[] data = this.httpService.getURLAsBytes( params.url, params.timeout, params.readTimeout,
+                                                            "application/xhtml+xml,application/xml,text/xml" );
 
         if ( data == null )
         {
