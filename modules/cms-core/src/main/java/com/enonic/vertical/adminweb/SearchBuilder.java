@@ -21,6 +21,7 @@ public final class SearchBuilder
             if ( includeTitle )
             {
                 paramQuery.appendTitle( param );
+                paramQuery.appendName( SearchStringBuffer.Operator.OR, param );
             }
             if ( includeAllDataFields )
             {

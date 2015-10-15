@@ -26,6 +26,16 @@ public final class SearchStringBuffer
         return appendContains( operator, "title", criteria );
     }
 
+    public SearchStringBuffer appendName( String criteria )
+    {
+        return appendName( Operator.AND, criteria );
+    }
+
+    public SearchStringBuffer appendName( Operator operator, String criteria )
+    {
+        return appendContains( operator, "name", criteria );
+    }
+
     public SearchStringBuffer appendData( String criteria )
     {
         return appendData( Operator.AND, criteria );

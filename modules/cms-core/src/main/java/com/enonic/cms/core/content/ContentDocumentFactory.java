@@ -106,6 +106,7 @@ public class ContentDocumentFactory
         String title = contentVersion.getTitle();
 
         ContentDocument indexedDoc = new ContentDocument( contentKey );
+        indexedDoc.setName(content.getName());
         indexedDoc.setCategoryKey( category.getKey() );
         indexedDoc.setContentTypeKey( new ContentTypeKey( contentType.getKey() ) );
         indexedDoc.setContentTypeName( contentType.getName() );

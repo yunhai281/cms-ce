@@ -71,6 +71,7 @@ public class ContentIndexDataFactory
     {
         contentIndexData.addContentIndexDataElement( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt() );
         contentIndexData.addContentIndexDataElement( TITLE_FIELDNAME, content.getTitle() );
+        contentIndexData.addContentIndexDataElement( NAME_FIELDNAME, content.getName() );
         contentIndexData.addContentIndexDataElement( TIMESTAMP_FIELDNAME, content.getTimestamp() );
         contentIndexData.addContentIndexDataElement( PUBLISH_FROM_FIELDNAME, content.getPublishFrom() );
         contentIndexData.addContentIndexDataElement( PUBLISH_TO_FIELDNAME, content.getPublishTo() );
@@ -87,7 +88,7 @@ public class ContentIndexDataFactory
 
     private void addUsers( ContentIndexData contentIndexData, ContentDocument content )
     {
-        addUserValues( contentIndexData, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
+        addUserValues( contentIndexData, OWNER_FIELDNAME, content. getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
         addUserValues( contentIndexData, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
                        content.getModifierQualifiedName() );
         addUserValues( contentIndexData, ASSIGNEE_FIELDNAME, content.getAssigneeKey(), content.getAssigneeName(),

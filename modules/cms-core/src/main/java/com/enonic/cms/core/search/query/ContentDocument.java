@@ -45,6 +45,8 @@ public final class ContentDocument
 
     private SimpleText title;
 
+    private SimpleText name;
+
     private SimpleText ownerKey;
 
     private SimpleText ownerName;
@@ -207,6 +209,16 @@ public final class ContentDocument
     public void setTitle( String title )
     {
         this.title = new SimpleText( title );
+    }
+
+    public SimpleText getName()
+    {
+        return name;
+    }
+
+    public void setName( final String name )
+    {
+        this.name = new SimpleText (name);
     }
 
     public SimpleText getOwnerKey()

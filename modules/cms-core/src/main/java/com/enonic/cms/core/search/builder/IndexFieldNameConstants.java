@@ -57,6 +57,8 @@ public class IndexFieldNameConstants
 
     public static final String TITLE_FIELDNAME = "title";
 
+    public static final String NAME_FIELDNAME = "name";
+
     public static final String CONTENTLOCATION_APPROVED_FIELDNAME = "contentlocations_approved";
 
     public static final String CONTENTLOCATION_UNAPPROVED_FIELDNAME = "contentlocations_unapproved";
