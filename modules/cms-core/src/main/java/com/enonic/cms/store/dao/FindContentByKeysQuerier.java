@@ -25,7 +25,7 @@ class FindContentByKeysQuerier
 
     public static final int EAGER_FETCH_NUMBER_OF_SECTIONS_THRESHOLD = 10;
 
-    public static final int MAXIMUM_NUMBER_OF_PARAMETER_MARKERS = 50;
+    public static final int MAXIMUM_NUMBER_OF_PARAMETER_MARKERS = 1000;
 
     private Session hibernateSession;
 
