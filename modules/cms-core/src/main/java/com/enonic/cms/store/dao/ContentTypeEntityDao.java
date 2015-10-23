@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -32,6 +33,11 @@ public class ContentTypeEntityDao
     public ContentTypeEntity findByName( String name )
     {
         return findSingleByNamedQuery( ContentTypeEntity.class, "ContentTypeEntity.getByName", "name", name );
+    }
+
+    public List<ContentTypeEntity> findByContentHandler( ContentHandlerKey contentHandlerKey )
+    {
+        return findByNamedQuery( ContentTypeEntity.class, "ContentTypeEntity.getByHandler", "contentHandlerKey", contentHandlerKey );
     }
 
     public List<ContentTypeEntity> getAll()

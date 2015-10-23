@@ -50,6 +50,7 @@ import com.enonic.cms.api.client.model.DeleteContentParams;
 import com.enonic.cms.api.client.model.DeleteGroupParams;
 import com.enonic.cms.api.client.model.DeletePreferenceParams;
 import com.enonic.cms.api.client.model.DeleteUserParams;
+import com.enonic.cms.api.client.model.GenerateLowResImagesParams;
 import com.enonic.cms.api.client.model.GetBinaryParams;
 import com.enonic.cms.api.client.model.GetCategoriesParams;
 import com.enonic.cms.api.client.model.GetContentBinaryParams;
@@ -1203,6 +1204,23 @@ public abstract class InternalClientImpl
         try
         {
             internalClientContentService.snapshotContent( params );
+        }
+        catch ( Exception e )
+        {
+            throw handleException( e );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void generateLowResImages( final GenerateLowResImagesParams params )
+        throws ClientException
+    {
+        try
+        {
+            internalClientContentService.generateLowResImages( params );
         }
         catch ( Exception e )
         {

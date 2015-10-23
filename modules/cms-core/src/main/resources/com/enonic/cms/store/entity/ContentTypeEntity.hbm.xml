@@ -52,4 +52,7 @@
   <query name="ContentTypeEntity.getByName" cacheable="true" read-only="true">
     from ContentTypeEntity x where x.name =:name
   </query>
+  <query name="ContentTypeEntity.getByHandler" cacheable="true" read-only="true">
+    from ContentTypeEntity x where x.contentHandler.key = :contentHandlerKey
+  </query>
 </hibernate-mapping>

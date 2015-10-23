@@ -27,6 +27,7 @@ import com.enonic.cms.api.client.model.CreateContentParams;
 import com.enonic.cms.api.client.model.CreateFileContentParams;
 import com.enonic.cms.api.client.model.CreateImageContentParams;
 import com.enonic.cms.api.client.model.DeleteContentParams;
+import com.enonic.cms.api.client.model.GenerateLowResImagesParams;
 import com.enonic.cms.api.client.model.GetBinaryParams;
 import com.enonic.cms.api.client.model.GetContentBinaryParams;
 import com.enonic.cms.api.client.model.MoveContentParams;
@@ -72,6 +73,7 @@ import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.image.ContentImageUtil;
+import com.enonic.cms.core.content.image.GenerateLowResImagesCommand;
 import com.enonic.cms.core.content.image.ImageUtil;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCache;
@@ -462,6 +464,18 @@ public class InternalClientContentService
         snapshotCommand.setClearCommentInDraft( params.clearCommentInDraft );
 
         contentService.snapshotContent( snapshotCommand );
+    }
+
+    public void generateLowResImages( final GenerateLowResImagesParams params )
+    {
+        final UserEntity modifier = securityService.getImpersonatedPortalUser();
+
+        GenerateLowResImagesCommand generateCommand = new GenerateLowResImagesCommand();
+        generateCommand.setCategoryKeys( params.categoryKeys );
+        generateCommand.setImageSize( params.imageSize );
+        generateCommand.setModifier( modifier );
+
+        contentService.generateLowResImages( generateCommand );
     }
 
     public int updateContent( UpdateContentParams params )

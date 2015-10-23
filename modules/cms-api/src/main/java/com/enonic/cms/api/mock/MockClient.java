@@ -24,6 +24,7 @@ import com.enonic.cms.api.client.model.DeleteContentParams;
 import com.enonic.cms.api.client.model.DeleteGroupParams;
 import com.enonic.cms.api.client.model.DeletePreferenceParams;
 import com.enonic.cms.api.client.model.DeleteUserParams;
+import com.enonic.cms.api.client.model.GenerateLowResImagesParams;
 import com.enonic.cms.api.client.model.GetBinaryParams;
 import com.enonic.cms.api.client.model.GetCategoriesParams;
 import com.enonic.cms.api.client.model.GetContentBinaryParams;
@@ -268,6 +269,11 @@ public class MockClient
     }
 
     public void snapshotContent( SnapshotContentParams params )
+        throws ClientException
+    {
+    }
+
+    public void generateLowResImages( final GenerateLowResImagesParams params )
         throws ClientException
     {
     }

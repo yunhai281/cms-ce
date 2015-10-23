@@ -19,6 +19,7 @@ import com.enonic.cms.core.content.command.UpdateAssignmentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.image.GenerateLowResImagesCommand;
 import com.enonic.cms.core.content.query.ContentByCategoryQuery;
 import com.enonic.cms.core.content.query.ContentByContentQuery;
 import com.enonic.cms.core.content.query.ContentByQueryQuery;
@@ -70,6 +71,8 @@ public interface ContentService
     ContentKey createContent( CreateContentCommand command );
 
     UpdateContentResult updateContent( UpdateContentCommand command );
+
+    void generateLowResImages( GenerateLowResImagesCommand command );
 
     /**
      * Get either the children og parents of a set of content. Only the related content that is related to every content passed in, will be

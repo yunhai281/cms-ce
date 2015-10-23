@@ -84,7 +84,7 @@ public class BinaryDataAndBinary
         return list;
     }
 
-    private static BinaryDataAndBinary create( BinaryData binaryData )
+    public static BinaryDataAndBinary create( BinaryData binaryData )
     {
         BinaryDataEntity binaryDataEntity = new BinaryDataEntity();
         binaryDataEntity.setName( xmlCleaner.cleanXml( binaryData.fileName ) );

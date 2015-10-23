@@ -22,6 +22,7 @@ import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.command.AssignContentCommand;
 import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.image.GenerateLowResImagesCommand;
 import com.enonic.cms.core.content.command.SnapshotContentCommand;
 import com.enonic.cms.core.content.command.UnassignContentCommand;
 import com.enonic.cms.core.content.command.UpdateAssignmentCommand;
@@ -182,7 +183,6 @@ public class ContentServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public UpdateContentResult updateContent( UpdateContentCommand command )
     {
         try
@@ -198,6 +198,21 @@ public class ContentServiceImpl
             }
 
             return updateContentResult;
+        }
+        catch ( RuntimeException e )
+        {
+            throw new UpdateContentException( e );
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void generateLowResImages( final GenerateLowResImagesCommand command )
+    {
+        try
+        {
+            // TODO: Verify that modifier is Enterprise Administrator
+            indexTransactionService.startTransaction();
+            contentStorer.generateScaledImagesOfMainVersion( command );
         }
         catch ( RuntimeException e )
         {

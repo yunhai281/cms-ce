@@ -4,6 +4,9 @@
  */
 package com.enonic.cms.core.content;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -21,11 +24,15 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
+import com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet;
+
 import com.enonic.cms.framework.blob.BlobRecord;
 
+import com.enonic.cms.api.client.model.StandardImageSize;
 import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.access.ContentAccessType;
+import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
@@ -34,6 +41,7 @@ import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.command.AssignContentCommand;
 import com.enonic.cms.core.content.command.BaseContentCommand;
 import com.enonic.cms.core.content.command.CreateContentCommand;
@@ -42,12 +50,18 @@ import com.enonic.cms.core.content.command.UnassignContentCommand;
 import com.enonic.cms.core.content.command.UpdateAssignmentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand.UpdateStrategy;
+import com.enonic.cms.core.content.contentdata.BinaryFileReadingException;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataException;
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.image.ContentImageUtil;
+import com.enonic.cms.core.content.image.GenerateLowResImagesCommand;
+import com.enonic.cms.core.content.image.ImageUtil;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ContentNotFoundException;
 import com.enonic.cms.core.search.IndexTransactionService;
@@ -58,7 +72,9 @@ import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentHandlerDao;
 import com.enonic.cms.store.dao.ContentHomeDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.LanguageDao;
@@ -89,6 +105,12 @@ public class ContentStorer
 
     @Autowired
     private ContentVersionDao contentVersionDao;
+
+    @Autowired
+    private ContentTypeDao contentTypeDao;
+
+    @Autowired
+    private ContentHandlerDao contentHandlerDao;
 
     @Autowired
     private RelatedContentDao relatedContentDao;
@@ -832,6 +854,133 @@ public class ContentStorer
             relatedContent.setKey( new RelatedContentKey( versionKey, relatedChild ) );
             relatedContentDao.storeNew( relatedContent );
         }
+    }
+
+
+    public void generateScaledImagesOfMainVersion( final GenerateLowResImagesCommand command )
+    {
+        final List<ContentKey> contentKeys = getContentKeysOfImagesToScale( command );
+
+        HashMap<String, Integer> imageSizes = convertImageSize( command.getImageSize() );
+
+        for ( ContentKey contentKey : contentKeys )
+        {
+            final ContentEntity contentEntity = contentDao.findByKey( contentKey );
+            scaleAndStoreImages( contentKey, contentEntity.getMainVersion(), imageSizes );
+        }
+    }
+
+    private List<ContentKey> getContentKeysOfImagesToScale( final GenerateLowResImagesCommand command )
+    {
+        final List<ContentKey> contentKeys = new ArrayList<ContentKey>();
+
+        if ( command.getCategoryKeys() == null || command.getCategoryKeys().length == 0 )
+        {
+            final ContentHandlerEntity imageHandler =
+                contentHandlerDao.findByClassName( ContentEnhancedImageHandlerServlet.class.getCanonicalName() );
+            List<ContentTypeEntity> imageContentTypes = contentTypeDao.findByContentHandler( imageHandler.getKey() );
+            for ( ContentTypeEntity imageContentType : imageContentTypes )
+            {
+                contentKeys.addAll( contentDao.findContentKeysByContentType( imageContentType ) );
+            }
+        }
+        else
+        {
+            for ( int categoryKey : command.getCategoryKeys() )
+            {
+                contentKeys.addAll( contentDao.findContentKeysByCategory( new CategoryKey( categoryKey ) ) );
+            }
+        }
+        return contentKeys;
+    }
+
+    private void scaleAndStoreImages( final ContentKey key, final ContentVersionEntity version, final HashMap<String, Integer> imageSizes )
+    {
+
+        final BinaryDataEntity sourceImage = version.getBinaryData( "source" );
+        if ( sourceImage == null )
+        {
+            return;
+        }
+        List<BinaryDataAndBinary> binaries = new ArrayList<BinaryDataAndBinary>();
+//        List<ContentBinaryDataEntity> contentBinaries = new ArrayList<ContentBinaryDataEntity>();
+        String filenameTokens[] = sourceImage.getName().split( "[.]" );
+        final BlobRecord blob = binaryDataDao.getBlob( sourceImage );
+
+        try
+        {
+            BufferedImage origImage = ImageUtil.readImage( blob.getAsBytes() );
+
+            for ( String imageSize : imageSizes.keySet() )
+            {
+                if ( ( version.getBinaryData( imageSize ) == null ) && ( imageSizes.get( imageSize ) < origImage.getWidth() ) )
+                {
+                    // Image size does not exist and is smaller than original image.
+                    final BufferedImage scaledImage =
+                        ContentImageUtil.scaleNewImage( origImage, filenameTokens[1], imageSizes.get( imageSize ) );
+
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    ImageUtil.writeImage( scaledImage, filenameTokens[1], outputStream, 1.0f );
+
+                    final BinaryData binaryDataFromStream =
+                        BinaryData.createBinaryDataFromStream( outputStream, sourceImage.getName(), imageSize, null );
+                    final BinaryDataAndBinary bdab = BinaryDataAndBinary.create( binaryDataFromStream );
+                    binaries.add( bdab );
+                    doStoreNewBinary( bdab );
+
+                }
+            }
+
+            flushPendingHibernateWork();
+
+        }
+        catch ( IOException e )
+        {
+            throw new BinaryFileReadingException( "Error scaling image of content with key: " + key.toString(), e );
+        }
+
+        version.getContentData().replaceBinaryKeyPlaceholders( BinaryDataKey.convertList( binaries ) );
+        version.setXmlDataFromContentData();
+
+        if ( binaries.size() > 0 )
+        {
+
+            for ( BinaryDataAndBinary binary : binaries )
+            {
+                final ContentBinaryDataEntity cbde = ContentBinaryDataEntity.createNewFrom( binary );
+                version.addContentBinaryData( cbde );
+            }
+
+            flushPendingHibernateWork();
+
+            indexTransactionService.registerUpdate( key, false );
+        }
+    }
+
+    private HashMap<String, Integer> convertImageSize( StandardImageSize size )
+    {
+        HashMap<String, Integer> imageWidths = new HashMap<String, Integer>();
+        switch ( size )
+        {
+            case SMALL:
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[0], ContentImageUtil.STANDARD_WIDTH_SIZES[0] );
+                break;
+            case MEDIUM:
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[1], ContentImageUtil.STANDARD_WIDTH_SIZES[1] );
+                break;
+            case LARGE:
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[2], ContentImageUtil.STANDARD_WIDTH_SIZES[2] );
+                break;
+            case EXTRA_LARGE:
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[3], ContentImageUtil.STANDARD_WIDTH_SIZES[3] );
+                break;
+            default:
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[0], ContentImageUtil.STANDARD_WIDTH_SIZES[0] );
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[1], ContentImageUtil.STANDARD_WIDTH_SIZES[1] );
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[2], ContentImageUtil.STANDARD_WIDTH_SIZES[2] );
+                imageWidths.put( ContentImageUtil.STANDARD_WIDTH_LABELS[3], ContentImageUtil.STANDARD_WIDTH_SIZES[3] );
+        }
+        return imageWidths;
     }
 
     public void deleteContent( final UserEntity deleter, final ContentEntity content )
@@ -1600,9 +1749,6 @@ public class ContentStorer
                 dest.setContentData( updateContentCommand.getContentData() );
                 modified = true;
             }
-        }
-        else if ( updateContentCommand.getContentData() == null && updateContentCommand.getUpdateStrategy() == UpdateStrategy.MODIFY )
-        {
         }
 
         return modified;

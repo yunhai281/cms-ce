@@ -21,6 +21,12 @@ public final class ContentHandlerEntityDao
         return get( ContentHandlerEntity.class, key );
     }
 
+    @Override
+    public ContentHandlerEntity findByClassName( final String contentHandlerClassName )
+    {
+        return findSingleByNamedQuery( ContentHandlerEntity.class, "ContentHandlerEntity.getByClass", "className", contentHandlerClassName );
+    }
+
     public List<ContentHandlerEntity> findAll()
     {
         return findByNamedQuery( ContentHandlerEntity.class, "ContentHandlerEntity.findAll" );

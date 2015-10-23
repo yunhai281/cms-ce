@@ -6,6 +6,7 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -20,6 +21,8 @@ public interface ContentTypeDao
     ContentTypeEntity findByKey( ContentTypeKey key );
 
     ContentTypeEntity findByName( String name );
+
+    List<ContentTypeEntity> findByContentHandler( ContentHandlerKey contentHandlerKey );
 
     List<ContentTypeEntity> getAll();
 

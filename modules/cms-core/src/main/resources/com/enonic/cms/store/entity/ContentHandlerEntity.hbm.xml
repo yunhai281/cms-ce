@@ -27,4 +27,7 @@
   <query name="ContentHandlerEntity.findAll" cacheable="true" read-only="true">
     from ContentHandlerEntity
   </query>
+  <query name="ContentHandlerEntity.getByClass" cacheable="true" read-only="true">
+    from ContentHandlerEntity x where x.className = :className
+  </query>
 </hibernate-mapping>

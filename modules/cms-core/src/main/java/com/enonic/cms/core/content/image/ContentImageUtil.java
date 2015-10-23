@@ -15,9 +15,9 @@ import com.enonic.cms.core.content.binary.BinaryData;
 
 public class ContentImageUtil
 {
-    protected static final int[] STANDARD_WIDTH_SIZES = new int[]{256, 512, 1024, 2048};
+    public static final int[] STANDARD_WIDTH_SIZES = new int[]{256, 512, 1024, 2048};
 
-    protected static final String[] STANDARD_WIDTH_LABELS = new String[]{"small", "medium", "large", "extra-large"};
+    public static final String[] STANDARD_WIDTH_LABELS = new String[]{"small", "medium", "large", "extra-large"};
 
     public static List<BinaryData> createStandardSizeImages( BufferedImage origImage, String encodeType,
                                                              String originalFilenameWithoutExtension )
@@ -62,7 +62,7 @@ public class ContentImageUtil
         return width.equals( "source" );
     }
 
-    private static BufferedImage scaleNewImage( BufferedImage origImage, String encodeType, int newWidth )
+    public static BufferedImage scaleNewImage( BufferedImage origImage, String encodeType, int newWidth )
     {
         final int newHeight = findNewHeight( origImage, newWidth );
         return ImageUtil.scaleImage( origImage, newWidth, newHeight, getBufferedImageType( encodeType ) );

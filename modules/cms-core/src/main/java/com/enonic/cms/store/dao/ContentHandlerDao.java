@@ -15,5 +15,7 @@ public interface ContentHandlerDao
 {
     ContentHandlerEntity findByKey( ContentHandlerKey key );
 
+    ContentHandlerEntity findByClassName ( String contentHandlerClassName );
+
     List<ContentHandlerEntity> findAll();
 }
