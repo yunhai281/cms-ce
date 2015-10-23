@@ -210,7 +210,6 @@ public class ContentServiceImpl
     {
         try
         {
-            // TODO: Verify that modifier is Enterprise Administrator
             indexTransactionService.startTransaction();
             contentStorer.generateScaledImagesOfMainVersion( command );
         }

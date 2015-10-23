@@ -859,7 +859,21 @@ public class ContentStorer
 
     public void generateScaledImagesOfMainVersion( final GenerateLowResImagesCommand command )
     {
+        final UserEntity modifier = userDao.findByKey( command.getModifier() );
+
         final List<ContentKey> contentKeys = getContentKeysOfImagesToScale( command );
+        if ( contentKeys.size() < 1 )
+        {
+            return;
+        }
+
+        if ( !modifier.isEnterpriseAdmin() )
+        {
+            throw new ContentAccessException(
+                "Only an Enterprise Administrator is allowed to generate scaled images on behalf of the image owners.",
+                modifier.getQualifiedName(), ContentAccessType.UPDATE, contentKeys.get( 0 ) );
+
+        }
 
         HashMap<String, Integer> imageSizes = convertImageSize( command.getImageSize() );
 

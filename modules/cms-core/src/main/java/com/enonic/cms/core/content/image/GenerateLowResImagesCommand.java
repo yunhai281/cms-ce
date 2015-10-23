@@ -21,7 +21,7 @@ public class GenerateLowResImagesCommand
     private StandardImageSize imageSize;
 
     /**
-     * Probably not needed, but we'll see.
+     * This operation is modifying content without changing ownership, so only an Enterprise Administrator is allowed to do it.
      */
     private UserKey modifier;
 
