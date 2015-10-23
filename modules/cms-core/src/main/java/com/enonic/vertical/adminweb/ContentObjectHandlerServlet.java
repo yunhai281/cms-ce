@@ -107,22 +107,11 @@ public final class ContentObjectHandlerServlet
             contentObject.setAttribute( "runAs", runAsKey );
         }
 
-        String name = formItems.getString( "name" ).trim();
-        if ( updateStyleSheets )
-        {
-            if ( name != null )
-            {
-                XMLTool.createElement( doc, contentObject, "name", name );
-            }
-            else
-            {
-                XMLTool.createElement( doc, contentObject, "name" );
-            }
+        String name = formItems.getString( "name", null );
+        if (name != null) {
+            name = name.trim();
         }
-        else
-        {
-            XMLTool.createElement( doc, contentObject, "name", name );
-        }
+        XMLTool.createElement( doc, contentObject, "name", name );
 
         Element tempElement;
         ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
@@ -173,10 +162,9 @@ public final class ContentObjectHandlerServlet
         }
 
         Document datasourcesDoc = null;
-        String datasources = "";
         try
         {
-            datasources = formItems.getString( "datasources", null );
+            String datasources = formItems.getString( "datasources", null );
             // Do NOT replace this with formItems.getString("datasources", "</datasources">) since
             // the editor could send blankspaces
             if ( StringUtils.isBlank( datasources ) )
@@ -380,9 +368,7 @@ public final class ContentObjectHandlerServlet
                             String message = "Failed to parse menu item key: %t";
                             VerticalAdminLogger.errorAdmin( message, nfe );
                         }
-                        String menuItemName = "null";
-                        menuItemName = admin.getMenuItemName( menuItemKey );
-                        tempElement.setAttribute( "valuename", menuItemName );
+                        tempElement.setAttribute( "valuename", admin.getMenuItemName( menuItemKey ) );
                     }
                     else if ( "category".equals( type ) )
                     {
