@@ -260,6 +260,15 @@ public interface Client
     public void snapshotContent( SnapshotContentParams params )
         throws ClientException;
 
+    /**
+     * This method will use an original image stored in the archive, and generate low resolution images of this, as specified by the
+     * <code>params</code> parameter.  The low resolution images specified will only be generated if they are smaller than the original
+     * image.  The ownership of the image content will not change, and only a user who is a member of the Enterprise Administrator group
+     * is allowed to execute this operation on behalf of the owners of the images (the owners may not even do it themselves).
+     *
+     * @param params An object that specifies which images to regenerate.
+     * @throws ClientException If the logged in user is not an Enterprise Administrator, or if any other server error occured.
+     */
     public void generateLowResImages( GenerateLowResImagesParams params )
         throws ClientException;
 
