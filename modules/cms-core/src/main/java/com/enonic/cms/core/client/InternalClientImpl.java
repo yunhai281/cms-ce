@@ -1215,12 +1215,12 @@ public abstract class InternalClientImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void generateLowResImages( final GenerateLowResImagesParams params )
+    public int generateLowResImages( final GenerateLowResImagesParams params )
         throws ClientException
     {
         try
         {
-            internalClientContentService.generateLowResImages( params );
+            return internalClientContentService.generateLowResImages( params );
         }
         catch ( Exception e )
         {

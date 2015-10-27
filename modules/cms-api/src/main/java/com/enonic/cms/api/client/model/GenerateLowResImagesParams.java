@@ -7,6 +7,8 @@ public class GenerateLowResImagesParams
 
     /**
      * List categories in which all images should be (re)generated, or NULL to (re)generate low res images of all images in entire archive.
+     * If a lot of images will be regenerated at the same time, the transaction timeout should be temporarily increased while executing the
+     * method.  Regenerating one image may take up to or more than 2 seconds, depending on the speed of the hardware used.
      */
     public Integer[] categoryKeys;
 

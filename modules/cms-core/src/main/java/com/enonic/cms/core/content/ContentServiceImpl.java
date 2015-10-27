@@ -206,12 +206,12 @@ public class ContentServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void generateLowResImages( final GenerateLowResImagesCommand command )
+    public int generateLowResImages( final GenerateLowResImagesCommand command )
     {
         try
         {
             indexTransactionService.startTransaction();
-            contentStorer.generateScaledImagesOfMainVersion( command );
+            return contentStorer.generateScaledImagesOfMainVersion( command );
         }
         catch ( RuntimeException e )
         {

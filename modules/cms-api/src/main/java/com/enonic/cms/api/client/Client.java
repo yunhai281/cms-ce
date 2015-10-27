@@ -268,8 +268,9 @@ public interface Client
      *
      * @param params An object that specifies which images to regenerate.
      * @throws ClientException If the logged in user is not an Enterprise Administrator, or if any other server error occured.
+     * @return The number of scaled images generated.
      */
-    public void generateLowResImages( GenerateLowResImagesParams params )
+    int generateLowResImages( GenerateLowResImagesParams params )
         throws ClientException;
 
     /**

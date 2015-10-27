@@ -273,9 +273,10 @@ public class MockClient
     {
     }
 
-    public void generateLowResImages( final GenerateLowResImagesParams params )
+    public int generateLowResImages( final GenerateLowResImagesParams params )
         throws ClientException
     {
+        return 0;
     }
 
     public Document getContent( GetContentParams params )

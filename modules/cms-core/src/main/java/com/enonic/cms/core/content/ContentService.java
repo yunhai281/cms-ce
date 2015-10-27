@@ -72,7 +72,7 @@ public interface ContentService
 
     UpdateContentResult updateContent( UpdateContentCommand command );
 
-    void generateLowResImages( GenerateLowResImagesCommand command );
+    int generateLowResImages( GenerateLowResImagesCommand command );
 
     /**
      * Get either the children og parents of a set of content. Only the related content that is related to every content passed in, will be

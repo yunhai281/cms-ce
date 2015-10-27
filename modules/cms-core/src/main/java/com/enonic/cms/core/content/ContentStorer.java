@@ -857,15 +857,17 @@ public class ContentStorer
     }
 
 
-    public void generateScaledImagesOfMainVersion( final GenerateLowResImagesCommand command )
+    public int generateScaledImagesOfMainVersion( final GenerateLowResImagesCommand command )
     {
         final UserEntity modifier = userDao.findByKey( command.getModifier() );
 
         final List<ContentKey> contentKeys = getContentKeysOfImagesToScale( command );
         if ( contentKeys.size() < 1 )
         {
-            return;
+            return 0;
         }
+
+        int count = 0;
 
         if ( !modifier.isEnterpriseAdmin() )
         {
@@ -880,8 +882,12 @@ public class ContentStorer
         for ( ContentKey contentKey : contentKeys )
         {
             final ContentEntity contentEntity = contentDao.findByKey( contentKey );
-            scaleAndStoreImages( contentKey, contentEntity.getMainVersion(), imageSizes );
+            if ( !contentEntity.isDeleted() )
+            {
+                count += scaleAndStoreImages( contentKey, contentEntity.getMainVersion(), imageSizes );
+            }
         }
+        return count;
     }
 
     private List<ContentKey> getContentKeysOfImagesToScale( final GenerateLowResImagesCommand command )
@@ -908,22 +914,25 @@ public class ContentStorer
         return contentKeys;
     }
 
-    private void scaleAndStoreImages( final ContentKey key, final ContentVersionEntity version, final HashMap<String, Integer> imageSizes )
+    private int scaleAndStoreImages( final ContentKey key, final ContentVersionEntity version, final HashMap<String, Integer> imageSizes )
     {
 
         final BinaryDataEntity sourceImage = version.getBinaryData( "source" );
         if ( sourceImage == null )
         {
-            return;
+            return 0;
         }
         List<BinaryDataAndBinary> binaries = new ArrayList<BinaryDataAndBinary>();
-//        List<ContentBinaryDataEntity> contentBinaries = new ArrayList<ContentBinaryDataEntity>();
-        String filenameTokens[] = sourceImage.getName().split( "[.]" );
         final BlobRecord blob = binaryDataDao.getBlob( sourceImage );
+        if ( blob == null )
+        {
+            return 0;
+        }
 
         try
         {
             BufferedImage origImage = ImageUtil.readImage( blob.getAsBytes() );
+            String filenameTokens[] = sourceImage.getName().split( "[.]" );
 
             for ( String imageSize : imageSizes.keySet() )
             {
@@ -969,6 +978,7 @@ public class ContentStorer
 
             indexTransactionService.registerUpdate( key, false );
         }
+        return 1;
     }
 
     private HashMap<String, Integer> convertImageSize( StandardImageSize size )

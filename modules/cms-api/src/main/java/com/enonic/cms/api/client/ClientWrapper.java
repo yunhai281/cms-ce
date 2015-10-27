@@ -296,10 +296,10 @@ public abstract class ClientWrapper
         this.delegate.snapshotContent( params );
     }
 
-    public void generateLowResImages( final GenerateLowResImagesParams params )
+    public int generateLowResImages( final GenerateLowResImagesParams params )
         throws ClientException
     {
-        this.delegate.generateLowResImages( params );
+        return this.delegate.generateLowResImages( params );
     }
 
     public Document getContent( GetContentParams params )

@@ -466,7 +466,7 @@ public class InternalClientContentService
         contentService.snapshotContent( snapshotCommand );
     }
 
-    public void generateLowResImages( final GenerateLowResImagesParams params )
+    public int generateLowResImages( final GenerateLowResImagesParams params )
     {
         final UserEntity modifier = securityService.getImpersonatedPortalUser();
 
@@ -475,7 +475,7 @@ public class InternalClientContentService
         generateCommand.setImageSize( params.imageSize );
         generateCommand.setModifier( modifier );
 
-        contentService.generateLowResImages( generateCommand );
+        return contentService.generateLowResImages( generateCommand );
     }
 
     public int updateContent( UpdateContentParams params )
