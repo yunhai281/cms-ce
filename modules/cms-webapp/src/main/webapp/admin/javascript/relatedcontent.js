@@ -19,6 +19,9 @@ function editImageE( obj, fieldName )
 
 function callback_update_content_name( fieldName, fieldRow, contentKey, title, current )
 {
+    if (title == null || title == '') {
+        return;
+    }
     // file and files
     var filenamePlaceholder = document.getElementsByName( 'filename' + fieldName );
     if ( filenamePlaceholder.length > 0 ) {
@@ -44,7 +47,7 @@ function callback_update_content_name( fieldName, fieldRow, contentKey, title, c
     var hiddenKeyInput = document.getElementsByName( fieldName );
     if ( hiddenKeyInput.length > 0 ) {
         var next = hiddenKeyInput[fieldRow].nextSibling;
-        if (next && (next.className == 'relatedcontentsclass') && (title != '')) {
+        if (next && next.className == 'relatedcontentsclass') {
             hiddenKeyInput[fieldRow].parentNode.removeChild( hiddenKeyInput[fieldRow].nextSibling );
 
             var titleSpan = document.createElement("span");
