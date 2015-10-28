@@ -202,7 +202,7 @@
                       <tr>
                         <td>
                           <input type="checkbox" name="{$input_name}" value="{@value}" readonly="readonly" disabled="disabled">
-                            <xsl:if test="@selected = 'true'">
+                            <xsl:if test="@selected = 'true' or @selected = 'on' or @selected = '1'">
                               <xsl:attribute name="checked">checked</xsl:attribute>
                             </xsl:if>
                           </input>

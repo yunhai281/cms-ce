@@ -1727,7 +1727,11 @@
           <x:if>
             <xsl:attribute name="test">
               <xsl:value-of select="$input/xpath"/>
-              <xsl:text>= 'true'</xsl:text>
+              <xsl:text>= 'true' or </xsl:text>
+              <xsl:value-of select="$input/xpath"/>
+              <xsl:text>= 'on' or </xsl:text>
+              <xsl:value-of select="$input/xpath"/>
+              <xsl:text>= '1'</xsl:text>
             </xsl:attribute>
             <x:attribute name="checked">checked</x:attribute>
           </x:if>
