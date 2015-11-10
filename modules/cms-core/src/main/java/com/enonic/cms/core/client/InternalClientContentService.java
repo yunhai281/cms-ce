@@ -365,7 +365,11 @@ public class InternalClientContentService
         {
             throw AttachmentNotFoundException.noAccess( content.getKey() );
         }
-        checkContentIsOnline( content );
+
+        if (!params.includeOfflineContent)
+        {
+            checkContentIsOnline( content );
+        }
 
         ContentBinaryDataEntity contentBinaryData;
         if ( params.label == null )

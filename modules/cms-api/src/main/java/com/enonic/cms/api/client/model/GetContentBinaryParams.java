@@ -16,4 +16,11 @@ public final class GetContentBinaryParams
     public int contentKey = -1;
 
     public String label = null;
+
+    /**
+     * Specifies if content that matches the search, but is offline, should be included in the result set.
+     * Default is false.
+     */
+    public boolean includeOfflineContent = false;
+
 }
