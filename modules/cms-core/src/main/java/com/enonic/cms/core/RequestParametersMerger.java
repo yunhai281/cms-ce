@@ -8,12 +8,6 @@ import java.util.Map;
 
 import com.enonic.cms.core.structure.menuitem.MenuItemRequestParameter;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: Sep 15, 2010
- * Time: 10:35:04 AM
- */
 public class RequestParametersMerger
 {
 
