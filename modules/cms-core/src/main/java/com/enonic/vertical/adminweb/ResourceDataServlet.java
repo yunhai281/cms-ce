@@ -31,6 +31,7 @@ public class ResourceDataServlet
 
             if ( res != null )
             {
+                response.setContentType( res.getMimeType() );
                 HttpServletUtil.copyNoCloseOut( res.getDataAsInputStream(), response.getOutputStream() );
             }
             else
