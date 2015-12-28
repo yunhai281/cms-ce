@@ -7,9 +7,6 @@ package com.enonic.cms.core.structure.menuitem;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/**
- * Jul 24, 2009
- */
 public class MenuItemComparatorByHierarchy
     implements Comparator<MenuItemEntity>, Serializable
 {
