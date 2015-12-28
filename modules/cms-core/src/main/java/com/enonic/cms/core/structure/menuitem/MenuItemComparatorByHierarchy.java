@@ -4,14 +4,17 @@
  */
 package com.enonic.cms.core.structure.menuitem;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Jul 24, 2009
  */
 public class MenuItemComparatorByHierarchy
-    implements Comparator<MenuItemEntity>
+    implements Comparator<MenuItemEntity>, Serializable
 {
+    private static final long serialVersionUID = -6540903107046469057L;
+
     public int compare( final MenuItemEntity a, final MenuItemEntity b )
     {
         if (a == b) {
