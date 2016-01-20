@@ -19,7 +19,7 @@
   <xsl:param name="languagecode"/>
 
   <xsl:variable name="URLToCommunity" select="'https://www.enonic.com/community/'"/>
-  <xsl:variable name="URLToSupport" select="'https://www.enonic.com/support'"/>
+  <xsl:variable name="URLToSupport" select="'http://support.enonic.com'"/>
   <xsl:variable name="URLToDocumentation" select="'https://enonic.com/learn'"/>
 
   <xsl:template match="/">

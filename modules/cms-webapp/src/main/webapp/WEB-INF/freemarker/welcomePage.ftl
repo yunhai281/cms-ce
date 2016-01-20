@@ -31,7 +31,7 @@
     <ul class="menu horizontal main">
         <li><a title="Community" href="https://www.enonic.com/community" rel="external">Community</a></li>
         <li><a title="Documentation" href="https://enonic.com/learn" rel="external">Documentation</a></li>
-        <li><a title="Support" href="https://www.enonic.com/en/support" rel="external">Support</a></li>
+        <li><a title="Support" href="http://support.enonic.com" rel="external">Support</a></li>
         <li><a title="Contact us" class=" last" href="https://enonic.com/contact-us" rel="external">Contact Enonic</a></li>
     </ul>
 
