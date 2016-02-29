@@ -53,8 +53,6 @@ public final class AdminLogInServlet
 
     private static final int COOKIE_TIMEOUT = 60 * 60 * 24 * 365 * 50;   // 50 years
 
-    private static final int SESSION_TIMEOUT_ERROR = 2 * 60;
-
     // error codes
     //  500_unexpected_error   : an unexpected error occurred during login
     //  401_missing_user_passwd: missing user id and/or password
@@ -125,20 +123,9 @@ public final class AdminLogInServlet
                 super.doGet( request, response );
             }
         }
-        catch ( Exception vae )
+        catch ( Exception e )
         {
-            try
-            {
-                HttpSession session = request.getSession( true );
-                ErrorPageServlet.Error error = new ErrorPageServlet.ThrowableError( vae );
-                session.setAttribute( "com.enonic.vertical.error", error );
-                redirectClientToAdminPath( "errorpage", (MultiValueMap) null, request, response );
-            }
-            catch ( VerticalAdminException vae2 )
-            {
-                String message = "Failed to redirect to error page: %t";
-                VerticalAdminLogger.errorAdmin( message, vae2 );
-            }
+            localHandleException( request, response, e );
         }
     }
 
@@ -176,18 +163,30 @@ public final class AdminLogInServlet
         }
         catch ( Exception e )
         {
-            try
-            {
-                HttpSession session = request.getSession( true );
-                ErrorPageServlet.Error error = new ErrorPageServlet.ThrowableError( e );
-                session.setAttribute( "com.enonic.vertical.error", error );
-                redirectClientToAdminPath( "errorpage", (MultiValueMap) null, request, response );
-            }
-            catch ( VerticalAdminException vae2 )
-            {
-                String message = "Failed to redirect to error page: %t";
-                VerticalAdminLogger.errorAdmin( message, vae2 );
-            }
+            localHandleException( request, response, e );
+        }
+    }
+
+    /**
+     * Exactely the same thing that should be done, whether it is doGet or doPost that fails.
+     *
+     * @param request  The Http request object
+     * @param response The Http response object
+     * @param e        The exception to handle
+     */
+    private void localHandleException( final HttpServletRequest request, final HttpServletResponse response, final Exception e )
+    {
+        try
+        {
+            HttpSession session = request.getSession( true );
+            ErrorPageServlet.Error error = new ErrorPageServlet.ThrowableError( e );
+            session.setAttribute( "com.enonic.vertical.error", error );
+            redirectClientToAdminPath( "errorpage", (MultiValueMap) null, request, response );
+        }
+        catch ( VerticalAdminException vae2 )
+        {
+            String message = "Failed to redirect to error page: %t";
+            VerticalAdminLogger.errorAdmin( message, vae2 );
         }
     }
 
@@ -371,7 +370,6 @@ public final class AdminLogInServlet
                 VerticalAdminLogger.error( message );
                 session.setAttribute( "loginerrorcode", EC_401_MISSING_USER_PASSWD );
                 session.setAttribute( "loginerror", message );
-                session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
                 errorCode = EC_401_MISSING_USER_PASSWD;
             }
             else
@@ -397,7 +395,6 @@ public final class AdminLogInServlet
             message = MessageFormat.format( message, userStoreKey, uid, vse );
             session.setAttribute( "loginerrorcode", EC_401_USER_PASSWD_WRONG );
             session.setAttribute( "loginerror", message );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
             errorCode = EC_401_USER_PASSWD_WRONG;
             String remoteAdr = request.getRemoteAddr();
             logLoginFailed( qualifiedUsername, remoteAdr );
@@ -409,7 +406,6 @@ public final class AdminLogInServlet
             VerticalAdminLogger.error( message );
             session.setAttribute( "loginerrorcode", EC_401_ACCESS_DENIED );
             session.setAttribute( "loginerror", message );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
             errorCode = EC_401_ACCESS_DENIED;
         }
 
@@ -569,7 +565,6 @@ public final class AdminLogInServlet
         {
             session.setAttribute( "passworderrorcode", EC_400_MISSING_UID );
             session.setAttribute( "passworderror", "No user id specified!" );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
             redirectClientToAdminPath( "forgotpassword", request, response );
             return;
         }
@@ -593,7 +588,6 @@ public final class AdminLogInServlet
                 String message = "Failed to authenticate user by email " + uid;
                 session.setAttribute( "passworderrorcode", EC_400_USER_NOT_FOUND );
                 session.setAttribute( "passworderror", message );
-                session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
                 redirectClientToAdminPath( "forgotpassword", request, response );
                 return;
             }
@@ -615,7 +609,6 @@ public final class AdminLogInServlet
         {
             session.setAttribute( "passworderrorcode", EC_400_USER_NOT_FOUND );
             session.setAttribute( "passworderror", "Failed to authenticate user " + uid );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
 
             redirectClientToAdminPath( "forgotpassword", request, response );
 
@@ -627,7 +620,6 @@ public final class AdminLogInServlet
 
             session.setAttribute( "passworderrorcode", EC_401_ACCESS_DENIED );
             session.setAttribute( "passworderror", ex.getMessage() );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
 
             redirectClientToAdminPath( "forgotpassword", request, response );
 
@@ -649,7 +641,6 @@ public final class AdminLogInServlet
 
             session.setAttribute( "passworderrorcode", EC_500_FAILED_SEND_MAIL );
             session.setAttribute( "passworderror", message );
-            session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
 
             LOG.error( message );
 
