@@ -21,6 +21,8 @@ public class PageRenderingTrace
 
     private ViewTransformationTrace viewTransformationTrace;
 
+    private XsltCompilationTrace xsltCompilationTrace;
+
     private InstructionPostProcessingTrace instructionPostProcessingTrace;
 
     @SuppressWarnings("UnusedDeclaration")
@@ -61,6 +63,16 @@ public class PageRenderingTrace
             datasourceExecutionTraces = Traces.create();
         }
         datasourceExecutionTraces.add( trace );
+    }
+
+    public XsltCompilationTrace getXsltCompilationTrace()
+    {
+        return xsltCompilationTrace;
+    }
+
+    public void setXsltCompilationTrace( final XsltCompilationTrace xsltCompilationTrace )
+    {
+        this.xsltCompilationTrace = xsltCompilationTrace;
     }
 
     @SuppressWarnings("UnusedDeclaration")

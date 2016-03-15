@@ -246,6 +246,35 @@ public class LivePortalTraceServiceImpl
         return trace;
     }
 
+    @Override
+    public XsltCompilationTrace startXsltCompilationTracing( final String template )
+    {
+        final XsltCompilationTrace trace = new XsltCompilationTrace( template );
+        trace.setStartTime( timeService.getNowAsDateTime() );
+
+        final WindowRenderingTrace windowRenderingTrace = getCurrentTrace().getWindowRenderingTrace();
+        if ( windowRenderingTrace != null )
+        {
+            windowRenderingTrace.setXsltCompilationTrace( trace );
+            getCurrentTrace().setXsltCompilationTrace( trace );
+        }
+        else
+        {
+            final PageRenderingTrace pageRenderingTrace = getCurrentTrace().getPageRenderingTrace();
+            if ( pageRenderingTrace != null )
+            {
+                pageRenderingTrace.setXsltCompilationTrace( trace );
+                getCurrentTrace().setXsltCompilationTrace( trace );
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        return trace;
+    }
+
     public ViewFunctionTrace startViewFunctionTracing( final String functionName )
     {
         final ViewFunctionTrace trace = new ViewFunctionTrace();
@@ -446,6 +475,13 @@ public class LivePortalTraceServiceImpl
             final long duration = stopTime - startTime;
             instructionPostProcessingTrace.setDurationInMilliseconds( duration );
         }
+    }
+
+    public void stopTracing( final XsltCompilationTrace trace )
+    {
+        Preconditions.checkNotNull( trace );
+
+        trace.setStopTime( timeService.getNowAsDateTime() );
     }
 
     public void stopTracing( final ImageRequestTrace imageRequestTrace )

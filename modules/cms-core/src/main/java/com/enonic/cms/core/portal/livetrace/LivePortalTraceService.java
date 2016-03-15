@@ -32,6 +32,8 @@ public interface LivePortalTraceService
 
     ViewTransformationTrace startViewTransformationTracing();
 
+    XsltCompilationTrace startXsltCompilationTracing( String name);
+
     ViewFunctionTrace startViewFunctionTracing( String functionName );
 
     InstructionPostProcessingTrace startInstructionPostProcessingTracingForWindow();
@@ -69,6 +71,8 @@ public interface LivePortalTraceService
     void stopTracing( ImageRequestTrace imageRequestTrace );
 
     void stopTracing( InstructionPostProcessingTrace instructionPostProcessingTrace );
+
+    void stopTracing( XsltCompilationTrace xsltCompilationTrace );
 
     int getNumberOfPortalRequestTracesInProgress();
 

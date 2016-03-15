@@ -25,6 +25,8 @@ public class WindowRenderingTrace
 
     private InstructionPostProcessingTrace instructionPostProcessingTrace;
 
+    private XsltCompilationTrace xsltCompilationTrace;
+
     WindowRenderingTrace( String windowKey )
     {
         this.windowKey = windowKey;
@@ -76,9 +78,20 @@ public class WindowRenderingTrace
         this.viewTransformationTrace = viewTransformationTrace;
     }
 
+    public void setXsltCompilationTrace( final XsltCompilationTrace xsltCompilationTrace )
+    {
+        this.xsltCompilationTrace = xsltCompilationTrace;
+    }
+
     void setInstructionPostProcessingTrace( InstructionPostProcessingTrace instructionPostProcessingTrace )
     {
         this.instructionPostProcessingTrace = instructionPostProcessingTrace;
+    }
+
+    @SuppressWarnings("unused")
+    public XsltCompilationTrace getXsltCompilationTrace()
+    {
+        return xsltCompilationTrace;
     }
 
     @SuppressWarnings("UnusedDeclaration")

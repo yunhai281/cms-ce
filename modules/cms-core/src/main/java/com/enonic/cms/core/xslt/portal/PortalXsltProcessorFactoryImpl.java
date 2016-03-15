@@ -23,6 +23,9 @@ import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.livetrace.XsltCompilationTrace;
+import com.enonic.cms.core.portal.livetrace.XsltCompilationTracer;
 import com.enonic.cms.core.resource.FileResourceName;
 import com.enonic.cms.core.resource.FileResourceService;
 import com.enonic.cms.core.xslt.XsltProcessorException;
@@ -45,6 +48,8 @@ public final class PortalXsltProcessorFactoryImpl
 
     private long checkInterval = 5000;
 
+    private LivePortalTraceService livePortalTraceService;
+
     private static final Logger LOG = LoggerFactory.getLogger( PortalXsltProcessorFactory.class );
 
     private static GenericConcurrencyLock<String> concurrencyLock = GenericConcurrencyLock.create();
@@ -59,19 +64,25 @@ public final class PortalXsltProcessorFactoryImpl
     public PortalXsltProcessor createProcessor( final FileResourceName name )
         throws XsltProcessorException
     {
+        final XsltCompilationTrace trace = XsltCompilationTracer.startTracing( livePortalTraceService, name.toString() );
 
         final XsltTrackingUriResolver uriResolver = new XsltTrackingUriResolver( this.resourceLoader );
-        final XsltTemplatesCacheEntry templates = compileTemplates( name, uriResolver );
+        final XsltTemplatesCacheEntry templates = compileTemplates( name, uriResolver, trace );
         final Transformer transformer = createTransformer( templates, uriResolver );
+
+        XsltCompilationTracer.stopTracing( trace, livePortalTraceService );
+
         return new PortalXsltProcessorImpl( transformer );
     }
 
-    private XsltTemplatesCacheEntry compileTemplates( final FileResourceName name, final XsltTrackingUriResolver resolver )
+    private XsltTemplatesCacheEntry compileTemplates( final FileResourceName name, final XsltTrackingUriResolver resolver,
+                                                      final XsltCompilationTrace trace )
         throws XsltProcessorException
     {
         XsltTemplatesCacheEntry entry = this.templatesCache.get( name );
         if ( entry != null )
         {
+            XsltCompilationTracer.setCached( trace, true );
             return entry;
         }
 
@@ -79,11 +90,14 @@ public final class PortalXsltProcessorFactoryImpl
 
         try
         {
+            XsltCompilationTracer.startConcurrencyBlockTimer( trace );
             locker.lock();
+            XsltCompilationTracer.stopConcurrencyBlockTimer( trace );
 
             entry = this.templatesCache.get( name );
             if ( entry != null )
             {
+                XsltCompilationTracer.setCached( trace, true );
                 return entry;
             }
 
@@ -94,6 +108,7 @@ public final class PortalXsltProcessorFactoryImpl
             entry.addIncludes( resolver.getIncludes() );
             this.templatesCache.put( entry );
 
+            XsltCompilationTracer.setCached( trace, false );
             return entry;
         }
         finally
@@ -132,6 +147,12 @@ public final class PortalXsltProcessorFactoryImpl
     public void setCheckInterval( final long checkInterval )
     {
         this.checkInterval = checkInterval;
+    }
+
+    @Autowired
+    public void setLivePortalTraceService( final LivePortalTraceService livePortalTraceService )
+    {
+        this.livePortalTraceService = livePortalTraceService;
     }
 
     @Override

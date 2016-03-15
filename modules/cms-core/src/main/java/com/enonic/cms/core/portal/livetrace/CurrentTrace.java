@@ -25,6 +25,8 @@ public class CurrentTrace
 
     private WindowRenderingTrace windowRenderingTrace;
 
+    private XsltCompilationTrace xsltCompilationTrace;
+
     PortalRequestTrace getPortalRequestTrace()
     {
         return portalRequestTrace;
@@ -88,6 +90,16 @@ public class CurrentTrace
     ViewTransformationTrace getWindowViewTransformationTrace()
     {
         return windowViewTransformationTrace;
+    }
+
+    public XsltCompilationTrace getXsltCompilationTrace()
+    {
+        return xsltCompilationTrace;
+    }
+
+    public void setXsltCompilationTrace( final XsltCompilationTrace xsltCompilationTrace )
+    {
+        this.xsltCompilationTrace = xsltCompilationTrace;
     }
 
     void setWindowViewTransformationTrace( ViewTransformationTrace windowViewTransformationTrace )

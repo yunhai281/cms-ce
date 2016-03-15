@@ -86,8 +86,10 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
 
             // View transformation
             if (pageRenderingTrace.viewTransformationTrace != null) {
-                html += buildViewTransformationTrace(pageRenderingTrace.viewTransformationTrace, id + "-4");
+                html += buildViewTransformationTrace(pageRenderingTrace.viewTransformationTrace, pageRenderingTrace.xsltCompilationTrace,
+                    id + "-4");
             }
+
         }
 
         // Instruction Post Processing trace
@@ -156,7 +158,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
             if (windowRenderingTrace.datasourceExecutionTraces != null) {
                 html += "<tr id='node-" + childId + "' class='child-of-node-" + id + "'>";
                 html +=
-                "<td>Datasource Executions</td><td>" + windowRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
+                    "<td>Datasource Executions</td><td>" + windowRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
                 html += "</tr>";
                 html += buildDatasourceExecutionTraces(windowRenderingTrace.datasourceExecutionTraces, childId);
             }
@@ -169,7 +171,9 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
             // View transformation
             if (windowRenderingTrace.viewTransformationTrace != null) {
                 childId = id + "-" + (childCount++);
-                html += buildViewTransformationTrace(windowRenderingTrace.viewTransformationTrace, childId);
+                html +=
+                    buildViewTransformationTrace(windowRenderingTrace.viewTransformationTrace, windowRenderingTrace.xsltCompilationTrace,
+                        childId);
             }
         }
 
@@ -226,7 +230,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
                         datasourceExecutionTrace.clientMethodExecutionTraces.totalPeriodInHRFormat + "</td>";
                 html += "</tr>";
                 html +=
-                buildClientMethodExecutionTraces(datasourceExecutionTrace.clientMethodExecutionTraces, clientMethodExecutionTracesId);
+                    buildClientMethodExecutionTraces(datasourceExecutionTrace.clientMethodExecutionTraces, clientMethodExecutionTracesId);
             }
 
         });
@@ -384,7 +388,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
         return html;
     }
 
-    function buildViewTransformationTrace(viewTransformationTrace, id) {
+    function buildViewTransformationTrace(viewTransformationTrace, xsltCompilationTrace, id) {
         var html = "";
 
         html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId(id) + "'>";
@@ -392,6 +396,16 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function () {
         html += "</tr>";
         html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
         html += "<td>View</td><td>" + viewTransformationTrace.view + "</td>";
+
+        if (xsltCompilationTrace != null) {
+            html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
+            html += "<td>Cached</td><td>" + xsltCompilationTrace.cached + "</td>";
+            html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
+            html += "<td>Compile time</td><td>" + xsltCompilationTrace.duration.asHRFormat + "</td>";
+            html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
+            html += "<td>Waiting for lock</td><td>" + xsltCompilationTrace.concurrencyBlockingTime + " ms</td>";
+        }
+
         html += "</tr>";
 
         if (viewTransformationTrace.viewFunctionTraces != null) {
