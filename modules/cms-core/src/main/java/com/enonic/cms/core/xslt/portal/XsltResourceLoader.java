@@ -52,11 +52,21 @@ final class XsltResourceLoader
         try
         {
             file = ByteStreams.toByteArray( resourceData );
-            resourceData.close();
         }
         catch ( IOException e )
         {
             throw new TransformerException( "Could not read input file: " + name, e );
+        }
+        finally
+        {
+            try
+            {
+                resourceData.close();
+            }
+            catch ( IOException e )
+            {
+                throw new TransformerException( "Error closing input file: " + name, e );
+            }
         }
 
         final StreamSource source = new StreamSource();

@@ -73,24 +73,39 @@ public class HTTPService
 
     public byte[] getURLAsBytes( String address, int timeoutMs, int readTimeoutMs )
     {
-        return getURLAsBytes( address, timeoutMs, readTimeoutMs,
-                              "text/html;application/xhtml+xml;application/xml;" );
+        return getURLAsBytes( address, timeoutMs, readTimeoutMs, "text/html;application/xhtml+xml;application/xml;" );
     }
 
     public byte[] getURLAsBytes( String address, int timeoutMs, int readTimeoutMs, String mediaTypes )
     {
+        InputStream responseStream = null;
         try
         {
             URLConnection urlConn = setUpConnection( address, timeoutMs, readTimeoutMs );
             urlConn.setRequestProperty( "Accept", mediaTypes );
 
-            InputStream responseStream = urlConn.getInputStream();
+            responseStream = urlConn.getInputStream();
             return IOUtils.toByteArray( responseStream );
         }
         catch ( Exception e )
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
             LOG.warn( message );
+        }
+        finally
+        {
+            if (responseStream != null)
+            {
+                try
+                {
+                    responseStream.close();
+                }
+                catch ( IOException e )
+                {
+                    String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
+                    LOG.warn( message );
+                }
+            }
         }
 
         return null;
