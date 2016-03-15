@@ -5,11 +5,15 @@
 
 package com.enonic.cms.core.xslt.portal;
 
+import java.util.concurrent.locks.Lock;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
+import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
 import com.enonic.cms.core.resource.FileResourceName;
 import com.enonic.cms.core.resource.FileResourceService;
@@ -40,6 +45,10 @@ public final class PortalXsltProcessorFactoryImpl
 
     private long checkInterval = 5000;
 
+    private static final Logger LOG = LoggerFactory.getLogger( PortalXsltProcessorFactory.class );
+
+    private static GenericConcurrencyLock<String> concurrencyLock = GenericConcurrencyLock.create();
+
     @Autowired
     public void setPortalFunctions( final PortalFunctionsMediator portalFunctions )
     {
@@ -50,6 +59,7 @@ public final class PortalXsltProcessorFactoryImpl
     public PortalXsltProcessor createProcessor( final FileResourceName name )
         throws XsltProcessorException
     {
+
         final XsltTrackingUriResolver uriResolver = new XsltTrackingUriResolver( this.resourceLoader );
         final XsltTemplatesCacheEntry templates = compileTemplates( name, uriResolver );
         final Transformer transformer = createTransformer( templates, uriResolver );
@@ -65,14 +75,32 @@ public final class PortalXsltProcessorFactoryImpl
             return entry;
         }
 
-        final Source xsl = loadResource( name );
-        final Templates templates = compileTemplate( xsl, resolver );
+        final Lock locker = concurrencyLock.getLock( name.toString() );
 
-        entry = new XsltTemplatesCacheEntry( name, templates );
-        entry.addIncludes( resolver.getIncludes() );
-        this.templatesCache.put( entry );
+        try
+        {
+            locker.lock();
 
-        return entry;
+            entry = this.templatesCache.get( name );
+            if ( entry != null )
+            {
+                return entry;
+            }
+
+            final Source xsl = loadResource( name );
+            final Templates templates = compileTemplate( xsl, resolver );
+
+            entry = new XsltTemplatesCacheEntry( name, templates );
+            entry.addIncludes( resolver.getIncludes() );
+            this.templatesCache.put( entry );
+
+            return entry;
+        }
+        finally
+        {
+            locker.unlock();
+        }
+
     }
 
     private Source loadResource( final FileResourceName name )
