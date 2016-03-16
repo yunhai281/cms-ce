@@ -23,7 +23,12 @@ public class ListCountResolver
         }
         else if ( itemsPerPageCookie != null )
         {
-            count = Integer.parseInt( itemsPerPageCookie.getValue() );
+            try
+            {
+                count = Integer.parseInt( itemsPerPageCookie.getValue() );
+            } catch (NumberFormatException e) {
+                // Ignore and use default.  NumberFormatExceptions sometimes happen if cookie exists but does not have a value.
+            }
         }
 
         return count;
