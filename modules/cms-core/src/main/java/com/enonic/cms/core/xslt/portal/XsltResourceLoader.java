@@ -39,10 +39,34 @@ final class XsltResourceLoader
             throw new TransformerException( "Failed to find resource [" + name.toString() + "]" );
         }
 
-        final InputStream resourceData = this.resourceService.getResourceStream( name, true );
+        InputStream resourceData = null;
 
+        try
+        {
+            resourceData = this.resourceService.getResourceStream( name, true );
+
+            return doGetSource( name, resourceData );
+        }
+        finally
+        {
+            if ( resourceData != null )
+            {
+                try
+                {
+                    resourceData.close();
+                }
+                catch ( IOException e )
+                {
+                    throw new TransformerException( "Error closing input file: " + name, e );
+                }
+            }
+        }
+    }
+
+    private Source doGetSource( final FileResourceName name, final InputStream resourceData )
+        throws TransformerException
+    {
         if ( resourceData == null )
-
         {
             throw new TransformerException( "Failed to find resource data for [" + name.toString() + "]" );
         }
@@ -56,17 +80,6 @@ final class XsltResourceLoader
         catch ( IOException e )
         {
             throw new TransformerException( "Could not read input file: " + name, e );
-        }
-        finally
-        {
-            try
-            {
-                resourceData.close();
-            }
-            catch ( IOException e )
-            {
-                throw new TransformerException( "Error closing input file: " + name, e );
-            }
         }
 
         final StreamSource source = new StreamSource();
