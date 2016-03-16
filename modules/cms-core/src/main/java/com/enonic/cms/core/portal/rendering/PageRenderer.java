@@ -170,6 +170,13 @@ public class PageRenderer
 
         PageCacheKey pageCacheKey = resolvePageCacheKey();
 
+        RenderedPageResult cachedPageResult = getFromCache( pageCacheKey );
+
+        if ( cachedPageResult != null )
+        {
+            return cachedPageResult;
+        }
+
         final Lock locker = concurrencyLock.getLock( pageCacheKey );
         try
         {
@@ -177,13 +184,11 @@ public class PageRenderer
             locker.lock();
             PageRenderingTracer.stopConcurrencyBlockTimer( pageRenderingTrace );
 
-            CachedObject cachedPageHolder = pageCache.getCachedPage( pageCacheKey );
-            if ( cachedPageHolder != null )
+            cachedPageResult = getFromCache( pageCacheKey );
+
+            if ( cachedPageResult != null )
             {
-                // Found the page in cache, return the clone to prevent further rendering of the cached object
-                RenderedPageResult cachedPageResult = (RenderedPageResult) cachedPageHolder.getObject();
-                PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, true, true );
-                return (RenderedPageResult) cachedPageResult.clone();
+                return cachedPageResult;
             }
 
             RenderedPageResult renderedPageResultToCache = renderPageTemplateExcludingPortlets( pageTemplate );
@@ -203,6 +208,19 @@ public class PageRenderer
         {
             locker.unlock();
         }
+    }
+
+    private RenderedPageResult getFromCache( final PageCacheKey pageCacheKey )
+    {
+        CachedObject cachedPageHolder = pageCache.getCachedPage( pageCacheKey );
+        if ( cachedPageHolder != null )
+        {
+            // Found the page in cache, return the clone to prevent further rendering of the cached object
+            RenderedPageResult cachedPageResult = (RenderedPageResult) cachedPageHolder.getObject();
+            PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, true, true );
+            return (RenderedPageResult) cachedPageResult.clone();
+        }
+        return null;
     }
 
     private RenderedPageResult renderPageTemplateExcludingPortlets( final PageTemplateEntity pageTemplate )
