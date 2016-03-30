@@ -933,6 +933,7 @@ public class ContentStorer
         {
             BufferedImage origImage = ImageUtil.readImage( blob.getAsBytes() );
             String filenameTokens[] = sourceImage.getName().split( "[.]" );
+            String fileType = filenameTokens[filenameTokens.length - 1];
 
             for ( String imageSize : imageSizes.keySet() )
             {
@@ -940,10 +941,10 @@ public class ContentStorer
                 {
                     // Image size does not exist and is smaller than original image.
                     final BufferedImage scaledImage =
-                        ContentImageUtil.scaleNewImage( origImage, filenameTokens[1], imageSizes.get( imageSize ) );
+                        ContentImageUtil.scaleNewImage( origImage, fileType, imageSizes.get( imageSize ) );
 
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    ImageUtil.writeImage( scaledImage, filenameTokens[1], outputStream, 1.0f );
+                    ImageUtil.writeImage( scaledImage, fileType, outputStream, 1.0f );
 
                     final BinaryData binaryDataFromStream =
                         BinaryData.createBinaryDataFromStream( outputStream, sourceImage.getName(), imageSize, null );

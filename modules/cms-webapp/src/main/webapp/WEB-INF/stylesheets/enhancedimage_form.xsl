@@ -189,10 +189,9 @@
 
           function getFilenameWithoutExtension(fullPath) {
             var proposedName = fullPath.match(/[^\/\\]+$/);
-            var dotIndex = proposedName.toString().indexOf('.');
+            var dotIndex = proposedName.toString().lastIndexOf('.');
             if(dotIndex > -1) {
-              var temp = proposedName.toString().split('.');
-              proposedName = temp[0];
+              proposedName = proposedName.toString().substr(0, dotIndex);
             }
 
             // Mac
