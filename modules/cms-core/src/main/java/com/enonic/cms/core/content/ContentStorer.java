@@ -881,10 +881,17 @@ public class ContentStorer
 
         for ( ContentKey contentKey : contentKeys )
         {
-            final ContentEntity contentEntity = contentDao.findByKey( contentKey );
-            if ( !contentEntity.isDeleted() )
+            try
             {
-                count += scaleAndStoreImages( contentKey, contentEntity.getMainVersion(), imageSizes );
+                final ContentEntity contentEntity = contentDao.findByKey( contentKey );
+                if ( !contentEntity.isDeleted() )
+                {
+                    count += scaleAndStoreImages( contentKey, contentEntity.getMainVersion(), imageSizes );
+                }
+            }
+            catch ( BinaryFileReadingException e )
+            {
+                e.printStackTrace();
             }
         }
         return count;
@@ -916,17 +923,18 @@ public class ContentStorer
 
     private int scaleAndStoreImages( final ContentKey key, final ContentVersionEntity version, final HashMap<String, Integer> imageSizes )
     {
+        int scaledImageCount = 0;
 
         final BinaryDataEntity sourceImage = version.getBinaryData( "source" );
         if ( sourceImage == null )
         {
-            return 0;
+            return scaledImageCount;
         }
         List<BinaryDataAndBinary> binaries = new ArrayList<BinaryDataAndBinary>();
         final BlobRecord blob = binaryDataDao.getBlob( sourceImage );
         if ( blob == null )
         {
-            return 0;
+            return scaledImageCount;
         }
 
         try
@@ -940,8 +948,7 @@ public class ContentStorer
                 if ( ( version.getBinaryData( imageSize ) == null ) && ( imageSizes.get( imageSize ) < origImage.getWidth() ) )
                 {
                     // Image size does not exist and is smaller than original image.
-                    final BufferedImage scaledImage =
-                        ContentImageUtil.scaleNewImage( origImage, fileType, imageSizes.get( imageSize ) );
+                    final BufferedImage scaledImage = ContentImageUtil.scaleNewImage( origImage, fileType, imageSizes.get( imageSize ) );
 
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     ImageUtil.writeImage( scaledImage, fileType, outputStream, 1.0f );
@@ -951,7 +958,7 @@ public class ContentStorer
                     final BinaryDataAndBinary bdab = BinaryDataAndBinary.create( binaryDataFromStream );
                     binaries.add( bdab );
                     doStoreNewBinary( bdab );
-
+                    scaledImageCount++;
                 }
             }
 
@@ -979,7 +986,7 @@ public class ContentStorer
 
             indexTransactionService.registerUpdate( key, false );
         }
-        return 1;
+        return scaledImageCount;
     }
 
     private HashMap<String, Integer> convertImageSize( StandardImageSize size )
