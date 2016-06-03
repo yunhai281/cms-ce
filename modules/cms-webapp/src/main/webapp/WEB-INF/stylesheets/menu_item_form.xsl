@@ -1796,7 +1796,7 @@
                       </tr>
                       <xsl:for-each
                               select="$menuitem/page/contentobjects/contentobject[parametername=$currentparametername]">
-                        <xsl:sort select="order"/>
+                        <xsl:sort select="number(order)"/>
                         <tr>
                           <xsl:call-template name="contentobjectselector_multi">
                             <xsl:with-param name="name" select="$currentparametername"/>
