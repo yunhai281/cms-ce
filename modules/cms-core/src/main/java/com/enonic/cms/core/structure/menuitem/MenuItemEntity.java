@@ -1004,6 +1004,10 @@ public class MenuItemEntity
         setXmlData( data.getJDOMDocument() );
     }
 
+    public boolean getIncludeRequestParameters() {
+        return getMenuItemData().getIncludeRequestParameters();
+    }
+
     public Map<String, MenuItemRequestParameter> getRequestParameters()
     {
         return getMenuItemData().getRequestParameters();

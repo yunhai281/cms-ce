@@ -51,10 +51,19 @@ public class DirectiveRequestProcessor
         SitePath sitePath = context.getSitePath();
         MenuItemEntity shortcuttedMenuItem = context.getMenuItem().getMenuItemShortcut();
         Path pathToShortcuttedMenuItem = shortcuttedMenuItem.getPath();
-        RequestParameters mergedRequestParameters =
-            RequestParametersMerger.mergeWithMenuItemRequestParameters( sitePath.getRequestParameters(),
-                                                                        context.getMenuItem().getRequestParameters() );
-        SitePath shortcutSitePath = sitePath.createNewInSameSite( pathToShortcuttedMenuItem, mergedRequestParameters.getAsMapWithStringValues() );
+        SitePath shortcutSitePath;
+        if ( context.getMenuItem().getIncludeRequestParameters() )
+        {
+            RequestParameters mergedRequestParameters =
+                RequestParametersMerger.mergeWithMenuItemRequestParameters( sitePath.getRequestParameters(),
+                                                                            context.getMenuItem().getRequestParameters() );
+            shortcutSitePath =
+                sitePath.createNewInSameSite( pathToShortcuttedMenuItem, mergedRequestParameters.getAsMapWithStringValues() );
+        }
+        else
+        {
+            shortcutSitePath = sitePath.createNewInSameSite( pathToShortcuttedMenuItem, sitePath.getParams() );
+        }
         shortcutSitePath.removeParam( "id" );
 
         // Check for eternal shortcut loop that can occurs when you have menuitems with equals names

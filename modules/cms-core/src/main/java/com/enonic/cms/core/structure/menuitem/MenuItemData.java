@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jdom.Attribute;
+import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -109,6 +110,27 @@ class MenuItemData
         }
 
         parametersEl.addContent( parameterEl );
+    }
+
+    public boolean getIncludeRequestParameters()
+    {
+        Element rootEl = getAndEnsureRootElement();
+        Element parametersEl = getAndEnsureElement( rootEl, "parameters" );
+        Attribute includeParams = parametersEl.getAttribute( "include-parameters" );
+        try
+        {
+            // To make this backward compatible, null, or missing element means the value have not been set by admin and should default to true.
+            if ( includeParams == null || includeParams.getBooleanValue() == true )
+            {
+                return true;
+            }
+        }
+        catch ( DataConversionException e )
+        {
+            // Also return default if error.
+            return true;
+        }
+        return false;
     }
 
     public Map<String, MenuItemRequestParameter> getRequestParameters()

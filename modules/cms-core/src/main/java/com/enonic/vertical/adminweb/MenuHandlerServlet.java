@@ -273,6 +273,7 @@ public class MenuHandlerServlet
         String type = (String) formItems.get( "type" );
         // automatically treat a form as a page
         boolean hasForm = false;
+        boolean includeShortcutParameters = false;
         if ( type.equals( "form" ) )
         {
             hasForm = true;
@@ -289,6 +290,7 @@ public class MenuHandlerServlet
         else if ( type.equals( "shortcut" ) )
         {
             type = "shortcut";
+            includeShortcutParameters = formItems.getBoolean( "shortcut_include_parameters", false );
         }
         else if ( "localurl".equals( type ) || "externalurl".equals( type ) )
         {
@@ -368,6 +370,14 @@ public class MenuHandlerServlet
             String[] paramOverrides = (String[]) formItems.get( "paramoverride" );
 
             Element paramElem = XMLTool.createElement( newDoc, menuItemElement, "parameters" );
+            if ( includeShortcutParameters )
+            {
+                paramElem.setAttribute( "include-parameters", "true" );
+            }
+            else
+            {
+                paramElem.setAttribute( "include-parameters", "false" );
+            }
             for ( int i = 0; i < paramNames.length; i++ )
             {
                 if ( paramNames[i].length() == 0 || paramVals[i].length() == 0 )

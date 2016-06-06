@@ -6,8 +6,6 @@ package com.enonic.cms.core.content.index;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;

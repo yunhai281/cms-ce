@@ -14,7 +14,7 @@
     <xsl:include href="common/generic_parameters.xsl"/>
     <xsl:include href="common/genericheader.xsl"/>
     <xsl:include href="common/textfield.xsl"/>
-	<xsl:include href="common/textarea.xsl"/>
+    <xsl:include href="common/textarea.xsl"/>
     <xsl:include href="common/accessrights.xsl"/>
     <xsl:include href="common/button.xsl"/>
     <xsl:include href="common/searchfield.xsl"/>
@@ -41,19 +41,20 @@
     <xsl:param name="catselkey" select="'none'"/>
     <xsl:param name="selpagetemplatekey" select="''"/>
     <xsl:param name="forward_data" select="false()"/>
+    <xsl:param name="shortcut_include_parameters" select="true()"/>
     <xsl:param name="name" select="''"/>
     <xsl:param name="closedunit" select="'false'"/>
     <xsl:param name="visibility" select="'off'"/>
     <xsl:param name="menu-name" select="''"/>
     <xsl:param name="displayname" select="''"/>
     <xsl:param name="description" select="''"/>
-	<xsl:param name="keywords" select="''"/>
+    <xsl:param name="keywords" select="''"/>
     <xsl:param name="document" select="''"/>
     <xsl:param name="noauth" select="'notset'"/>
     <xsl:param name="catkey" select="'none'"/>
     <xsl:param name="catname" select="'none'"/>
     <xsl:param name="selectedtabpageid" select="'none'"/>
-	<xsl:param name="contenttitle"/>
+	  <xsl:param name="contenttitle"/>
     <xsl:param name="forward_shortcut" select="'false'"/>
     <xsl:param name="contenttypestring" select="''"/>
 
@@ -326,6 +327,12 @@
                         break;
                       }
                     }
+                  }
+
+                  function toggle_include_parameters(status)
+                  {
+                    status = !status;
+                    document.getElementsByName("shortcut_include_parameters")[0].disabled = status;
                   }
 
                   function OpenSelectorWindow( page, width, height )
@@ -1167,7 +1174,7 @@
                                   <tr>
                                     <td class="form_labelcolumn">%fldForward%:</td>
                                     <td>
-                                      <input type="checkbox" name="forward_shortcut" value="true">
+                                      <input type="checkbox" name="forward_shortcut" value="true" onClick="toggle_include_parameters(this.checked)">
                                         <xsl:choose>
                                           <xsl:when test="$forward_data">
                                             <xsl:if test="$forward_shortcut = 'false'">
@@ -1181,6 +1188,43 @@
                                               <xsl:text>checked</xsl:text>
                                             </xsl:attribute>
                                           </xsl:when>
+                                        </xsl:choose>
+                                      </input>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="form_labelcolumn">%fldForwardParameters%</td>
+                                    <td>
+                                      <input type="checkbox" name="shortcut_include_parameters" value="true">
+                                        <xsl:choose>
+                                          <xsl:when test="$forward_data">
+                                            <xsl:choose>
+                                              <xsl:when test="$forward_shortcut = 'false'">
+                                                <xsl:attribute name="disabled">
+                                                  <xsl:text>disabled</xsl:text>
+                                                </xsl:attribute>
+                                              </xsl:when>
+                                              <xsl:otherwise>
+                                                <xsl:if test="$shortcut_include_parameters = 'true'">
+                                                  <xsl:attribute name="checked">
+                                                    <xsl:text>checked</xsl:text>
+                                                  </xsl:attribute>
+                                                </xsl:if>
+                                              </xsl:otherwise>
+                                            </xsl:choose>
+                                          </xsl:when>
+                                          <xsl:when test="$menuitem/shortcut/@forward = 'true'">
+                                            <xsl:attribute name="disabled">
+                                              <xsl:text>disabled</xsl:text>
+                                            </xsl:attribute>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                            <xsl:if test="not(exists($menuitem/parameters/@include-parameters)) or $menuitem/parameters/@include-parameters = 'true'">
+                                              <xsl:attribute name="checked">
+                                                <xsl:text>checked</xsl:text>
+                                              </xsl:attribute>
+                                            </xsl:if>
+                                          </xsl:otherwise>
                                         </xsl:choose>
                                       </input>
                                     </td>

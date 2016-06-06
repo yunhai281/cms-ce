@@ -1107,6 +1107,7 @@
 %fldShortcut%|Målside|Destination page|Målside|Målsida|Página de destino
 %optPageTypeShortcut%|Snarvei|Shortcut|Genvej|Genväg|Acceso directo
 %fldForward%|Videresend|Redirect|Videresend|Vidarebefordra|Redirección
+%fldForwardParameters%|Inkluder parametere|Include parameters|Medtag parametre|Inkludera parametrar|Incluir parámetros
 %modelVersion%|Model versjon|Model version|Modelversion|Modellversion|Versión del modelo
 %errAZ09%|Feltet \Navn\ kan bare inneholde a-z, A-Z, 0-9, punktum, bindestrek og underscore|The field called \name\ can only contain a-z, A-Z, 0-9, punctuation, dash and underscore|Feltet \Navn\ kan kun indehold a-z, A-Z, punktum, bindestreg og underscore|Fältet \Namn\ får bara innehålla tecknen a-z, A-Z, 0-9, punkt, bindestreck och liggande bindestreck (underscore)|El campo \name\ sólo puede contener a-z, A-Z, 0-9, punto, guión y subrayado.
 %msgClickToDeleteVersion%|Klikk for å slette denne versjonen|Click to delete this version|Klik for at slette denne version|Klicka för att radera denna version|Clique para borrar esta versión

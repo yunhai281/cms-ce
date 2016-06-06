@@ -1,7 +1,6 @@
 package com.enonic.cms.core.security.userstore.connector;
 
 import com.enonic.cms.api.plugin.ext.auth.AuthenticationToken;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
 
 final class AuthenticationTokenImpl
     implements AuthenticationToken
