@@ -54,10 +54,6 @@ public class PortalRequestProcessor
 
     private UserEntity requester;
 
-    private SiteEntity requestedSite;
-
-    private PortalRequestTrace portalRequestTrace;
-
     private SiteDao siteDao;
 
     private PortletDao portletDao;
@@ -85,7 +81,7 @@ public class PortalRequestProcessor
 
     public PortalResponse processRequest()
     {
-        portalRequestTrace = liveTraceService.getCurrentPortalRequestTrace();
+        final PortalRequestTrace portalRequestTrace = liveTraceService.getCurrentPortalRequestTrace();
 
         PortalResponse portalResponse = null;
         try
@@ -93,7 +89,7 @@ public class PortalRequestProcessor
             final SitePath sitePath = request.getSitePath();
 
             requester = resolveRequester( request );
-            requestedSite = resolveSite( sitePath );
+            final SiteEntity requestedSite = resolveSite( sitePath );
 
             PortalRequestTracer.traceRequestedSite( portalRequestTrace, requestedSite );
             PortalRequestTracer.traceRequester( portalRequestTrace, requester );
@@ -331,16 +327,12 @@ public class PortalRequestProcessor
         }
         else
         {
-            StringBuffer message = new StringBuffer( "The request for menuItem (" );
-            message.append( menuItem.getKey() );
-            message.append( " - " );
-            message.append( menuItem.getPathAsString() );
-            message.append( ") could not be completed for path : " );
-            message.append( pageRequestContext.getSitePath() == null ? "unknown" : pageRequestContext.getSitePath().asString() );
-            message.append( "  - Unhandled menuitem type for request:" );
-            message.append( menuItemType );
+            String message = "The request for menuItem (" + menuItem.getKey() + " - " + menuItem.getPathAsString() +
+                ") could not be completed for path : " +
+                ( pageRequestContext.getSitePath() == null ? "unknown" : pageRequestContext.getSitePath().asString() ) +
+                "  - Unhandled menuitem type for request:" + menuItemType;
 
-            throw new IllegalArgumentException( message.toString() );
+            throw new IllegalArgumentException( message );
         }
     }
 
