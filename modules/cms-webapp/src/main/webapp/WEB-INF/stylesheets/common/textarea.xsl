@@ -108,9 +108,14 @@
         <xsl:attribute name="rows"><xsl:value-of select="$rows"/></xsl:attribute>
         <xsl:attribute name="cols"><xsl:value-of select="$cols"/></xsl:attribute>
 
-        <xsl:if test="$width != ''">
-          <xsl:attribute name="style">width: <xsl:value-of select="$width"/></xsl:attribute>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$width != ''">
+            <xsl:attribute name="style">width: <xsl:value-of select="$width"/>; white-space: pre-wrap;</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:attribute name="style">white-space: pre-wrap;</xsl:attribute>
+          </xsl:otherwise>
+        </xsl:choose>
 
         <!-- Affects Firefox only -->
         <xsl:attribute name="spellcheck">
