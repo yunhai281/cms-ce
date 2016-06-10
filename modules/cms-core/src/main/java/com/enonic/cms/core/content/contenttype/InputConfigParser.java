@@ -148,7 +148,8 @@ public class InputConfigParser
 
         String defaultValue = parseDefaultValue( inputEl );
 
-        return new RadioButtonDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(defaultValue);
+        return new RadioButtonDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(
+            defaultValue );
     }
 
     private MultipleChoiceDataEntryConfig parseMultipleChoiceInputConfig( Element inputEl )
@@ -223,7 +224,8 @@ public class InputConfigParser
 
         String defaultValue = parseDefaultValue( inputEl );
 
-        return new DropdownDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(defaultValue);
+        return new DropdownDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(
+            defaultValue );
     }
 
     private DateDataEntryConfig parseDateInputConfig( Element inputEl )
@@ -252,7 +254,7 @@ public class InputConfigParser
 
         String defaultValue = parseDefaultValueAsXML( inputEl );
 
-        return new XmlDataEntryConfig( inputName, required, displayName, xpath ).setDefaultValue(defaultValue);
+        return new XmlDataEntryConfig( inputName, required, displayName, xpath ).setDefaultValue( defaultValue );
     }
 
     private RelatedContentDataEntryConfig parseRelatedContentInputConfig( Element inputEl )
@@ -268,8 +270,7 @@ public class InputConfigParser
             multiple = Boolean.parseBoolean( multipleStr );
         }
 
-        @SuppressWarnings( "unchecked" )
-        List<Element> contentTypeElements = inputEl.getChildren( "contenttype" );
+        @SuppressWarnings("unchecked") List<Element> contentTypeElements = inputEl.getChildren( "contenttype" );
 
         List<String> contentTypeNames = new ArrayList<String>();
 
@@ -290,8 +291,9 @@ public class InputConfigParser
                 if ( StringUtils.isBlank( contentTypeName ) )
                 {
                     throw new InvalidContentTypeConfigException( "Missing content type name ('" + contentTypeName +
-                        "') in name attribute for contenttype element in input config '" + inputName + "' in position: " +
-                        inputConfigPosition );
+                                                                     "') in name attribute for contenttype element in input config '" +
+                                                                     inputName + "' in position: " +
+                                                                     inputConfigPosition );
                 }
 
                 contentTypeNames.add( contentTypeName );
@@ -322,7 +324,15 @@ public class InputConfigParser
 
         String defaultValue = parseDefaultValue( inputEl );
 
-        return new TextDataEntryConfig( inputName, required, displayName, xpath ).setMaxLength( maxLength ).setDefaultValue( defaultValue );
+        Element regExpEl = inputEl.getChild( "regexp" );
+        String regExp = null;
+        if ( regExpEl != null )
+        {
+            regExp = regExpEl.getText();
+        }
+
+        return new TextDataEntryConfig( inputName, required, displayName, xpath ).setMaxLength( maxLength ).setDefaultValue(
+            defaultValue ).setRegExp( regExp );
     }
 
     private UrlDataEntryConfig parseUrlInputConfig( Element inputEl )
@@ -420,14 +430,14 @@ public class InputConfigParser
     {
         final Element aDefault = inputEl.getChild( "default" );
 
-        if (aDefault == null)
+        if ( aDefault == null )
         {
             return null;
         }
 
         final List children = aDefault.getChildren();
 
-        if (!children.isEmpty())
+        if ( !children.isEmpty() )
         {
             final Element displayElement = (Element) children.get( 0 );
 

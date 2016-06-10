@@ -11,6 +11,8 @@ public class TextDataEntryConfig
 
     private Integer maxLength;
 
+    private String regExp;
+
     public TextDataEntryConfig( String name, boolean required, String displayName, String xpath )
     {
         super( name, required, DataEntryConfigType.TEXT, displayName, xpath );
@@ -36,5 +38,16 @@ public class TextDataEntryConfig
     {
         this.defaultValue = defaultValue;
         return this;
+    }
+
+    public TextDataEntryConfig setRegExp( String value )
+    {
+        this.regExp = value;
+        return this;
+    }
+
+    public String getRegExp()
+    {
+        return this.regExp;
     }
 }

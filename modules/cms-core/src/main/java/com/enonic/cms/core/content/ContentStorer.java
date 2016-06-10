@@ -58,7 +58,9 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
 import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.image.ContentImageUtil;
 import com.enonic.cms.core.content.image.GenerateLowResImagesCommand;
 import com.enonic.cms.core.content.image.ImageUtil;
@@ -210,15 +212,8 @@ public class ContentStorer
 
         if ( statusApprovedOrArchived )
         {
-            boolean hasCreateAndApproveAccess;
-            if ( category.getAutoMakeAvailableAsBoolean() )
-            {
-                hasCreateAndApproveAccess = hasCreateAccess;
-            }
-            else
-            {
-                hasCreateAndApproveAccess = new CategoryAccessResolver( groupDao ).hasApproveContentAccess( creator, category );
-            }
+            boolean hasCreateAndApproveAccess = category.getAutoMakeAvailableAsBoolean() ||
+                new CategoryAccessResolver( groupDao ).hasApproveContentAccess( creator, category );
 
             if ( !hasCreateAndApproveAccess )
             {
@@ -279,6 +274,7 @@ public class ContentStorer
         new ContentValidator( contentDao ).validate( newContentVersion );
         ContentNameValidator.validate( newContent.getName() );
         ContentTitleValidator.validate( newContentVersion.getContentData() );
+        ContentRegExpValidator.validate( newContentVersion.getContentData() );
 
         if ( accessRightsStrategy == CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY )
         {
@@ -345,6 +341,7 @@ public class ContentStorer
 
         ContentNameValidator.validate( persistedContent.getName() );
         ContentTitleValidator.validate( updateCommand.getContentData() );
+        ContentRegExpValidator.validate( updateCommand.getContentData() );
 
         if ( contentHasChanged )
         {

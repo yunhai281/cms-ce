@@ -80,7 +80,7 @@ public class ContentTypeConfig
 
     public List<DataEntryConfig> getInputConfigs()
     {
-        return null;
+        return form.getInputConfigs();
     }
 
     public List<CtySetConfig> getSetConfig()
@@ -114,8 +114,6 @@ public class ContentTypeConfig
 
     public String toString()
     {
-        StringBuffer s = new StringBuffer();
-        s.append( "name = " ).append( name ).append( ", contentHandlerName = " ).append( contentHandlerName );
-        return s.toString();
+        return "name = " + name + ", contentHandlerName = " + contentHandlerName;
     }
 }
