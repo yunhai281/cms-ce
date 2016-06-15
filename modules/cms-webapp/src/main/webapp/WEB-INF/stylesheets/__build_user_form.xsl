@@ -762,6 +762,7 @@
                                   <tr>
                                       <th style="width:100px; text-align:left">%fldTimestamp%</th>
                                       <th style="width:150px; text-align:left">%fldSite%</th>
+                                      <th style="width:150px; text-align:left">%fldType%</th>
                                       <th style="text-align:left">%fldClient%</th>
                                   </tr>
                                   <x:for-each select="/users/logentries/logentry">
@@ -778,6 +779,11 @@
                                                       <x:text>Adminweb</x:text>
                                                   </x:otherwise>
                                               </x:choose>
+                                          </td>
+                                          <td>
+                                            <x:call-template name="actionstring">
+                                              <x:with-param name="typekey" select="@typekey"/>
+                                            </x:call-template>
                                           </td>
                                           <td>
                                               <x:value-of select="@inetaddress"/>

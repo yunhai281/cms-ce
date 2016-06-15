@@ -474,9 +474,13 @@ public class UserHandlerServlet
 
                 MultiValueMap adminParams = new MultiValueMap();
                 adminParams.put( "@userkey", userKey );
+                adminParams.put( "@typekey", 0 );
                 adminParams.put( "@typekey", 1 );
-                Document logEntries = admin.getLogEntries( loggedInUser, adminParams, 0, 5, true ).getAsDOMDocument();
-                XMLTool.mergeDocuments( userDoc, logEntries, true );
+                adminParams.put( "@typekey", 2 );
+                adminParams.put( "@typekey", 8 );
+                adminParams.put( "@typekey", 9 );
+                Document loginEntries = admin.getLogEntries( loggedInUser, adminParams, 0, 20, true ).getAsDOMDocument();
+                XMLTool.mergeDocuments( userDoc, loginEntries, true );
             }
             else
             {
