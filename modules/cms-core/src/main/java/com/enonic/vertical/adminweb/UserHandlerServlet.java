@@ -479,7 +479,7 @@ public class UserHandlerServlet
                 adminParams.put( "@typekey", 2 );
                 adminParams.put( "@typekey", 8 );
                 adminParams.put( "@typekey", 9 );
-                Document loginEntries = admin.getLogEntries( loggedInUser, adminParams, 0, 20, true ).getAsDOMDocument();
+                Document loginEntries = admin.getLogEntries( loggedInUser, adminParams, 0, 10, true ).getAsDOMDocument();
                 XMLTool.mergeDocuments( userDoc, loginEntries, true );
             }
             else
