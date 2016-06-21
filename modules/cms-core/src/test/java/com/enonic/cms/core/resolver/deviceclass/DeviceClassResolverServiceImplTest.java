@@ -5,6 +5,7 @@
 package com.enonic.cms.core.resolver.deviceclass;
 
 import java.util.Calendar;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,8 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SitePropertiesService;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -37,6 +40,8 @@ public class DeviceClassResolverServiceImplTest
 
     private ScriptResolverService deviceClassResolverServiceMock;
 
+    private SitePropertiesService sitePropertiesServiceMock;
+
     private static final String DEVICE_CLASS_SESSION_VALUE = "fromSession";
 
     private static final SiteKey siteKey = new SiteKey( 0 );
@@ -51,9 +56,11 @@ public class DeviceClassResolverServiceImplTest
     public void setUp()
     {
         deviceClassResolverServiceMock = createMock( ScriptResolverService.class );
+        sitePropertiesServiceMock = createMock( SitePropertiesService.class );
 
         deviceClassResolverService = new DeviceClassResolverServiceImpl();
         deviceClassResolverService.setDeviceClassScriptResolver( deviceClassResolverServiceMock );
+        deviceClassResolverService.setSitePropertiesService( sitePropertiesServiceMock );
 
         deviceClassResolverService.setResourceService( resourceServiceMock );
         deviceClassResolverService.setForceResolverValueService( forcedResolverValueService );
@@ -80,6 +87,12 @@ public class DeviceClassResolverServiceImplTest
 
         setUpResolveDeviceScenario( true, true );
 
+        Properties props = new Properties(  );
+        props.put( "cms.site.deviceClassification.cache", "true");
+        SiteProperties siteProperties = new SiteProperties( new SiteKey(0), props );
+        expect( sitePropertiesServiceMock.getSiteProperties( new SiteKey( 0 ) )).andReturn( siteProperties ).times( 1 );
+        replay( sitePropertiesServiceMock );
+
         ResolverContext context = new ResolverContext( request, createSite( true ) );
         String deviceClass = deviceClassResolverService.getDeviceClass( context );
 
@@ -105,11 +118,18 @@ public class DeviceClassResolverServiceImplTest
     @Test
     public void testDefaultDeviceClass()
     {
+        Properties props = new Properties(  );
+        props.put( "cms.site.deviceClassification.cache", "true");
+        SiteProperties siteProperties = new SiteProperties( new SiteKey(0), props );
+
         setUpGetResourceFileMock( true, true );
 
         expect( deviceClassResolverServiceMock.resolveValue( isA( ResolverContext.class ), isA( ResourceFile.class ) ) ).andReturn(
             createScriptResolverReturnValue( "" ) ).times( 1 );
         replay( deviceClassResolverServiceMock );
+
+        expect( sitePropertiesServiceMock.getSiteProperties( new SiteKey( 0 ) )).andReturn( siteProperties ).times( 1 );
+        replay( sitePropertiesServiceMock );
 
         SiteEntity site = createSite( true );
         ResolverContext context = new ResolverContext( request, site );

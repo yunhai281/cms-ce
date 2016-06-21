@@ -23,6 +23,7 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePropertiesService;
 
 @Component
 public class DeviceClassResolverServiceImpl
@@ -30,6 +31,8 @@ public class DeviceClassResolverServiceImpl
 {
 
     private ResourceService resourceService;
+
+    private SitePropertiesService sitePropertiesService;
 
     public final static String DEVICE_CLASS_FORCED_BASE_NAME = "ForceDeviceClass";
 
@@ -61,11 +64,16 @@ public class DeviceClassResolverServiceImpl
 
         ResourceFile deviceClassResolverScript = getDeviceClassResolverResourceFile( context.getSite() );
 
-        String cachedDeviceClass = resolveCachedDeviceClass( context, deviceClassResolverScript );
-
-        if ( StringUtils.isNotEmpty( cachedDeviceClass ) )
+        final String isDeviceCachingOn =
+            sitePropertiesService.getSiteProperties( context.getSite().getKey() ).getProperty( "cms.site.deviceClassification.cache" );
+        if ( Boolean.parseBoolean( isDeviceCachingOn ) )
         {
-            return cachedDeviceClass;
+            String cachedDeviceClass = resolveCachedDeviceClass( context, deviceClassResolverScript );
+
+            if ( StringUtils.isNotEmpty( cachedDeviceClass ) )
+            {
+                return cachedDeviceClass;
+            }
         }
 
         String resolvedDeviceClass = resolveDeviceClassFromScript( context, deviceClassResolverScript );
@@ -198,6 +206,12 @@ public class DeviceClassResolverServiceImpl
     public void setResourceService( ResourceService resourceService )
     {
         this.resourceService = resourceService;
+    }
+
+    @Autowired
+    public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
+    {
+        this.sitePropertiesService = sitePropertiesService;
     }
 
 }
