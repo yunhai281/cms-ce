@@ -6,6 +6,7 @@
 package com.enonic.cms.core.content.category;
 
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -135,11 +136,13 @@ class UpdateCategoryCommandProcessor
             modified = true;
         }
 
-        if ( allowedContentTypes != null )
+        if ( allowedContentTypes == null )
         {
-            boolean modifiedContentTypes = unitToUpdate.synchronizeContentTypes( allowedContentTypes );
-            modified = modified || modifiedContentTypes;
+            allowedContentTypes = new HashSet<ContentTypeEntity>();
         }
+
+        boolean modifiedContentTypes = unitToUpdate.synchronizeContentTypes( allowedContentTypes );
+        modified = modified || modifiedContentTypes;
 
         return modified;
     }

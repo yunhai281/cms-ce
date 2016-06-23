@@ -129,7 +129,6 @@ public class UnitEntity
     {
         boolean removed = contentTypes.retainAll( allowedContentTypes );
         boolean added = contentTypes.addAll( allowedContentTypes );
-        // TODO return
         return removed || added;
     }
 
