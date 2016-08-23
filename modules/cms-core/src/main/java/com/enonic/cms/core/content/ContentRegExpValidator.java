@@ -31,11 +31,12 @@ public class ContentRegExpValidator
                         if (!(dataEntry instanceof TextDataEntry)) {
                             throw new IllegalArgumentException( "The input field, " + name + " is expected to be a text input, but is not." );
                         }
-                        TextDataEntry textDataEntry = (TextDataEntry)dataEntry;
-                        if ( !textDataEntry.getValue().matches( regExp ) )
+                        TextDataEntry textDataEntry = (TextDataEntry) dataEntry;
+                        String value = textDataEntry.getValue();
+                        if ( !value.isEmpty() && !value.matches( regExp ) )
                         {
                             throw new IllegalArgumentException(
-                                "The value: " + textDataEntry.getValue() + ", does not match the validation reg exp: " + regExp );
+                                "The value: " + value + ", does not match the validation reg exp: " + regExp );
                         }
                     }
                 }
