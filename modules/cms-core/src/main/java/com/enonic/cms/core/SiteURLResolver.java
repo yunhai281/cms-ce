@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.framework.util.HttpServletUtil;
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.structure.SiteKey;
@@ -157,7 +158,7 @@ public class SiteURLResolver
         URL url;
         try
         {
-            final String scheme = request.getScheme();
+            String scheme = HttpServletUtil.getScheme( request );
             final int port = request.getServerPort();
 
             if ( "http".equalsIgnoreCase( scheme ) && ( port == DEFAULT_HTTP_PORT ) )

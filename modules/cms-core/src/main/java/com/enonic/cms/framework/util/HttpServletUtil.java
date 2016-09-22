@@ -222,4 +222,39 @@ public class HttpServletUtil
             Arrays.binarySearch( values, value.replaceAll( "/.*$", "/*" ) ) > -1 ||
             Arrays.binarySearch( values, "*/*" ) > -1;
     }
+
+    /**
+     * Find the right scheme for the original request, independent of where in the network, Enonic CMS is running.
+     * The method is checking the "Forwarded" header first, then the "X-Forwarded-Proto" header.  If none of these are set, then the
+     * standard call to <code>request.getScheme()</code> is used.
+     *
+     * @param request The HttpRequest.
+     * @return The original scheme used for the request from the browser.
+     */
+    public static String getScheme( final HttpServletRequest request )
+    {
+        final String originalScheme = request.getHeader( "Forwarded" );
+        if ( originalScheme != null && !originalScheme.equals( "" ) )
+        {
+            String[] pairs = originalScheme.split( ";" );
+            for ( String pair : pairs )
+            {
+                if ( pair.startsWith( "proto" ) )
+                {
+                    return pair.substring( 6 );
+                }
+            }
+        }
+        else
+        {
+            final String originalXScheme = request.getHeader( "X-Forwarded-Proto" );
+            if ( originalXScheme != null && !originalXScheme.equals( "" ) )
+            {
+                return originalXScheme;
+            }
+        }
+        return request.getScheme();
+    }
+
+
 }

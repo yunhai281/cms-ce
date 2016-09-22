@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.framework.util;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -22,7 +23,7 @@ public class HttpServletUtilTest
     public void testSetDateHeader()
     {
         GregorianCalendar cal = new GregorianCalendar( TimeZone.getTimeZone( "GMT" ) );
-        cal.set( 1994, 11, 1, 16, 0, 0 );
+        cal.set( 1994, Calendar.DECEMBER, 1, 16, 0, 0 );
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
         HttpServletUtil.setDateHeader( mockResponse, cal.getTime() );
@@ -32,7 +33,7 @@ public class HttpServletUtilTest
     public void testSetExpiresHeader()
     {
         GregorianCalendar cal = new GregorianCalendar( TimeZone.getTimeZone( "GMT" ) );
-        cal.set( 1994, 11, 1, 16, 0, 0 );
+        cal.set( 1994, Calendar.DECEMBER, 1, 16, 0, 0 );
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
         HttpServletUtil.setExpiresHeader( mockResponse, cal.getTime() );
@@ -42,7 +43,7 @@ public class HttpServletUtilTest
     public void testSetExpiresHeaderConvertsLocalTimeToGMT()
     {
         GregorianCalendar cal = new GregorianCalendar( TimeZone.getTimeZone( "Europe/Oslo" ) );
-        cal.set( 1994, 11, 1, 16, 0, 0 );
+        cal.set( 1994, Calendar.DECEMBER, 1, 16, 0, 0 );
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
         HttpServletUtil.setExpiresHeader( mockResponse, cal.getTime() );
@@ -59,5 +60,31 @@ public class HttpServletUtilTest
 
         assertFalse( HttpServletUtil.isContentModifiedAccordingToIfNoneMatchHeader( mockRequest, etagFor123 ) );
         assertTrue( HttpServletUtil.isContentModifiedAccordingToIfNoneMatchHeader( mockRequest, etagFor321 ) );
+    }
+
+    public void testSchemeUsingForwardedHeader() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest(  );
+        mockRequest.addHeader( "Forwarded", "for=192.0.2.60;proto=https;by=203.0.113.43" );
+        mockRequest.addHeader( "X-Forwarded-Proto", "smtp" );
+        mockRequest.setScheme( "http" );
+        assertEquals( "https", HttpServletUtil.getScheme( mockRequest ));
+    }
+
+    public void testSchemeUsingXForwardedProtoHeader() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest(  );
+        mockRequest.addHeader( "X-Forwarded-Proto", "https" );
+        mockRequest.setScheme( "http" );
+        assertEquals( "https", HttpServletUtil.getScheme( mockRequest ));
+    }
+
+    /*
+     * If Forwarded is used, X-Forwarded-Proto should be ignored, even if proto is not set for Forwarded.
+     */
+    public void testSchemeWithoutAnyForwardedHeader() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest(  );
+        mockRequest.addHeader( "Forwarded", "for=192.0.2.43, for=198.51.100.17" );
+        mockRequest.addHeader( "X-Forwarded-Proto", "smtp" );
+        mockRequest.setScheme( "http" );
+        assertEquals( "http", HttpServletUtil.getScheme( mockRequest ));
     }
 }

@@ -7,9 +7,6 @@ package com.enonic.cms.core.resolver;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Created by rmy - Date: Apr 15, 2009
- */
 public class ResolverHttpRequestInput
 {
 
