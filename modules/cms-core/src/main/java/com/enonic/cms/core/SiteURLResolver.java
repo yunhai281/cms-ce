@@ -74,7 +74,7 @@ public class SiteURLResolver
             {
                 pathFromRoot = path;
             }
-            return doCreateFullPathForRedirectFromRootPath( siteKey, pathFromRoot );
+            return doCreateFullPathForRedirectFromRootPath( pathFromRoot );
         }
         else
         {
@@ -124,7 +124,7 @@ public class SiteURLResolver
         if ( basePathOverride != null )
         {
             url = basePathOverride;
-            String siteLocalUrl = sitePathAndSitePathToString( sitePath.getSiteKey(), sitePath.getPathAndParams(), includeParamsInPath );
+            String siteLocalUrl = sitePathAndSitePathToString( sitePath.getPathAndParams(), includeParamsInPath );
             if ( siteLocalUrl.startsWith( "/" ) && url.endsWith( "/" ) )
             {
                 // preventing double slashes (example: //news/politics)
@@ -158,10 +158,16 @@ public class SiteURLResolver
         URL url;
         try
         {
+            String localScheme = request.getScheme();
             String scheme = HttpServletUtil.getScheme( request );
             final int port = request.getServerPort();
 
-            if ( "http".equalsIgnoreCase( scheme ) && ( port == DEFAULT_HTTP_PORT ) )
+            if ( !scheme.equalsIgnoreCase( localScheme ) )
+            {
+                // When the scheme has been changed, the port in use is probably not correct, so we will trust that the default is correct:
+                url = new URL( scheme, request.getServerName(), pathFromRoot );
+            }
+            else if ( "http".equalsIgnoreCase( scheme ) && ( port == DEFAULT_HTTP_PORT ) )
             {
                 url = new URL( scheme, request.getServerName(), pathFromRoot );
             }
@@ -194,7 +200,7 @@ public class SiteURLResolver
         return siteBasePathAndSitePathToStringBuilder.toString( siteBasePathAndSitePath );
     }
 
-    private String sitePathAndSitePathToString( SiteKey siteKey, PathAndParams siteLocalPathAndParams, boolean includeParamsInPath )
+    private String sitePathAndSitePathToString( PathAndParams siteLocalPathAndParams, boolean includeParamsInPath )
     {
         PathAndParamsToStringBuilder pathAndParamsToStringBuilder = new PathAndParamsToStringBuilder();
         pathAndParamsToStringBuilder.setEncoding( characterEncoding );
@@ -231,7 +237,7 @@ public class SiteURLResolver
         return localPathPrefix + localPathEncoded;
     }
 
-    private String doCreateFullPathForRedirectFromRootPath( SiteKey siteKey, String pathFromRoot )
+    private String doCreateFullPathForRedirectFromRootPath( String pathFromRoot )
     {
         final StringBuilder stringBuilder = new StringBuilder();
 
@@ -240,7 +246,7 @@ public class SiteURLResolver
             pathFromRoot = "/" + pathFromRoot;
         }
 
-        stringBuilder.append( encodePath( pathFromRoot, siteKey ) );
+        stringBuilder.append( encodePath( pathFromRoot ) );
 
         return stringBuilder.toString();
     }
@@ -260,12 +266,12 @@ public class SiteURLResolver
             localPath = "/" + localPath;
         }
 
-        stringBuilder.append( encodePath( localPath, siteKey ) );
+        stringBuilder.append( encodePath( localPath ) );
 
         return stringBuilder.toString();
     }
 
-    private String encodePath( String path, SiteKey siteKey )
+    private String encodePath( String path )
     {
         return UrlPathEncoder.encodeUrlPath( path, characterEncoding );
     }
