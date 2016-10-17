@@ -95,7 +95,7 @@ public final class BasicAuthInterceptor
 
     private void login( String user, String password )
     {
-        login( new QualifiedUsername( user ), password );
+        login( QualifiedUsername.parse( user ), password );
     }
 
     private void login( QualifiedUsername user, String password )
