@@ -186,6 +186,9 @@ public abstract class AbstractBaseEntityDao<T>
         getHibernateTemplate().evict( object );
     }
 
+    /*
+    JSI 23.11.2016 - No longer in use after CMS-5431?  Can probably be deleted.
+     */
     public int deleteByNamedQuery( final String queryName, final String[] paramNames, final Object[][] paramValues )
     {
         return ( (Number) getHibernateTemplate().execute( new HibernateCallback()

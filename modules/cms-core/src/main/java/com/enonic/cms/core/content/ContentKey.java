@@ -137,6 +137,21 @@ public class ContentKey
         return list;
     }
 
+    public static List<ContentKey> convertToList( Integer[] array )
+    {
+        if ( array == null || array.length == 0 )
+        {
+            return null;
+        }
+
+        List<ContentKey> list = new ArrayList<ContentKey>( array.length );
+        for ( Integer value : array )
+        {
+            list.add( new ContentKey( value ) );
+        }
+        return list;
+    }
+
     public static List<ContentKey> convertToList( String[] contentKeysStrings )
     {
         List<ContentKey> contentKeys = new ArrayList<ContentKey>();
